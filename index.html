@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Moje_Radio-JAZZFM</title>
+    <title>Moje_Radio-Zurnal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="icon" href="data:,">
     
@@ -226,19 +226,19 @@
             <button onclick="playRadio('https://icecast.stv.livebox.sk/slovensko_128.mp3', this, 'slovensko')" class="btn rozhlas" style="background:#00547E;"><img src="LogoSRo.png" style="max-width:80%; max-height:70%; object-fit:contain;"></button>
             <button onclick="playRadio('https://stream.funradio.sk/fun128.mp3', this, 'fun')" class="btn fun" style="background:#ffffff;"><img src="LogoFunRadio.png" style="max-width:75%; max-height:70%; object-fit:contain;"></button>
             <button onclick="playRadio('https://stream.bauermedia.sk/rock-hi.mp3', this, 'rock')" class="btn rock" style="background:#000000;"><img src="LogoAntenaROCK.png" style="max-width:70%; max-height:60%; object-fit:contain;"></button>
-            <button onclick="changePage(2)" class="btn btn-nav"><i class="fa-solid fa-circle-arrow-right"></i>SPOTIFY JazzFM -></button>
+            <button onclick="changePage(2)" class="btn btn-nav"><i class="fa-solid fa-circle-arrow-right"></i>SPOTIFY-JazzFM-Žurnál</button>
         </div>
 
         <div id="page-2" class="page-group hidden">
             <button id="main-jazz-btn" onclick="showJazz(this)" class="btn jazz" style="background: #000000;"><img src="LogoJazzFM.png" style="max-width: 85%; max-height: 50%; object-fit: contain;"></button>
             <button onclick="playRadiozurnal(this)" class="btn rozhlas-info" style="background:#b30000; font-size:16px; font-weight:700;"><i class="fa-solid fa-microphone-lines" style="font-size:35px; margin-bottom:8px;"></i>ŽURNÁL</button>
             <button onclick="showSpotify()" class="btn spotify"><i class="fa-brands fa-spotify"></i></button>
-            <button onclick="changePage(1)" class="btn btn-nav"><i class="fa-solid fa-circle-arrow-left"></i><- SRo FUN ROCK</button>
+            <button onclick="changePage(1)" class="btn btn-nav"><i class="fa-solid fa-circle-arrow-left"></i>SRo-FUN-ROCK</button>
         </div>
     </div>
 
     <script>
-    const VOLUME_MAP = { 'slovensko': 0.3, 'fun': 1.0, 'rock': 0.5, 'radiozurnal': 0.3, 'jazzfm': 0.5, 'jazz-oscar': 0.5, 'jazz-vocal': 0.5, 'jazz-fusion': 0.5, 'jazz-yule': 0.5 };
+    const VOLUME_MAP = { 'slovensko': 0.3, 'fun': 1.0, 'rock': 0.5, 'radiozurnal': 0.4, 'jazzfm': 0.5, 'jazz-oscar': 0.5, 'jazz-vocal': 0.5, 'jazz-fusion': 0.5, 'jazz-yule': 0.5 };
     const RODINA = ['Dominik', 'Janka', 'Patrik', 'Martin', 'Andrea', 'Roman', 'Emília', 'Ján', 'Mária', 'Juraj', 'Tatiana', 'Rastislav', 'Viktor', 'Adela', 'Linda', 'Michal', 'Ondrej', 'Jana', 'Viliam', 'Nataša', 'Kristína', 'Tibor', 'Ema'];
     const KOLEGOVIA = ['Ivana', 'Mária', 'Iveta', 'Nina', 'Adriana', 'Jaroslava', 'Eva', 'Jana', 'Judita', 'Martin', 'Jozef', 'Marcel', 'Karol', 'Anna', 'Petra', 'Dominika'];
     const SPOLUZIACI = ['Claudia', 'Bibiana','Zuzana', 'Kristína','Hana', 'Amanda','Viktória', 'Karin','Alexandra', 'Vanesa','Tamara', 'Zoe','Ela', 'Ema','Sebastian', 'Barbora','Jakub', 
@@ -491,8 +491,8 @@ function playRadiozurnal(element) {
     element.classList.add('playing');
 
     // 3. Spustíme priamy, živý spravodajský stream Rádio Slovensko 24
-    audio.volume = VOLUME_MAP['radiozurnal'] || 0.3;
-    audio.src = 'https://icecast.stv.livebox.sk/rtvs24_128.mp3';
+    audio.volume = VOLUME_MAP['radiozurnal'] || 0.4;
+    audio.src = 'https://icecast.stv.livebox.sk/rtvscross_128.mp3';
     audio.play();
     hraSaZurnal = true;
 
