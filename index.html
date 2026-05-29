@@ -231,16 +231,14 @@
 
         <div id="page-2" class="page-group hidden">
             <button id="main-jazz-btn" onclick="showJazz(this)" class="btn jazz" style="background: #000000;"><img src="LogoJazzFM.png" style="max-width: 85%; max-height: 50%; object-fit: contain;"></button>
-            <button onclick="playRadio('URL_RADIA_5', this, 'radio5')" class="btn" style="background:#111; font-size:24px; font-weight:700;">Rádio 5</button>
-            
+            <button onclick="playRadiozurnal(this)" class="btn rozhlas-info" style="background:#b30000; font-size:16px; font-weight:700;"><i class="fa-solid fa-microphone-lines" style="font-size:35px; margin-bottom:8px;"></i>ŽURNÁL</button>
             <button onclick="showSpotify()" class="btn spotify"><i class="fa-brands fa-spotify"></i></button>
-            
             <button onclick="changePage(1)" class="btn btn-nav"><i class="fa-solid fa-circle-arrow-left"></i><- S5</button>
         </div>
     </div>
 
     <script>
-    const VOLUME_MAP = { 'slovensko': 0.3, 'fun': 1.0, 'rock': 0.5, 'radio5': 0.7, 'jazzfm': 0.5, 'jazz-oscar': 0.5, 'jazz-vocal': 0.5, 'jazz-fusion': 0.5, 'jazz-yule': 0.5 };
+    const VOLUME_MAP = { 'slovensko': 0.3, 'fun': 1.0, 'rock': 0.5, 'radiozurnal': 0.3, 'jazzfm': 0.5, 'jazz-oscar': 0.5, 'jazz-vocal': 0.5, 'jazz-fusion': 0.5, 'jazz-yule': 0.5 };
     const RODINA = ['Dominik', 'Janka', 'Patrik', 'Martin', 'Andrea', 'Roman', 'Emília', 'Ján', 'Mária', 'Juraj', 'Tatiana', 'Rastislav', 'Viktor', 'Adela', 'Linda', 'Michal', 'Ondrej', 'Jana', 'Viliam', 'Nataša', 'Kristína', 'Tibor', 'Ema'];
     const KOLEGOVIA = ['Ivana', 'Mária', 'Iveta', 'Nina', 'Adriana', 'Jaroslava', 'Eva', 'Jana', 'Judita', 'Martin', 'Jozef', 'Marcel', 'Karol', 'Anna', 'Petra', 'Dominika'];
     const SPOLUZIACI = ['Claudia', 'Bibiana','Zuzana', 'Kristína','Hana', 'Amanda','Viktória', 'Karin','Alexandra', 'Vanesa','Tamara', 'Zoe','Ela', 'Ema','Sebastian', 'Barbora','Jakub', 
@@ -431,7 +429,6 @@
         document.getElementById('spotify-links-container').style.display = 'none';
         document.getElementById('jazz-links-container').style.display = 'block';
         
-        audio.volume = VOLUME_MAP['jazzfm'] || 0.7;
         audio.src = 'https://jazzfm91.streamb.live/SB00009'; 
         audio.play();
         
@@ -462,7 +459,97 @@
     }
     document.addEventListener('touchstart', resetIdleTimer);
     resetIdleTimer();
+let pamatStreamu = null;
+let pamatElementu = null;
+let pamatTypu = null;
+let hraSaZurnal = false;
 
+async function playRadiozurnal(element) {
+    // Ak už správy hrajú a klikne sa znova, ihneď sa vrátime k hudbe
+    if (hraSaZurnal) {
+        vratZurnalSpat();
+        return;
+    }
+
+    try {
+        // 1. Zapamätáme si aktuálne hrajúce rádio
+        const aktualneHrajuce = document.querySelector('.btn.playing');
+        if (aktualneHrajuce && aktualneHrajuce !== element && aktualneHrajuce.id !== 'main-jazz-btn') {
+            pamatStreamu = audio.src;
+            pamatElementu = aktualneHrajuce;
+            pamatTypu = Object.keys(VOLUME_MAP).find(key => audio.src.includes(key)) || 'fun';
+        } else if (document.getElementById('jazz-links-container').style.display === 'block') {
+            pamatStreamu = audio.src;
+            pamatElementu = document.getElementById('main-jazz-btn');
+            pamatTypu = 'jazzfm';
+        }
+
+        // 2. Podsvietime tlačidlo Rádiožurnálu
+        document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('playing'));
+        element.classList.add('playing');
+
+        // 3. Vytiahneme najnovšiu MP3 z RSS feedu Slovenského rozhlasu (Rádiožurnál o 7:00)
+        // Použijeme free CORS proxy cors-anywhere, aby nám Apple/Safari povolilo stiahnuť XML
+        const rssUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://api.stvr.sk/xml/applepodcast_archive.xml?series=1122');
+        const response = await fetch(rssUrl);
+        const data = await response.json();
+        
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(data.contents, "text/xml");
+        
+        // Nájdeme prvý (najnovší) audio súbor v XML
+        const najnovsiaMp3 = xmlDoc.getElementsByTagName('enclosure')[0].getAttribute('url');
+
+        if (najnovsiaMp3) {
+            audio.src = najnovsiaMp3;
+            audio.play();
+            hraSaZurnal = true;
+
+            // AKO TO VYPNÚŤ: Sledujeme koniec pesničky/súboru
+            audio.onended = function() {
+                vratZurnalSpat();
+            };
+        } else {
+            alert("Nepodarilo sa načítať najnovší Žurnál.");
+            vratZurnalSpat();
+        }
+
+    } catch (e) {
+        console.log("Chyba načítania správ:", e);
+        vratZurnalSpat();
+    }
+    resetIdleTimer();
+}
+
+function vratZurnalSpat() {
+    audio.onended = null; // Zrušíme sledovanie konca
+    document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('playing'));
+    
+    if (pamatStreamu && pamatStreamu !== "") {
+        audio.volume = VOLUME_MAP[pamatTypu] || 1.0;
+        audio.src = pamatStreamu;
+        audio.play();
+        if (pamatElementu) pamatElementu.classList.add('playing');
+    } else {
+        audio.pause();
+        audio.src = "";
+    }
+    
+    hraSaZurnal = false;
+    pamatStreamu = null;
+    pamatElementu = null;
+    pamatTypu = null;
+}
+
+// Poistka: Ak klikneš na hlavné vypínacie tlačidlo, vymažeme kompletne pamäť správ
+const povodnaStopRadioZa = stopRadio;
+stopRadio = function() {
+    audio.onended = null;
+    hraSaZurnal = false;
+    pamatStreamu = null;
+    pamatElementu = null;
+    povodnaStopRadioZa();
+};
     function klikNaHodiny(e) {
         if (e) e.stopPropagation();
         if (document.body.classList.contains('screensaver-mode')) {
