@@ -518,8 +518,7 @@ const VOLUME_MAP = {
 
     // Na úplný koniec funkcie playRadio sa do šetriča pošle pekný názov:
     document.getElementById('ss-radio-info').textContent = type;
-
-        
+            
     // Skryjeme Spotify kontajner, ak by bol náhodou otvorený
     document.getElementById('spotify-links-container').style.display = 'none';
     
@@ -528,7 +527,8 @@ const VOLUME_MAP = {
     audio.play();
     resetIdleTimer();
     // Na koniec funkcie playRadio:
-    document.getElementById('ss-radio-info').textContent = type;
+    document.getElementById('ss-radio-info').textContent = type;// Na úplný koniec funkcie playRadio namiesto pôvodného riadku daj tento:
+    document.getElementById('ss-radio-info').innerHTML = `<small style="font-size: 0.6em; opacity: 0.7; text-transform: none; margin-right: 8px;">hrá:</small>${type}`;
 }
     
     function stopRadio() {
@@ -552,6 +552,8 @@ const VOLUME_MAP = {
     resetIdleTimer();
         // Na koniec funkcie showSpotify:
     document.getElementById('ss-radio-info').textContent = "SPOTIFY";
+    // Na úplný koniec funkcie showSpotify namiesto pôvodného riadku daj tento:
+    document.getElementById('ss-radio-info').innerHTML = `<small style="font-size: 0.6em; opacity: 0.7; text-transform: none; margin-right: 8px;">hrá:</small>SPOTIFY`;
 }
     
     function openSpotify(id) {
