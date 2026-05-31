@@ -247,18 +247,25 @@
     }
 
     let dnesneMeno = ""; 
+    let poslednyDatumMenin = ""; // Tu si uložíme dátum, kedy sme naposledy stiahli CSV
 
     async function updateNameday() {
+        const now = new Date();
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const dd = String(now.getDate()).padStart(2, '0');
+        const targetDate = `${mm}-${dd}`; // formát "05-31" pro vyhľadávanie v CSV
+        const dnesnyFormatnyDatum = `${now.getDate()}.${now.getMonth() + 1}.`; // formát "31.5." pre našu kontrolu
+
+        // KONTROLA: Ak sme dnes už meniny úspešne stiahli, nepokračuj ďalej
+        if (poslednyDatumMenin === dnesnyFormatnyDatum && dnesneMeno !== "") {
+            return; 
+        }
         try {
             const url = 'https://raw.githubusercontent.com/spacek/slovensky-kalendar-menin/master/sk-meniny.csv';
             const response = await fetch(url);
             if (!response.ok) throw new Error('Súbor nedostupný');
             const text = await response.text();
             const lines = text.split('\n');
-            const now = new Date();
-            const mm = String(now.getMonth() + 1).padStart(2, '0');
-            const dd = String(now.getDate()).padStart(2, '0');
-            const targetDate = `${mm}-${dd}`;
             let found = "";
             
             for (let line of lines) {
@@ -271,7 +278,14 @@
                 }
             }
             dnesneMeno = found;
-        } catch (e) { console.log("Chyba menín:", e); dnesneMeno = ""; }
+        // Ak sme úspešne našli meno, zapíšeme si dnešný dátum, aby sme už nefetchovali
+            if (dnesneMeno !== "") {
+                poslednyDatumMenin = dnesnyFormatnyDatum;
+            }
+        } catch (e) { 
+            console.log("Chyba menín:", e); 
+            dnesneMeno = ""; 
+        }
     }
 
     updateNameday();
