@@ -25,6 +25,7 @@
         .hours-part { font-weight: 600; color: #ffffff; } 
         .minutes-part { font-weight: 200; color: #ffffff; margin-left: 5px; } 
         .red-digit { color: #eb0028 !important; } 
+        
         /* Štýl pre info riadok v rádio režime */
         .radio-info-wrapper { display: flex;  align-items: center;  gap: 12px; margin-top: 10px;  font-size: 3.5vw; font-weight: 300; color: #aaa;}
         .radio-info-wrapper .separator { color: #222; font-weight: 200; }
@@ -35,7 +36,34 @@
         .ss-only { display: none !important; }
 
         #spotify-links-container { display: none; margin-top: 15px; width: 85%; background: #0a0a0a; border-radius: 12px; padding: 10px; border: 1px solid #222; }
+        /* Štýl pre nový kontajner RTVS pod-rádií */
+        #slovensko-links-container { display: none; flex-direction: row; justify-content: center;  gap: 20px; margin-top: 25px; width: 90%; } /* <-- Táto zátvorka tu je */
 
+/* Štýl pre samotné malé štvorcové tlačidlá s logami */
+.sub-btn { 
+    width: 65px; 
+    height: 65px; 
+    background: #000; 
+    border: 1px solid #222; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    padding: 0; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    overflow: hidden;
+}
+
+.sub-btn img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: contain; 
+}
+
+/* Keď sa pod-rádio prehráva, získa výrazný biely okraj */
+.sub-btn.playing { 
+    border: 2px solid #fff !important; 
+}
         .buttons-section { flex: 1.1; display: grid; grid-template-columns: 1fr 1fr; 
             grid-template-rows: 0.7fr 1fr 1fr; gap: 8px; padding: 10px; background: #050505; }
         
@@ -58,6 +86,7 @@
         /* --- ŠETRIČ (METEOSTANICA) --- */
         body.screensaver-mode .buttons-section { display: none; }
         body.screensaver-mode .ss-hide { display: none !important; }
+        /*body.screensaver-mode #slovensko-links-container { display: none !important; }*/
         body.screensaver-mode .ss-only { display: flex !important; }
         body.screensaver-mode .clock-section { flex: 1; border: none; display: grid; grid-template-columns: 1.3fr 0.7fr; align-items: stretch; }
 
@@ -159,6 +188,13 @@
                 <span class="separator">|</span>
                 <span id="radio-name">---</span>
             </div>
+
+            <div id="slovensko-links-container" class="ss-hide">
+    <button onclick="playRadio('https://icecast.stv.livebox.sk/fm_128.mp3', this, 'fm')" class="sub-btn"><img src="LogoRadioFM.png"></button>
+    <button onclick="playRadio('https://icecast.stv.livebox.sk/devin_128.mp3', this, 'devin')" class="sub-btn"><img src="LogoRadioDevin.png"></button>
+    <button onclick="playRadio('https://icecast.stv.livebox.sk/litera_128.mp3', this, 'litera')" class="sub-btn"><img src="LogoRadioLitera.png"></button>
+    <button onclick="playRadio('https://icecast.stv.livebox.sk/regina_stred_128.mp3', this, 'regina')" class="sub-btn"><img src="LogoRadioReginaZ.png"></button>
+</div>
             
             <div id="spotify-links-container" class="ss-hide">
                 <div style="display: flex; justify-content: space-around; gap: 10px;">
@@ -228,7 +264,15 @@
 
     <script>
     // GLOBÁLNA MAPA HLASITOSTÍ
-    const VOLUME_MAP = { 'slovensko': 0.3, 'fun': 1.0, 'rock': 0.5 };
+const VOLUME_MAP = { 
+    'slovensko': 0.3, 
+    'fun': 1.0, 
+    'rock': 0.5,
+    'fm': 0.3,
+    'devin': 0.3,
+    'litera': 0.3,
+    'regina': 0.3
+};
     
     const RODINA = ['Dominik', 'Janka', 'Patrik', 'Martin', 'Andrea', 'Roman', 'Emília', 'Ján', 'Mária', 'Juraj', 'Tatiana', 'Rastislav', 'Viktor', 'Adela', 'Linda', 'Michal', 'Ondrej', 'Jana', 'Viliam', 'Nataša', 'Kristína', 'Tibor', 'Ema'];
     const KOLEGOVIA = ['Ivana', 'Mária', 'Iveta', 'Nina', 'Adriana', 'Jaroslava', 'Eva', 'Jana', 'Judita', 'Martin', 'Jozef', 'Marcel', 'Karol', 'Anna', 'Petra', 'Dominika'];
@@ -394,30 +438,52 @@
 
     // --- AUDIO LOGIKA PREHRÁVANIA ---
     const audio = document.getElementById('audioPlayer');
-    
     function playRadio(url, element, type) {
+    // 1. Ak klikáme na hlavné rádio (má triedu .btn), zrušíme označenie ostatných hlavných tlačidiel
+    if (element.classList.contains('btn')) {
         document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('playing'));
-        
-        audio.volume = VOLUME_MAP[type] || 1.0;
-        audio.src = url; 
-        audio.play();
         element.classList.add('playing');
-        resetIdleTimer();
+    } else {
+        // 2. Ak klikáme na malé pod-rádio (trieda .sub-btn), zrušíme označenie len medzi malými tlačidlami
+        document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('playing'));
+        element.classList.add('playing');
     }
+    
+    // 3. LOGIKA PRE ZOBRAZENIE POD-RÁDIÍ: 
+    // Ak hrá hlavné Rádio Slovensko alebo jeho pod-okruhy, ukážeme lištu. Inak ju skryjeme.
+    const slovenskoContainer = document.getElementById('slovensko-links-container');
+    if (url.includes('slovensko_128.mp3') || element.classList.contains('sub-btn')) {
+        slovenskoContainer.style.display = 'flex';
+    } else {
+        slovenskoContainer.style.display = 'none';
+        document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('playing'));
+    }
+
+    // Skryjeme Spotify kontajner, ak by bol náhodou otvorený
+    document.getElementById('spotify-links-container').style.display = 'none';
+    
+    audio.volume = VOLUME_MAP[type] || 1.0;
+    audio.src = url; 
+    audio.play();
+    resetIdleTimer();
+}
     
     function stopRadio() {
-        audio.pause(); audio.src = "";
-        document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('playing'));
-        document.getElementById('spotify-links-container').style.display = 'none';
-        resetIdleTimer();
-    }
+    audio.pause(); audio.src = "";
+    document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('playing'));
+    document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('playing')); // Vyčistí malé tlačidlá
+    document.getElementById('spotify-links-container').style.display = 'none';
+    document.getElementById('slovensko-links-container').style.display = 'none'; // Skryje pod-rádiá
+    resetIdleTimer();
+}
     
     function showSpotify() {
-        stopRadio();
-        document.getElementById('spotify-links-container').style.display = 'block';
-        document.querySelector('.spotify').classList.add('playing');
-        resetIdleTimer();
-    }
+    stopRadio();
+    document.getElementById('slovensko-links-container').style.display = 'none'; // Skryje RTVS pod-rádiá
+    document.getElementById('spotify-links-container').style.display = 'block';
+    document.querySelector('.spotify').classList.add('playing');
+    resetIdleTimer();
+}
     
     function openSpotify(id) {
         let url = id === 'search' ? "https://open.spotify.com/search" : `https://open.spotify.com/playlist/${id}`;
@@ -435,6 +501,7 @@
             document.getElementById('radio-label').textContent = 'Radio 2';
         }
         document.getElementById('spotify-links-container').style.display = 'none';
+        document.getElementById('slovensko-links-container').style.display = 'none'; // Skryje lištu pri zmene strany
         resetIdleTimer();
     }
 
@@ -449,14 +516,17 @@
     resetIdleTimer();
 
     function klikNaHodiny(e) {
-        if (e) e.stopPropagation();
-        if (document.body.classList.contains('screensaver-mode')) {
-            resetIdleTimer();
-        } else {
-            clearTimeout(idleTimer);
-            document.body.classList.add('screensaver-mode');
-        }
-    }   
+    if (e) {
+        e.stopPropagation();
+        if (e.cancelable) e.preventDefault(); // <-- TENTO RIADOK TU CHÝBA
+    }
+    if (document.body.classList.contains('screensaver-mode')) {
+        resetIdleTimer();
+    } else {
+        clearTimeout(idleTimer);
+        document.body.classList.add('screensaver-mode');
+    }
+}
     </script>
 </body>
 </html>
