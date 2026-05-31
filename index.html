@@ -88,6 +88,7 @@
         body.screensaver-mode .buttons-section { display: none; }
         body.screensaver-mode .ss-hide { display: none !important; }
         body.screensaver-mode #fun-links-container { display: none !important; } 
+        body.screensaver-mode #komerce-links-container { display: none !important; }
         body.screensaver-mode .ss-only { display: flex !important; }
         body.screensaver-mode .clock-section { flex: 1; border: none; display: grid; grid-template-columns: 1.3fr 0.7fr; align-items: stretch; }
 
@@ -223,6 +224,15 @@ body.screensaver-mode #ss-radio-info { display: flex !important; }
                 <button onclick="playRadio('https://stream.funradio.sk/running128.mp3', this, 'funrunning')" class="sub-btn"><img src="LogoFUNrunning.png"></button>
                 <button onclick="playRadio('https://stream.funradio.sk/8090_128.mp3', this, 'fun8090')" class="sub-btn"><img src="LogoFUN80-90.png"></button>
             </div>
+
+            <!-- NOVÁ LIŠTA KOMERČNÝCH STANÍC (Po stlačení JAZZ) -->
+            <div id="komerce-links-container" class="ss-hide" style="display: none; flex-direction: row; justify-content: center; gap: 15px; margin-top: 25px; width: 90%;">
+                <button onclick="playRadio('https://stream.radiojazz.sk/jazz128.mp3', this, 'jazz')" class="sub-btn"><img src="LogoJazz.png"></button>
+                <button onclick="playRadio('https://stream.expres.sk/128.mp3', this, 'expres')" class="sub-btn"><img src="LogoExpress.png"></button>
+                <button onclick="playRadio('https://stream.europa2.sk/128.mp3', this, 'europa2')" class="sub-btn"><img src="LogoEuropa2.png"></button>
+                <button onclick="playRadio('https://stream.radia.sk/melody128.mp3', this, 'melody')" class="sub-btn"><img src="LogoMelody.png"></button>
+                <button onclick="playRadio('https://stream.radia.sk/vlna128.mp3', this, 'vlna')" class="sub-btn"><img src="LogoVlna.png"></button>
+            </div>
             
             <div id="spotify-links-container" class="ss-hide">
                 <div style="display: flex; justify-content: space-around; gap: 10px;">
@@ -284,27 +294,29 @@ body.screensaver-mode #ss-radio-info { display: flex !important; }
             <button onclick="changePage(2)" class="btn btn-nav"><i class="fa-solid fa-circle-arrow-right"></i>SPOTIFY</button>
         </div>
 
+        <!-- STRANA 2: SPOTIFY A JAZZ S KOMERCIOU -->
         <div id="page-2" class="page-group hidden"> 
+            <!-- 1. Tvoja obľúbená Spotify -->
             <button onclick="showSpotify()" class="btn spotify"><i class="fa-brands fa-spotify"></i></button>
-            <button onclick="changePage(1)" class="btn btn-nav"><i class="fa-solid fa-circle-arrow-left"></i>SRo FUN ROCK</button>
+            
+            <!-- 2. Dynamické tlačidlo JAZZ (predvolene začína s logom Jazzu) -->
+            <button id="jazz-main-btn" onclick="showKomerce()" class="btn jazz" style="background:#111;">
+                <img src="LogoJazz.png" style="max-width:80%; max-height:70%; object-fit:contain;">
+            </button>
+            
+            <!-- 3. Veľké tlačidlo späť cez oba stĺpce -->
+            <button onclick="changePage(1)" class="btn btn-nav" style="grid-column: span 2;"><i class="fa-solid fa-circle-arrow-left"></i>SRo FUN ROCK</button>
         </div>
-    </div>
+    </div> <!-- Tu končí hlavný buttons-section -->
 
     <script>
   // GLOBÁLNA MAPA HLASITOSTÍ
 const VOLUME_MAP = { 
-    'slovensko': 0.3, 
-    'fun': 1.0, 
-    'rock': 0.5,
-    'fm': 0.3,
-    'devin': 0.3,
-    'litera': 0.3,
-    'regina': 0.3,
+    'slovensko': 0.3, 'fun': 1.0, 'rock': 0.5, 'fm': 0.3, 'devin': 0.3, 'litera': 0.3, 'regina': 0.3,
     // NOVÉ SUB-RÁDIÁ FUN RÁDIA:
-    'funchill': 1.0,
-    'funczsk': 1.0,
-    'funrunning': 1.0,
-    'fun8090': 1.0
+    'funchill': 1.0, 'funczsk': 1.0, 'funrunning': 1.0, 'fun8090': 1.0,
+    // NOVÉ STANICE:
+    'jazz': 0.7, 'expres': 0.5, 'europa2': 0.5, 'melody': 0.5, 'vlna': 0.5,
 };
     
     const RODINA = ['Dominik', 'Janka', 'Patrik', 'Martin', 'Andrea', 'Roman', 'Emília', 'Ján', 'Mária', 'Juraj', 'Tatiana', 'Rastislav', 'Viktor', 'Adela', 'Linda', 'Michal', 'Ondrej', 'Jana', 'Viliam', 'Nataša', 'Kristína', 'Tibor', 'Ema'];
@@ -477,26 +489,33 @@ const VOLUME_MAP = {
     updateWeather(); setInterval(updateWeather, 600000);
 
     // --- AUDIO LOGIKA PREHRÁVANIA ---
-    const audio = document.getElementById('audioPlayer');
-    function playRadio(url, element, type) {
-    // 1. Ak klikáme na hlavné rádio (má triedu .btn), zrušíme označenie ostatných hlavných tlačidiel
+const audio = document.getElementById('audioPlayer');
+
+function playRadio(url, element, type) {
+    // 1. Riešenie označovania (.playing)
     if (element.classList.contains('btn')) {
         document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('playing'));
         element.classList.add('playing');
     } else {
-        // 2. Ak klikáme na malé pod-rádio (trieda .sub-btn), zrušíme označenie len medzi malými tlačidlami
+        // Ak klikáme na malé pod-rádio (trieda .sub-btn), zrušíme označenie len medzi malými tlačidlami
         document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('playing'));
         element.classList.add('playing');
     }
     
-    // 3. LOGIKA PRE ZOBRAZENIE POD-RÁDIÍ: 
+    // 2. Definícia všetkých štyroch líšt
     const slovenskoContainer = document.getElementById('slovensko-links-container');
     const funContainer = document.getElementById('fun-links-container');
+    const komerceContainer = document.getElementById('komerce-links-container');
+    const spotifyContainer = document.getElementById('spotify-links-container');
 
+    // 3. LOGIKA PRE ZOBRAZENIE POD-RÁDIÍ: 
     // Ak hrá Slovensko alebo jeho pod-okruhy
     if (['slovensko', 'fm', 'devin', 'litera', 'regina'].includes(type)) {
         slovenskoContainer.style.display = 'flex';
         funContainer.style.display = 'none';
+        komerceContainer.style.display = 'none';
+        spotifyContainer.style.display = 'none';
+        
         if (element.classList.contains('btn')) {
             document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('playing'));
         }
@@ -505,29 +524,35 @@ const VOLUME_MAP = {
     else if (['fun', 'funchill', 'funczsk', 'funrunning', 'fun8090'].includes(type)) {
         funContainer.style.display = 'flex';
         slovenskoContainer.style.display = 'none';
+        komerceContainer.style.display = 'none';
+        spotifyContainer.style.display = 'none';
+        
         if (element.classList.contains('btn')) {
             document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('playing'));
         }
     }
-    // Ak hrá Rock, Spotify alebo vypneš rádio
+    // Ak hrá nová komerčná päťka (Jazz, Expres, Europa2, Melody, Vlna)
+    else if (['jazz', 'expres', 'europa2', 'melody', 'vlna'].includes(type)) {
+        komerceContainer.style.display = 'flex';
+        slovenskoContainer.style.display = 'none';
+        funContainer.style.display = 'none';
+        spotifyContainer.style.display = 'none';
+    }
+    // Ak hrá Rock, samostatné Spotify alebo vypneš rádio
     else {
         slovenskoContainer.style.display = 'none';
         funContainer.style.display = 'none';
+        komerceContainer.style.display = 'none';
+        spotifyContainer.style.display = 'none';
         document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('playing'));
     }
 
-    // Na úplný koniec funkcie playRadio sa do šetriča pošle pekný názov:
-    document.getElementById('ss-radio-info').textContent = type;
-            
-    // Skryjeme Spotify kontajner, ak by bol náhodou otvorený
-    document.getElementById('spotify-links-container').style.display = 'none';
-    
+    // 4. Spustenie audia a zápis textu "hrá: stanica" do šetriča
     audio.volume = VOLUME_MAP[type] || 1.0;
     audio.src = url; 
     audio.play();
     resetIdleTimer();
-    // Na koniec funkcie playRadio:
-    document.getElementById('ss-radio-info').textContent = type;// Na úplný koniec funkcie playRadio namiesto pôvodného riadku daj tento:
+    
     document.getElementById('ss-radio-info').innerHTML = `<small style="font-size: 0.6em; opacity: 0.7; text-transform: none; margin-right: 8px;">hrá:</small>${type}`;
 }
     
@@ -535,23 +560,25 @@ const VOLUME_MAP = {
     audio.pause(); audio.src = "";
     document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('playing'));
     document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('playing')); // Vyčistí malé tlačidlá
+    
+    // Schovanie všetkých štyroch líšt pod hodinami
     document.getElementById('spotify-links-container').style.display = 'none';
     document.getElementById('slovensko-links-container').style.display = 'none'; // Skryje pod-rádiá
     document.getElementById('fun-links-container').style.display = 'none';
+    document.getElementById('komerce-links-container').style.display = 'none'; // <-- TENTO RIADOK TU PRIDAJ
+    
     resetIdleTimer();
-    // Na koniec funkcie stopRadio:
     document.getElementById('ss-radio-info').textContent = "";
 }
     
     function showSpotify() {
     stopRadio();
     document.getElementById('slovensko-links-container').style.display = 'none'; // Skryje RTVS pod-rádiá
-    document.getElementById('spotify-links-container').style.display = 'block';
+    document.getElementById('spotify-links-container').style.display = 'flex';
     document.getElementById('fun-links-container').style.display = 'none';
+    document.getElementById('komerce-links-container').style.display = 'none';
     document.querySelector('.spotify').classList.add('playing');
     resetIdleTimer();
-        // Na koniec funkcie showSpotify:
-    document.getElementById('ss-radio-info').textContent = "SPOTIFY";
     // Na úplný koniec funkcie showSpotify namiesto pôvodného riadku daj tento:
     document.getElementById('ss-radio-info').innerHTML = `<small style="font-size: 0.6em; opacity: 0.7; text-transform: none; margin-right: 8px;">hrá:</small>SPOTIFY`;
 }
@@ -574,6 +601,7 @@ const VOLUME_MAP = {
         document.getElementById('spotify-links-container').style.display = 'none';
         document.getElementById('slovensko-links-container').style.display = 'none'; // Skryje lištu pri zmene strany
         document.getElementById('fun-links-container').style.display = 'none';
+        document.getElementById('komerce-links-container').style.display = 'none';
         resetIdleTimer();
     }
 
