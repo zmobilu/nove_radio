@@ -560,7 +560,8 @@ function playRadio(url, element, type) {
     audio.pause(); audio.src = "";
     document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('playing'));
     document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('playing')); // Vyčistí malé tlačidlá
-    
+    // TENTO RIADOK PRIDAJ SEM (aby zhaslo aj veľké JAZZ tlačidlo):
+    document.getElementById('jazz-main-btn').classList.remove('playing');
     // Schovanie všetkých štyroch líšt pod hodinami
     document.getElementById('spotify-links-container').style.display = 'none';
     document.getElementById('slovensko-links-container').style.display = 'none'; // Skryje pod-rádiá
@@ -581,6 +582,22 @@ function playRadio(url, element, type) {
     resetIdleTimer();
     // Na úplný koniec funkcie showSpotify namiesto pôvodného riadku daj tento:
     document.getElementById('ss-radio-info').innerHTML = `<small style="font-size: 0.6em; opacity: 0.7; text-transform: none; margin-right: 8px;">hrá:</small>SPOTIFY`;
+}
+        function showKomerce() {
+    stopRadio();
+    document.getElementById('slovensko-links-container').style.display = 'none';
+    document.getElementById('spotify-links-container').style.display = 'none';
+    document.getElementById('fun-links-container').style.display = 'none';
+    
+    // Ukáže komerčnú lištu
+    document.getElementById('komerce-links-container').style.display = 'flex';
+    
+    // Pridá biely okraj veľkému tlačidlu JAZZ, aby bolo jasné, že je aktívne
+    document.getElementById('jazz-main-btn').classList.add('playing');
+    resetIdleTimer();
+    
+    // V šetriči ukáže, že sa prešlo na komerčnú lištu (alebo tam nechaj čisté JAZZ)
+    document.getElementById('ss-radio-info').innerHTML = `<small style="font-size: 0.6em; opacity: 0.7; text-transform: none; margin-right: 8px;">hrá:</small>JAZZ`;
 }
     
     function openSpotify(id) {
