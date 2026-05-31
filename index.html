@@ -462,6 +462,10 @@ const VOLUME_MAP = {
     const slovenskoContainer = document.getElementById('slovensko-links-container');
     if (url.includes('slovensko_128.mp3') || element.classList.contains('sub-btn')) {
         slovenskoContainer.style.display = 'flex';
+    // TENTO RIADOK PRIDAJ: Ak klikneš na hlavné tlačidlo Slovensko, zruš výber na malých tlačidlách
+        if (element.classList.contains('btn')) {
+            document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('playing'));
+        }
     } else {
         slovenskoContainer.style.display = 'none';
         document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('playing'));
