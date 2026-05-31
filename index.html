@@ -153,13 +153,14 @@
         .name-family { color: #FF8C00 !important; }     
         .name-colleagues { color: #00CED1 !important; } 
         .name-classmates { color: #32CD32 !important; } 
+        
         /* Názov hrajúceho rádia v šetriči - absolútne poziciovaný */
-#ss-radio-info {
+    #ss-radio-info {
     position: absolute;
-    bottom: 16vh; /* Umiestni text presne do medzery nad dátum */
+    bottom: 21vh; /* Posunuté z 16vh na 21vh vyššie do medzery */
     left: 0;
     width: 100%;
-    font-size: 4.5vw;
+    font-size: 4.0vw; /* Jemne zmenšené z 4.5vw, aby to lepšie sedelo */
     font-weight: 400;
     color: #75FA8D;
     text-transform: uppercase;
@@ -167,7 +168,7 @@
     display: none;
     justify-content: center;
     align-items: center;
-    pointer-events: none; /* Aby sa cez text dalo kliknúť na hodiny */
+    pointer-events: none;
 }
 body.screensaver-mode #ss-radio-info { display: flex !important; }
         
