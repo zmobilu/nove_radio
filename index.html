@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Moje_Radio-JazzFM</title>
+    <title>Moje_Radio-SRo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="icon" href="data:,">
     
@@ -436,6 +436,28 @@
                 </div>
             </div>
 
+            <!-- SRo submenu: _FM, Devín, Litera, Regina -->
+            <div id="sro-links-container" class="ss-hide">
+                <div class="sub-btn-row">
+                    <button onclick="playRadio('https://icecast.stv.livebox.sk/fm_128.mp3', this, 'sro-fm')"
+                            style="background:#c0392b; border-radius:8px; padding:4px 10px; line-height:1.1; font-size:clamp(10px,2.5vw,18px); font-weight:700; text-align:center;">
+                        rádio<br>_FM
+                    </button>
+                    <button onclick="playRadio('https://icecast.stv.livebox.sk/devin_128.mp3', this, 'sro-devin')"
+                            style="background:#b8860b; border-radius:8px; padding:4px 10px; line-height:1.1; font-size:clamp(10px,2.5vw,18px); font-weight:700; text-align:center;">
+                        rádio<br>DEVÍN
+                    </button>
+                    <button onclick="playRadio('https://icecast.stv.livebox.sk/litera_128.mp3', this, 'sro-litera')"
+                            style="background:#1a7a7a; border-radius:8px; padding:4px 10px; line-height:1.1; font-size:clamp(10px,2.5vw,18px); font-weight:700; text-align:center;">
+                        rádio<br>LITERA
+                    </button>
+                    <button onclick="playRadio('https://icecast.stv.livebox.sk/regina_128.mp3', this, 'sro-regina')"
+                            style="background:#2e8b57; border-radius:8px; padding:4px 10px; line-height:1.1; font-size:clamp(10px,2.5vw,18px); font-weight:700; text-align:center;">
+                        rádio<br>REGINA
+                    </button>
+                </div>
+            </div>
+
             <!-- Jazz submenu -->
             <div id="jazz-links-container" class="ss-hide">
                 <div class="sub-btn-row">
@@ -495,7 +517,7 @@
 
         <!-- Strana 1: SRo, Fun, Rock, → -->
         <div id="page-1" class="page-group">
-            <button onclick="playRadio('https://icecast.stv.livebox.sk/slovensko_128.mp3', this, 'slovensko')"
+            <button id="main-sro-btn" onclick="showSro(this)"
                     class="btn rozhlas" style="background:#00547E;">
                 <img src="LogoSRo.png" alt="SRo">
             </button>
@@ -518,10 +540,7 @@
                     class="btn jazz" style="background:#000000;">
                 <img src="LogoJazzFM.png" alt="Jazz FM">
             </button>
-            <button onclick="playRadiozurnal(this)"
-                    class="btn rozhlas-info" style="background:#b30000; font-size:clamp(10px,1.6vw,18px); font-weight:700;">
-                <i class="fa-solid fa-microphone-lines" style="font-size:clamp(24px,5vh,50px); margin-bottom:clamp(4px,0.8vh,10px);"></i>ŽURNÁL
-            </button>
+
             <button onclick="showSpotify()" class="btn spotify">
                 <i class="fa-brands fa-spotify"></i>
             </button>
@@ -537,11 +556,14 @@
     <script>
     /* ---- Konštanty ---- */
     const VOLUME_MAP = {
-        slovensko:   0.3,
-        fun:         1.0,
-        rock:        0.5,
-        'media.rtvs.sk': 0.3,
-        jazzfm:      0.5,
+        slovensko:    0.3,
+        'sro-fm':     0.3,
+        'sro-devin':  0.3,
+        'sro-litera': 0.3,
+        'sro-regina': 0.3,
+        fun:          1.0,
+        rock:         0.5,
+        jazzfm:       0.5,
         'jazz-oscar':  0.5,
         'jazz-vocal':  0.5,
         'jazz-fusion': 0.5,
@@ -697,19 +719,18 @@
     }
 
     function stopRadio() {
-        audio.onended = null;
-        hraSaZurnal   = false;
-        pamatStreamu = pamatElementu = pamatTypu = null;
         audio.pause(); audio.src = "";
         document.querySelectorAll('.btn').forEach(b => b.classList.remove('playing'));
         document.getElementById('spotify-links-container').style.display = 'none';
         document.getElementById('jazz-links-container').style.display    = 'none';
+        document.getElementById('sro-links-container').style.display     = 'none';
         resetIdleTimer();
     }
 
     function showSpotify() {
         stopRadio();
         document.getElementById('jazz-links-container').style.display    = 'none';
+        document.getElementById('sro-links-container').style.display     = 'none';
         document.getElementById('spotify-links-container').style.display = 'block';
         document.querySelector('.spotify').classList.add('playing');
         resetIdleTimer();
@@ -721,9 +742,22 @@
             : `https://open.spotify.com/playlist/${id}`;
     }
 
+    function showSro(element) {
+        document.querySelectorAll('.btn').forEach(b => b.classList.remove('playing'));
+        document.getElementById('spotify-links-container').style.display = 'none';
+        document.getElementById('jazz-links-container').style.display    = 'none';
+        document.getElementById('sro-links-container').style.display     = 'block';
+        audio.volume = VOLUME_MAP['slovensko'];
+        audio.src    = 'https://icecast.stv.livebox.sk/slovensko_128.mp3';
+        audio.play();
+        element.classList.add('playing');
+        resetIdleTimer();
+    }
+
     function showJazz(element) {
         document.querySelectorAll('.btn').forEach(b => b.classList.remove('playing'));
         document.getElementById('spotify-links-container').style.display = 'none';
+        document.getElementById('sro-links-container').style.display     = 'none';
         document.getElementById('jazz-links-container').style.display    = 'block';
         audio.volume = VOLUME_MAP['jazzfm'];
         audio.src    = 'https://jazzfm91.streamb.live/SB00009';
@@ -738,6 +772,7 @@
         document.getElementById('radio-label').textContent = `Radio ${n}`;
         document.getElementById('spotify-links-container').style.display = 'none';
         document.getElementById('jazz-links-container').style.display    = 'none';
+        document.getElementById('sro-links-container').style.display     = 'none';
         resetIdleTimer();
     }
 
@@ -762,59 +797,7 @@
         }
     }
 
-    /* ---- Rádiožurnál ---- */
-    let pamatStreamu = null, pamatElementu = null, pamatTypu = null, hraSaZurnal = false;
 
-    async function playRadiozurnal(element) {
-        if (hraSaZurnal) { vratZurnalSpat(); return; }
-        try {
-            const aktualneHrajuce = document.querySelector('.btn.playing');
-            if (aktualneHrajuce && aktualneHrajuce !== element && aktualneHrajuce.id !== 'main-jazz-btn') {
-                pamatStreamu  = audio.src;
-                pamatElementu = aktualneHrajuce;
-                pamatTypu     = Object.keys(VOLUME_MAP).find(k => audio.src.includes(k)) || 'fun';
-            } else if (document.getElementById('jazz-links-container').style.display === 'block') {
-                pamatStreamu  = audio.src;
-                pamatElementu = document.getElementById('main-jazz-btn');
-                pamatTypu     = 'jazzfm';
-            }
-
-            document.querySelectorAll('.btn').forEach(b => b.classList.remove('playing'));
-            element.classList.add('playing');
-
-            const rssUrl   = 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://api.rtvs.sk/xml/podcast_archive.xml?series=1122');
-            const response = await fetch(rssUrl);
-            const data     = await response.json();
-            const xmlDoc   = new DOMParser().parseFromString(data.contents, 'text/xml');
-            const mp3      = xmlDoc.getElementsByTagName('enclosure')[0]?.getAttribute('url');
-
-            if (mp3) {
-                audio.volume  = VOLUME_MAP['media.rtvs.sk'] || 0.3;
-                audio.src     = mp3;
-                audio.play();
-                hraSaZurnal   = true;
-                audio.onended = () => vratZurnalSpat();
-            } else {
-                vratZurnalSpat();
-            }
-        } catch(e) { console.log('Chyba žurnálu:', e); vratZurnalSpat(); }
-        resetIdleTimer();
-    }
-
-    function vratZurnalSpat() {
-        audio.onended = null;
-        document.querySelectorAll('.btn').forEach(b => b.classList.remove('playing'));
-        if (pamatStreamu) {
-            audio.volume = VOLUME_MAP[pamatTypu] || 1.0;
-            audio.src    = pamatStreamu;
-            audio.play();
-            if (pamatElementu) pamatElementu.classList.add('playing');
-        } else {
-            audio.pause(); audio.src = "";
-        }
-        hraSaZurnal = false;
-        pamatStreamu = pamatElementu = pamatTypu = null;
-    }
     </script>
 </body>
 </html>
