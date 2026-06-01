@@ -211,6 +211,39 @@ body.screensaver-mode #ss-radio-info { display: flex !important; }
                 <span id="radio-name">---</span>
             </div>
 
+            <div id="slovensko-links-container" class="ss-hide" style="display: none; flex-direction: row; justify-content: center; gap: 10px; margin-top: 25px; width: 90%;">
+                <button onclick="playRadio('https://icecast.stv.livebox.sk/fm_128.mp3', this, 'fm')" class="sub-btn"><img src="LogoRadioFM.png"></button>
+                <button onclick="playRadio('https://icecast.stv.livebox.sk/devin_128.mp3', this, 'devin')" class="sub-btn"><img src="LogoRadioDevin.png"></button>
+                <button onclick="playRadio('https://icecast.stv.livebox.sk/litera_128.mp3', this, 'litera')" class="sub-btn"><img src="LogoRadioLitera.png"></button>
+                <button onclick="playRadio('https://icecast.stv.livebox.sk/regina-ba_128.mp3', this, 'regina')" class="sub-btn"><img src="LogoRadioReginaZ.png"></button>
+            </div>
+
+            <div id="fun-links-container" class="ss-hide" style="display: none; flex-direction: row; justify-content: center; gap: 10px; margin-top: 25px; width: 90%;">
+                <button onclick="playRadio('https://stream.funradio.sk/chill128.mp3', this, 'funchill')" class="sub-btn"><img src="LogoFunChill.png"></button>
+                <button onclick="playRadio('https://stream.funradio.sk/cs128.mp3', this, 'funczsk')" class="sub-btn"><img src="LogoFunCZSK.png"></button>
+                <button onclick="playRadio('https://stream.funradio.sk/dance128.mp3', this, 'fundance')" class="sub-btn"><img src="LogoFunDance.png"></button>
+                <button onclick="playRadio('https://stream.funradio.sk/80-90-128.mp3', this, 'fun8090')" class="sub-btn"><img src="LogoFun8090.png"></button>
+                <button onclick="playRadio('https://stream.funradio.sk/milenialky128.mp3', this, 'milenialky')" class="sub-btn"><img src="LogoFun2000.png"></button>
+            </div>
+
+            <div id="spotify-links-container" class="ss-hide">
+                <div style="display: flex; justify-content: space-around; gap: 10px;">
+                    <button onclick="openSpotify('67q2IYkPShkkWCbV14rRil')" style="background:none; border:none; color:white; font-size:26px;">Janka🎵</button>
+                    <button onclick="openSpotify('63bq913mo2Dv0KIOnnUzam')" style="background:none; border:none; color:white; font-size:24px;">🎸</button>
+                    <button onclick="openSpotify('2xLrXn0HleL3pJvnRWnRcJ')" style="background:none; border:none; color:white; font-size:24px;">🔥</button>
+                    <button onclick="openSpotify('search')" style="background:none; border:none; color:white; font-size:26px;">🔍</button>
+                </div>
+            </div>
+
+            <div id="komerce-links-container" class="ss-hide" style="display: none; flex-direction: row; justify-content: center; gap: 15px; margin-top: 25px; width: 90%;">
+                <button onclick="playRadio('https://stream.radiojazz.sk/jazz128.mp3', this, 'jazz')" class="sub-btn"><img src="LogoJazz.png"></button>
+                <button onclick="playRadio('https://stream.expres.sk/128.mp3', this, 'expres')" class="sub-btn"><img src="LogoExpress.png"></button>
+                <button onclick="playRadio('https://stream.europa2.sk/128.mp3', this, 'europa2')" class="sub-btn"><img src="LogoEuropa2.png"></button>
+                <button onclick="playRadio('https://stream.radia.sk/melody128.mp3', this, 'melody')" class="sub-btn"><img src="LogoMelody.png"></button>
+                <button onclick="playRadio('https://stream.radia.sk/vlna128.mp3', this, 'vlna')" class="sub-btn"><img src="LogoVlna.png"></button>
+            </div>
+
+            
             <div id="date-block" class="ss-only">
                 <div class="ss-date-wrapper">
                     <span id="date-display" class="ss-date">--.--.</span>
@@ -251,37 +284,6 @@ body.screensaver-mode #ss-radio-info { display: flex !important; }
             </div>
         </div>
     </div>
-            <div id="slovensko-links-container" class="ss-hide">
-                <button onclick="playRadio('https://icecast.stv.livebox.sk/fm_128.mp3', this, 'fm')" class="sub-btn"><img src="LogoRadioFM.png"></button>
-                <button onclick="playRadio('https://icecast.stv.livebox.sk/devin_128.mp3', this, 'devin')" class="sub-btn"><img src="LogoRadioDevin.png"></button>
-                <button onclick="playRadio('https://icecast.stv.livebox.sk/litera_128.mp3', this, 'litera')" class="sub-btn"><img src="LogoRadioLitera.png"></button>
-                <button onclick="playRadio('https://icecast.stv.livebox.sk/regina-ba_128.mp3', this, 'regina')" class="sub-btn"><img src="LogoRadioReginaZ.png"></button>
-            </div>
-
-            <div id="fun-links-container" class="ss-hide" style="display: none; flex-direction: row; justify-content: center; gap: 10px; margin-top: 25px; width: 90%;">
-                <button onclick="playRadio('https://stream.funradio.sk/chill128.mp3', this, 'funchill')" class="sub-btn"><img src="LogoFunChill.png"></button>
-                <button onclick="playRadio('https://stream.funradio.sk/cs128.mp3', this, 'funczsk')" class="sub-btn"><img src="LogoFunCZSK.png"></button>
-                <button onclick="playRadio('https://stream.funradio.sk/dance128.mp3', this, 'fundance')" class="sub-btn"><img src="LogoFunDance.png"></button>
-                <button onclick="playRadio('https://stream.funradio.sk/80-90-128.mp3', this, 'fun8090')" class="sub-btn"><img src="LogoFun8090.png"></button>
-                <button onclick="playRadio('https://stream.funradio.sk/milenialky128.mp3', this, 'milenialky')" class="sub-btn"><img src="LogoFun2000.png"></button>
-            </div>
-
-            <div id="komerce-links-container" class="ss-hide" style="display: none; flex-direction: row; justify-content: center; gap: 15px; margin-top: 25px; width: 90%;">
-                <button onclick="playRadio('https://stream.radiojazz.sk/jazz128.mp3', this, 'jazz')" class="sub-btn"><img src="LogoJazz.png"></button>
-                <button onclick="playRadio('https://stream.expres.sk/128.mp3', this, 'expres')" class="sub-btn"><img src="LogoExpress.png"></button>
-                <button onclick="playRadio('https://stream.europa2.sk/128.mp3', this, 'europa2')" class="sub-btn"><img src="LogoEuropa2.png"></button>
-                <button onclick="playRadio('https://stream.radia.sk/melody128.mp3', this, 'melody')" class="sub-btn"><img src="LogoMelody.png"></button>
-                <button onclick="playRadio('https://stream.radia.sk/vlna128.mp3', this, 'vlna')" class="sub-btn"><img src="LogoVlna.png"></button>
-            </div>
-            
-            <div id="spotify-links-container" class="ss-hide">
-                <div style="display: flex; justify-content: space-around; gap: 10px;">
-                    <button onclick="openSpotify('67q2IYkPShkkWCbV14rRil')" style="background:none; border:none; color:white; font-size:26px;">Janka🎵</button>
-                    <button onclick="openSpotify('63bq913mo2Dv0KIOnnUzam')" style="background:none; border:none; color:white; font-size:24px;">🎸</button>
-                    <button onclick="openSpotify('2xLrXn0HleL3pJvnRWnRcJ')" style="background:none; border:none; color:white; font-size:24px;">🔥</button>
-                    <button onclick="openSpotify('search')" style="background:none; border:none; color:white; font-size:26px;">🔍</button>
-                </div>
-            </div>
 
     <div class="buttons-section">
         <button onclick="stopRadio()" class="btn vypni"><i class="fa-solid fa-power-off"></i></button>
@@ -312,7 +314,7 @@ body.screensaver-mode #ss-radio-info { display: flex !important; }
   // GLOBÁLNA MAPA HLASITOSTÍ
 const VOLUME_MAP = { 
     'slovensko': 0.3, 'fun': 1.0, 'rock': 0.5, 'fm': 0.3, 'devin': 0.5, 'litera': 0.5, 'regina': 0.3,
-    'funchill': 1.0, 'funczsk': 1.0, 'fundance': 1.0, 'fun8090': 1.0, 'milenialky': 1.0,
+    'funchill': 0.5, 'funczsk': 0.5, 'fundance': 0.4, 'fun8090': 0.5, 'milenialky': 0.5,
     'jazz': 0.7, 'expres': 0.5, 'europa2': 0.5, 'melody': 0.5, 'vlna': 0.5,
 };
     
