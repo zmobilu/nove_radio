@@ -444,7 +444,7 @@
     async function updateWeather() {
         try {
             // AKTUALIZOVANÝ VEĽKÝ DOPYT: Ťahá navyše hourly teploty a daily na 6 dní
-            const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=48.1421&longitude=17.1964&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m&hourly=temperature_2m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FBratislava&wind_speed_unit=kmh&forecast_days=6`);
+            const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=48.1421&longitude=17.1964&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m&hourly=temperature_2m,precipitation,cloud_cover,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FBratislava&wind_speed_unit=kmh&forecast_days=6`);
             const d = await r.json();
             const rawTemp = d.current.temperature_2m;
             const rawApparent = d.current.apparent_temperature; 
@@ -482,12 +482,21 @@
                 iconEl.style.color = WEATHER_COLORS[code] || '#aaa';
             }
 
-            // --- GENEROVANIE STĹPCOVÉHO GRAFU PRE 12 HODÍN ---
+            // --- GENEROVANIE ROZŠÍRENÉHO STĹPCOVÉHO GRAFU (TEPLOTA, DÁŽĎ, OBLAČNOSŤ, VIETOR) ---
             const chartContainer = document.getElementById('hourly-chart-container');
             chartContainer.innerHTML = ''; 
 
             const currentHourIndex = new Date().getHours();
+            
+            // Vytiahneme si 12 hodín pre všetky potrebné veličiny
             const nextHoursTemps = d.hourly.temperature_2m.slice(currentHourIndex, currentHourIndex + 12);
+            
+            // Pozor: pre zrážky, oblačnosť a vietor musíme zabezpečiť, aby ich API posielalo. 
+            // Naše upravené url v updateWeather ich už automaticky obsahuje, ak použijeme hourly parametre.
+            // Ak náhodou v API chýbajú, pre istotu dáme záložné hodnoty (|| []), aby kód nezlyhal.
+            const nextHoursRain = (d.hourly.precipitation || d.hourly.rain || []).slice(currentHourIndex, currentHourIndex + 12);
+            const nextHoursCloud = (d.hourly.cloud_cover || []).slice(currentHourIndex, currentHourIndex + 12);
+            const nextHoursWind = (d.hourly.wind_speed_10m || []).slice(currentHourIndex, currentHourIndex + 12);
             
             const maxGraphTemp = Math.max(...nextHoursTemps);
             const minGraphTemp = Math.min(...nextHoursTemps);
@@ -495,15 +504,30 @@
 
             nextHoursTemps.forEach((temp, idx) => {
                 const roundedTemp = Math.round(temp);
-                const pct = ((temp - minGraphTemp) / tempRange) * 60 + 25; // Výška stĺpca medzi 25% až 85%
+                const pct = ((temp - minGraphTemp) / tempRange) * 55 + 20; // Výška prispôsobená pre extra texty
                 const hLabel = String((currentHourIndex + idx) % 24).padStart(2, '0') + ':00';
+                
+                // 1. DÁŽĎ: Ak prší viac ako 0mm, ukážeme kvapku a milimetre
+                const rainVal = nextHoursRain[idx] ? parseFloat(nextHoursRain[idx]) : 0;
+                const rainHtml = rainVal > 0 ? `<span style="font-size: 1.6vw; color: #4dabff; margin-bottom: 2px; font-weight: 500;">💧${rainVal.toFixed(1)}</span>` : `<span style="height: 1.8vw;"></span>`;
+                
+                // 2. OBLAČNOSŤ: Vypočítame sivosť pozadia stĺpčeka podľa percent (0% = čierna, 100% = jemná sivá)
+                const cloudVal = nextHoursCloud[idx] ? Math.round(nextHoursCloud[idx]) : 0;
+                const bgOpacity = 0.05 + (cloudVal / 100) * 0.15; // rozsah od rgba(255,255,255, 0.05) do 0.20
+                const colBackground = `linear-gradient(to top, rgba(255,255,255, ${bgOpacity}), ${getTempColor(temp)})`;
+                
+                // 3. VIETOR: Zistíme rýchlosť vetra pre danú hodinu
+                const windVal = nextHoursWind[idx] ? Math.round(nextHoursWind[idx]) : 0;
+                const windHtml = windVal > 0 ? `<span style="font-size: 1.6vw; color: #888; margin-top: 3px;"><i class="fas fa-wind" style="font-size:0.8em;"></i> ${windVal}</span>` : `<span style="height: 1.8vw;"></span>`;
 
                 const column = document.createElement('div');
-                column.style.cssText = `display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 7%;`;
+                column.style.cssText = `display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 7.5%;`;
                 column.innerHTML = `
-                    <span style="font-size: 2.2vw; font-weight: bold; color: ${getTempColor(temp)}; margin-bottom: 5px;">${roundedTemp}°</span>
-                    <div style="width: 100%; height: ${pct}%; background: linear-gradient(to top, #111, ${getTempColor(temp)}); border-radius: 4px 4px 0 0; border: 1px solid #222; border-bottom: none;"></div>
-                    <span style="font-size: 1.8vw; color: #555; margin-top: 5px;">${idx === 0 ? 'Teraz' : hLabel}</span>
+                    ${rainHtml}
+                    <span style="font-size: 2.2vw; font-weight: bold; color: ${getTempColor(temp)}; margin-bottom: 3px;">${roundedTemp}°</span>
+                    <div style="width: 100%; height: ${pct}%; background: ${colBackground}; border-radius: 4px 4px 0 0; border: 1px solid #222; border-bottom: none; box-sizing: border-box;"></div>
+                    <span style="font-size: 1.8vw; color: #555; margin-top: 5px; font-weight: 500;">${idx === 0 ? 'Teraz' : hLabel}</span>
+                    ${windHtml}
                 `;
                 chartContainer.appendChild(column);
             });
@@ -693,7 +717,7 @@
         clearTimeout(pocasieTimer);
         pocasieTimer = setTimeout(() => {
             document.getElementById('weather-details-modal').style.display = 'none';
-        }, 15000);
+        }, 20000);
     }
 
     function zatvorPocasie(e) {
