@@ -778,17 +778,10 @@
         else { clearTimeout(idleTimer); document.body.classList.add('screensaver-mode'); }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        const timeEl = document.getElementById('time');
-        const weatherEl = document.getElementById('ss-weather-trigger');
-        if (timeEl) { timeEl.addEventListener('pointerdown', (e) => { klikNaHodiny(e); }); }
-        if (weatherEl) { weatherEl.addEventListener('pointerdown', (e) => { otvorPocasie(e, 'screensaver'); }); }
-    });
-
-    // --- OVLÁDANIE AUTOMATICKÉHO ČASOVAČA ---
-    let pocasieTimer;
+   // --- OVLÁDANIE AUTOMATICKÉHO ČASOVAČA ---
+let pocasieTimer;
         
-    function otvorPocasie(e, zdroj = 'radio') {
+function otvorPocasie(e, zdroj = 'radio') {
     if (e) { e.stopPropagation(); if (e.cancelable) e.preventDefault(); }
     weatherOpenedFrom = zdroj;
     
@@ -819,23 +812,32 @@ function zatvorPocasie(e) {
     } else { resetIdleTimer(); }
 }
 
-// NOVÉ: Okamžité naviazanie kliknutia na graf a veľkú ikonu pre zatvorenie
+// TU JE TEN JEDEN NOVÝ SPOJENÝ BLOK (Pôvodné dva kompletne zmaž)
 document.addEventListener('DOMContentLoaded', () => {
-    // Klik na graf (iba ak je aktívny detail počasia)
+    const timeEl = document.getElementById('time');
+    const weatherEl = document.getElementById('ss-weather-trigger');
     const grafContainer = document.getElementById('weather-details-top-inline');
-    if (grafContainer) {
-        grafContainer.addEventListener('pointerdown', (e) => {
-            if (document.body.classList.contains('weather-details-mode') && !e.target.closest('button')) {
-                zatvorPocasie(e);
+
+    // Klik na veľké hodiny prepína šetrič
+    if (timeEl) {
+        timeEl.addEventListener('pointerdown', (e) => {
+            klikNaHodiny(e);
+        });
+    }
+
+    // Veľká ikona vpravo slúži UŽ LEN na otvorenie predpovede
+    if (weatherEl) {
+        weatherEl.addEventListener('pointerdown', (e) => {
+            if (!document.body.classList.contains('weather-details-mode')) {
+                otvorPocasie(e, 'screensaver');
             }
         });
     }
 
-    // Klik na veľkú ikonu počasia vpravo pre zatvorenie
-    const velkaIkona = document.getElementById('ss-weather-trigger');
-    if (velkaIkona) {
-        velkaIkona.addEventListener('pointerdown', (e) => {
-            if (document.body.classList.contains('weather-details-mode')) {
+    // Kliknutie na plochu grafu (mimo tlačidla Zatvor) predpoveď bezpečne zavrie
+    if (grafContainer) {
+        grafContainer.addEventListener('pointerdown', (e) => {
+            if (document.body.classList.contains('weather-details-mode') && !e.target.closest('button')) {
                 zatvorPocasie(e);
             }
         });
