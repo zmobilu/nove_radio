@@ -6,15 +6,13 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>H_Pocasie</title>
+    <title>Moje_počasie-Hodiny</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="icon" href="data:,">
     
     <style>
-        /* Keď NIE JE aktívny detail počasia, prvky s touto triedou sú skryté */
+        /* Riadenie viditeľnosti pre Inline režim počasia */
         body:not(.weather-details-mode) .weather-details-only { display: none !important; }
-
-        /* Keď JE aktívny detail počasia, skryjeme hodiny a rádio info, ale zosvetlíme kontajner pre počasie */
         body.weather-details-mode .weather-details-hide { display: none !important; }
         body.weather-details-mode .weather-details-only { display: flex !important; }
         
@@ -48,7 +46,6 @@
         #komerce-links-container     { display: none; flex-direction: row; justify-content: center;  gap: 12px; margin-top: 25px; width: 100%; }
         #spotify-links-container     { display: none; flex-direction: row; justify-content: center;  gap: 12px; margin-top: 25px; width: 100%; background: #0a0a0a; border-radius: 12px; padding: 10px; border: 1px solid #222; }
 
-        /* Štýl pre samotné malé štvorcové tlačidlá s logami */
         .sub-btn { 
             width: 90px; 
             height: 90px; 
@@ -71,14 +68,10 @@
             object-fit: contain; 
         }
 
-        /* Keď sa pod-rádio prehráva, získa výrazný oranžový okraj */
-        .sub-btn.playing { 
-            border: 2px solid #ff9f0a !important; 
-        }
+        .sub-btn.playing { border: 2px solid #ff9f0a !important; }
         .buttons-section { flex: 1.1; display: grid; grid-template-columns: 1fr 1fr; 
             grid-template-rows: 0.7fr 1fr 1fr; gap: 8px; padding: 10px; background: #050505; }
         
-        /* Štýl na skrytie/zobrazenie konkrétnej strany rádií v gride */
         .page-group { display: contents; }
         .page-group.hidden { display: none !important; }
 
@@ -90,7 +83,6 @@
         .spotify i { font-size: 60px; }
         .playing { border: 2px solid #ff9f0a !important; }
 
-        /* Navigačné tlačidlá stránky */
         .btn-nav { background-color: #222; color: #ff9f0a; font-weight: bold; }
         .btn-nav i { font-size: 30px; margin-bottom: 5px; color: #ff9f0a; }
 
@@ -117,29 +109,9 @@
             padding-right: 2vw; 
         }
 
-        .ss-separator {
-            color: #222; 
-            font-size: 5.5vw;
-            font-weight: 200;
-            line-height: 1;
-            position: relative;
-            top: 0.5vw;
-        }
-
-        #date-display { 
-            line-height: 1; 
-            color: #ffffff;
-            position: relative;
-            top: 1.4vw;
-            margin-right: 2px; /* Poistka pre vizuálne natlačenie textu bližšie k sebe */
-        }
-
-        .ss-date-wrapper { 
-            display: flex; 
-            align-items: flex-end; 
-            gap: 5px; 
-        }
-
+        .ss-separator { color: #222; font-size: 5.5vw; font-weight: 200; line-height: 1; position: relative; top: 0.5vw; }
+        #date-display { line-height: 1; color: #ffffff; position: relative; top: 1.4vw; margin-right: 2px; }
+        .ss-date-wrapper { display: flex; align-items: flex-end; gap: 5px; }
         .ss-date { font-size: 14vw; font-weight: 300; color: #fff; line-height: 1; }
 
         .ss-day { 
@@ -157,7 +129,6 @@
             top: 0.6vw;
         }
 
-        /* Farby pre meniny */
         .name-female { color: #FFB6C1 !important; } 
         .name-male { color: #87CEEB !important; }    
         .name-moje { color: #FFFF00 !important; }       
@@ -190,15 +161,14 @@
         .hum-val { font-size: 6.5vw; font-weight: 200; color: #aaa; letter-spacing: 1px; opacity: 0.8; white-space: nowrap; }
 
         #mini-forecast-strip { display: flex; flex-direction: row !important; flex-wrap: nowrap; justify-content: space-around; width: 100%; border-top: 1px solid #222; padding-top: 1vh; margin-bottom: 3.5vh; }
-        .mini-item { display: flex; flex-direction: column; align-items: center; width: 48%; }
+        .mini-item { display: flex; flex-direction: column; align-items: center; width: 48%; cursor: pointer; }
         .mini-day { font-size: 1.8vw; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
         .mini-icon { font-size: 6vw; }
         .mini-temp { font-size: 4.5vw; font-weight: 300; color: #fff; white-space: nowrap; }
         
-        /* Označenie aktívneho dňa v predpovedi počasia */
         .day-box-active { border: 1px solid #ff9f0a !important; background: #111 !important; }
 
-        /* OPRAVENÉ: Chýbajúci štýl pre boxy rozšírenej predpovede */
+        /* VYLEPŠENÉ: Štýl pre spodné 5-dňové tlačidlá predpovede */
         .forecast-day-box {
             background: #050505; 
             border: 1px solid #111; 
@@ -208,7 +178,7 @@
             flex-direction: column; 
             align-items: center; 
             justify-content: space-around; 
-            padding: 10px 0; 
+            padding: 6px 0; 
             cursor: pointer; 
             transition: all 0.2s;
         }
@@ -227,18 +197,14 @@
     </div>
     <div id="ss-radio-info" class="weather-details-hide"></div>
 
-    <div id="weather-details-inline" class="weather-details-only" style="display: none; flex-direction: column; width: 100%; height: 60vh; padding: 10px; box-sizing: border-box; justify-content: space-between;">
-        
+    <div id="weather-details-top-inline" class="weather-details-only" style="display: none; flex-direction: column; width: 100%; height: 53vh; padding: 10px 10px 0 10px; box-sizing: border-box; justify-content: space-between;">
         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; height: 5vh;">
             <span id="weather-location" style="color: #666; font-size: 2.5vw; font-weight: 400; text-transform: uppercase; letter-spacing: 2px;">---</span>
             <button onclick="zatvorPocasie(event)" style="background: #222; color: #ff9f0a; border: 2px solid #ff9f0a; padding: 2px 15px; border-radius: 8px; font-size: 2.5vw; font-weight: bold; cursor: pointer;">Zatvor</button>
         </div>
-
-        <div style="height: 28vh; width: 100%; display: flex; align-items: flex-end;">
+        <div style="height: 44vh; width: 100%; display: flex; align-items: flex-end;">
             <div id="hourly-chart-container" style="display: flex; justify-content: space-around; align-items: flex-end; height: 100%; width: 100%;"></div>
         </div>
-
-        <div id="extended-forecast-container" style="display: flex; justify-content: space-between; gap: 8px; width: 100%; height: 22vh; border-top: 1px solid #111; padding-top: 8px;"></div>
     </div>
                    
             <div class="radio-info-wrapper ss-hide">
@@ -280,14 +246,16 @@
             </div>
 
             <div id="date-block" class="ss-only">
-                <div class="ss-date-wrapper">
+                <div class="ss-date-wrapper weather-details-hide">
                     <span id="date-display" class="ss-date">--.--.</span>
                     <span id="day-display" class="ss-day">---</span>
                 </div>
                 
-                <span class="ss-separator">|</span>
+                <div id="extended-forecast-container" class="weather-details-only" style="display: none; justify-content: space-between; gap: 6px; width: 100%; height: 35vh; padding-right: 1.5vw; box-sizing: border-box;"></div>
                 
-                <div id="wind-block" style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; margin-bottom: 0.2vh;">
+                <span class="ss-separator weather-details-hide">|</span>
+                
+                <div id="wind-block" class="weather-details-hide" style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; margin-bottom: 0.2vh;">
                     <i id="wind-icon" class="fas fa-arrow-up" style="font-size: 5.5vw; color: #aaa; transition: transform 0.5s ease-in-out; transform-origin: center; margin-bottom: 3.0vw;"></i>
                     <span id="wind-speed" style="font-size: 4.5vw; font-weight: 400; color: #fff; white-space: nowrap; line-height: 1;">-- km/h</span>
                 </div>
@@ -308,12 +276,12 @@
       
             
                 <div id="mini-forecast-strip">
-                    <div class="mini-item">
+                    <div class="mini-item" onpointerdown="prepniDenGrafu(event, 0)">
                         <span id="fc0-day" class="mini-day">Dnes</span>
                         <i id="fc0-icon" class="fas fa-cloud mini-icon"></i>
                         <span id="fc0-temp" class="mini-temp">-- / --</span>
                     </div>
-                    <div class="mini-item">
+                    <div class="mini-item" onpointerdown="prepniDenGrafu(event, 1)">
                         <span id="fc1-day" class="mini-day">Zajtra</span>
                         <i id="fc1-icon" class="fas fa-cloud mini-icon"></i>
                         <span id="fc1-temp" class="mini-temp">-- / --</span>
@@ -345,7 +313,6 @@
     </div>  
         
     <script>
-    // GLOBÁLNA MAPA HLASITOSTÍ
     const VOLUME_MAP = { 
         'slovensko': 0.3, 'fm': 0.3, 'devin': 0.5, 'litera': 0.5, 'regina': 0.3,
         'fun': 1.0, 'funchill': 0.5, 'funczsk': 0.5, 'fun8090': 0.5, 'milenialky': 0.5,
@@ -451,27 +418,14 @@
 
                 const skontroluj = (zoznam) => zoznam.some(m => m.toLowerCase().trim() === menoLower);
 
-                if (skontroluj(RODINA)) {
-                    el.classList.add('name-family');
-                } 
-                else if (skontroluj(MOJE_MENA)) {
-                    el.classList.add('name-moje');
-                } 
-                else if (skontroluj(KOLEGOVIA)) {
-                    el.classList.add('name-colleagues');
-                } 
-                else if (skontroluj(SPOLUZIACI)) {
-                    el.classList.add('name-classmates');
-                } 
+                if (skontroluj(RODINA)) { el.classList.add('name-family'); } 
+                else if (skontroluj(MOJE_MENA)) { el.classList.add('name-moje'); } 
+                else if (skontroluj(KOLEGOVIA)) { el.classList.add('name-colleagues'); } 
+                else if (skontroluj(SPOLUZIACI)) { el.classList.add('name-classmates'); } 
                 else {
                     const poslednePismeno = menoLower.slice(-1);
                     const vynimky = ['gejza', 'attila', 'boba'];
-
-                    if (poslednePismeno === 'a' && !vynimky.includes(menoLower)) {
-                        el.classList.add('name-female');
-                    } else {
-                        el.classList.add('name-male');
-                    }
+                    if (poslednePismeno === 'a' && !vynimky.includes(menoLower)) { el.classList.add('name-female'); } else { el.classList.add('name-male'); }
                 }
             });
         }
@@ -535,27 +489,19 @@
             const dniVTyzdni = ['Ned', 'Pon', 'Ut', 'Str', 'Štv', 'Pia', 'Sob'];
             const dnes = new Date();
 
-            for (let i = 0; i <= 4; i++) {
+            // NOVÉ: Boxy teraz začínajú od indexu 2 (+2 dni: PIA, SOB...) a držia sa striktne dole
+            for (let i = 2; i <= 6; i++) {
+                if(i >= d.daily.weather_code.length) break;
                 const code = d.daily.weather_code[i];
                 const max = d.daily.temperature_2m_max[i];
                 const min = Math.round(d.daily.temperature_2m_min[i]);
                 
                 const buduciDen = new Date(dnes);
                 buduciDen.setDate(dnes.getDate() + i);
-                
-                let nazovDna = "";
-                if (i === 0) {
-                    nazovDna = "Dnes";
-                } else if (i === 1) {
-                    nazovDna = "Zajtra";
-                } else {
-                    nazovDna = dniVTyzdni[buduciDen.getDay()];
-                }
+                let nazovDna = dniVTyzdni[buduciDen.getDay()];
 
                 const dayBox = document.createElement('div');
                 dayBox.className = 'forecast-day-box';
-                if (i === 0) dayBox.classList.add('day-box-active');
-                
                 dayBox.setAttribute('data-index', i);
                 dayBox.setAttribute('onpointerdown', `prepniDenGrafu(event, ${i})`);
                 
@@ -564,7 +510,7 @@
 
                 dayBox.innerHTML = `
                     <span style="font-size: 3vw; font-weight: 500; text-transform: uppercase; color: #aaa; transform: scaleY(1.1);">${nazovDna}</span>
-                    <i class="fas ${WEATHER_CODES[code] || 'fa-cloud'}" style="font-size: 7vw; color: ${WEATHER_COLORS[code] || '#aaa'}; margin: 5px 0;"></i>
+                    <i class="fas ${WEATHER_CODES[code] || 'fa-cloud'}" style="font-size: 7vw; color: ${WEATHER_COLORS[code] || '#aaa'}; margin: 3px 0;"></i>
                     <div style="font-size: 3.2vw; font-weight: 400; white-space: nowrap;">
                         <span style="color:${getTempColor(max)}">${Math.round(max)}°</span>
                         <span style="color:#444; font-size:0.85em">/ ${min}°</span>
@@ -576,18 +522,13 @@
         } catch (e) { console.log("Chyba počasia:", e); }
     }
 
-    /* OPRAVENÉ: Absolútne nepriestrelné spúšťanie počasia pre iPhone bez zasekavania */
     function inicializujPocasie() {
         const isSecure = window.location.protocol === 'https:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        
-        // Ak sme na mobile a nemáme zabezpečené pripojenie, Geolocation ani neskúšame (Safari by zamrzlo)
         if (!isSecure) {
-            console.log("HTTP pripojenie - načítavam predvolenú polohu (Bratislava) bez čakania.");
             updateWeather(); 
             setInterval(updateWeather, 600000);
             return;
         }
-
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
@@ -595,7 +536,6 @@
                     setInterval(() => updateWeather(position.coords.latitude, position.coords.longitude), 600000);
                 },
                 (error) => {
-                    console.log("Poloha nepovolená, fallback na predvolenú:", error.message);
                     updateWeather(); 
                     setInterval(updateWeather, 600000);
                 },
@@ -614,7 +554,7 @@
 
         let temps = [], rain = [], cloud = [], wind = [], labels = [];
 
-        if (targetDayIndex === null) {
+        if (targetDayIndex === null || targetDayIndex === 0) {
             const currentHourIndex = new Date().getHours();
             temps = weatherDataBackup.hourly.temperature_2m.slice(currentHourIndex, currentHourIndex + 12);
             rain = (weatherDataBackup.hourly.precipitation || weatherDataBackup.hourly.rain || []).slice(currentHourIndex, currentHourIndex + 12);
@@ -622,20 +562,20 @@
             wind = (weatherDataBackup.hourly.wind_speed_10m || []).slice(currentHourIndex, currentHourIndex + 12);
             
             for (let idx = 0; idx < 12; idx++) {
-                labels.push(idx === 0 ? 'Teraz' : String((currentHourIndex + idx) % 24).padStart(2, '0') + ':00');
+                // OPRAVENÉ: Odstránené ":00" pre čistejší a nezrazený dizajn
+                labels.push(idx === 0 ? 'Teraz' : String((currentHourIndex + idx) % 24));
             }
         } else {
             const startHourOfTargetDay = targetDayIndex * 24;
-            
             for (let step = 0; step < 12; step++) {
                 const hourOffset = startHourOfTargetDay + (step * 2); 
-                
                 temps.push(weatherDataBackup.hourly.temperature_2m[hourOffset]);
                 rain.push((weatherDataBackup.hourly.precipitation || weatherDataBackup.hourly.rain || [])[hourOffset]);
                 cloud.push((weatherDataBackup.hourly.cloud_cover || [])[hourOffset]);
                 wind.push((weatherDataBackup.hourly.wind_speed_10m || [])[hourOffset]);
                 
-                labels.push(String(step * 2).padStart(2, '0') + ':00');
+                // OPRAVENÉ: Iba čisté hodiny bez ":00"
+                labels.push(String(step * 2));
             }
         }
 
@@ -658,7 +598,6 @@
             const windVal = wind[idx] ? Math.round(wind[idx]) : 0;
             const windHtml = windVal > 0 ? `<span style="font-size: 1.6vw; color: #888; margin-top: 3px;"><i class="fas fa-wind" style="font-size:0.8em;"></i> ${windVal}</span>` : `<span style="height: 1.8vw;"></span>`;
 
-            /* OPRAVENÉ: Stĺpcom priradená flex-báza pre stabilitu v iOS Safari */
             const column = document.createElement('div');
             column.style.cssText = `display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 7.8%; flex-shrink: 0;`;
             column.innerHTML = `
@@ -680,29 +619,26 @@
         
         vykresliGraf(dayIndex);
         
-        document.querySelectorAll('.forecast-day-box').forEach(box => {
+        // Reset aktívnych okrajov na spodných aj bočných boxoch
+        document.querySelectorAll('.forecast-day-box, .mini-item').forEach(box => {
             box.classList.remove('day-box-active');
         });
+        
+        // Zvýraznenie spodného boxu ak existuje
         const aktivnyBox = document.querySelector(`.forecast-day-box[data-index="${dayIndex}"]`);
-        if (aktivnyBox) {
-            aktivnyBox.classList.add('day-box-active');
-        }
+        if (aktivnyBox) aktivnyBox.classList.add('day-box-active');
         
         clearTimeout(pocasieTimer);
-        pocasieTimer = setTimeout(() => {
-            zatvorPocasie(e); 
-        }, 30000);
+        pocasieTimer = setTimeout(() => { zatvorPocasie(e); }, 30000);
     }
 
-    // --- AUDIO LOGIKA PREHRÁVANIA ---
+    // --- AUDIO LOGIKA ---
     const audio = document.getElementById('audioPlayer');
 
     function playRadio(url, element, type) {
         currentPlayingType = type; 
-
         document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('playing'));
         document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('playing'));
-        
         element.classList.add('playing');
         
         if (['fm', 'devin', 'litera', 'regina'].includes(type)) {
@@ -717,14 +653,11 @@
             const hlavnyJazz = document.getElementById('jazz-main-btn');
             if (hlavnyJazz) hlavnyJazz.classList.add('playing');
         }
-
         aktualizujSubPanely(type);
-
         audio.volume = VOLUME_MAP[type] || 1.0;
         audio.src = url; 
         audio.play();
         resetIdleTimer();
-        
         document.getElementById('ss-radio-info').innerHTML = `<small style="font-size: 0.6em; opacity: 0.7; text-transform: none; margin-right: 8px;">hrá:</small>${type}`;
     }
     
@@ -743,16 +676,13 @@
     function stopRadio() {
         audio.pause(); audio.src = "";
         currentPlayingType = ""; 
-        
         document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('playing'));
         document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('playing')); 
         document.getElementById('jazz-main-btn').classList.remove('playing');
-        
         document.getElementById('spotify-links-container').style.display = 'none';
         document.getElementById('slovensko-links-container').style.display = 'none'; 
         document.getElementById('fun-links-container').style.display = 'none';
         document.getElementById('komerce-links-container').style.display = 'none'; 
-        
         resetIdleTimer();
         document.getElementById('ss-radio-info').textContent = "";
     }
@@ -785,10 +715,8 @@
             document.getElementById('page-1').classList.remove('hidden');
             document.getElementById('page-2').classList.add('hidden');
             document.getElementById('radio-label').textContent = 'Radio 1';
-            
             if (currentPlayingType !== "") {
                 aktualizujSubPanely(currentPlayingType);
-                
                 if (['slovensko', 'fm', 'devin', 'litera', 'regina'].includes(currentPlayingType)) {
                     document.querySelector('.rozhlas').classList.add('playing');
                 } else if (['fun', 'funchill', 'funczsk', 'fun8090', 'milenialky'].includes(currentPlayingType)) {
@@ -796,31 +724,22 @@
                 } else if (['rock'].includes(currentPlayingType)) {
                     document.querySelector('.btn.rock').classList.add('playing');
                 }
-                
                 document.querySelectorAll('.sub-btn').forEach(btn => {
-                    if (btn.getAttribute('onclick').includes(`'${currentPlayingType}'`)) {
-                        btn.classList.add('playing');
-                    }
+                    if (btn.getAttribute('onclick').includes(`'${currentPlayingType}'`)) btn.classList.add('playing');
                 });
-            } else {
-                aktualizujSubPanely("");
-            }
-            
+            } else { aktualizujSubPanely(""); }
         } else {
             document.getElementById('page-1').classList.add('hidden');
             document.getElementById('page-2').classList.remove('hidden');
             document.getElementById('radio-label').textContent = 'Radio 2';
-            
             if (!['jazz', 'expres', 'europa2', 'melody', 'vlna', 'spotify'].includes(currentPlayingType)) {
                 aktualizujSubPanely("");
-            } else {
-                aktualizujSubPanely(currentPlayingType);
-            }
+            } else { aktualizujSubPanely(currentPlayingType); }
         }
         resetIdleTimer();
     }
 
-    // --- REŽIM ŠETRIČA OBRAZOVKY A OŠETRENIE DOTYKOV ---
+    // --- ŠETRIČ A DOTYKY ---
     let idleTimer;
 
     function resetIdleTimer() {
@@ -830,92 +749,54 @@
     }
 
     document.addEventListener('touchstart', function(e) {
-        if (e.target.closest('#time') || 
-            e.target.closest('#ss-weather-trigger') || 
-            e.target.closest('#weather-details-inline')) {
+        if (e.target.closest('#time') || e.target.closest('#ss-weather-trigger') || e.target.closest('#weather-details-top-inline') || e.target.closest('#extended-forecast-container')) {
             return; 
         }
         resetIdleTimer();
     }, { passive: true });
 
-    clearTimeout(idleTimer);
-    idleTimer = setTimeout(() => document.body.classList.add('screensaver-mode'), 20000);
-
     function klikNaHodiny(e) {
-        if (e) {
-            e.stopPropagation();
-            e.preventDefault();
-        }
-        
-        if (document.body.classList.contains('screensaver-mode')) {
-            resetIdleTimer();
-        } else {
-            clearTimeout(idleTimer);
-            document.body.classList.add('screensaver-mode');
-        }
+        if (e) { e.stopPropagation(); e.preventDefault(); }
+        if (document.body.classList.contains('screensaver-mode')) { resetIdleTimer(); } 
+        else { clearTimeout(idleTimer); document.body.classList.add('screensaver-mode'); }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
         const timeEl = document.getElementById('time');
         const weatherEl = document.getElementById('ss-weather-trigger');
-
-        if (timeEl) {
-            timeEl.addEventListener('pointerdown', (e) => {
-                klikNaHodiny(e);
-            });
-        }
-
-        if (weatherEl) {
-            weatherEl.addEventListener('pointerdown', (e) => {
-                otvorPocasie(e, 'screensaver');
-            });
-        }
+        if (timeEl) { timeEl.addEventListener('pointerdown', (e) => { klikNaHodiny(e); }); }
+        if (weatherEl) { weatherEl.addEventListener('pointerdown', (e) => { otvorPocasie(e, 'screensaver'); }); }
     });
 
-    // --- OVLÁDANIE OKNA POČASIA S AUTOMATICKÝM ČASOVAČOM (30 SEKÚND) ---
+    // --- OVLÁDANIE AUTOMATICKÉHO ČASOVAČA ---
     let pocasieTimer;
         
     function otvorPocasie(e, zdroj = 'radio') {
-        if (e) {
-            e.stopPropagation();
-            if (e.cancelable) e.preventDefault();
-        }
-        
+        if (e) { e.stopPropagation(); if (e.cancelable) e.preventDefault(); }
         weatherOpenedFrom = zdroj;
-
-        document.querySelectorAll('.forecast-day-box').forEach(box => {
-            box.classList.remove('day-box-active');
-        });
-
+        
+        document.querySelectorAll('.forecast-day-box').forEach(box => { box.classList.remove('day-box-active'); });
         vykresliGraf(null);
         
+        // Prepnutie do režimu počasia - skryje hodiny a dátum, vysunie graf a 5-dňovú predpoveď
         document.body.classList.add('weather-details-mode');
         
         clearTimeout(pocasieTimer);
-        pocasieTimer = setTimeout(() => {
-            zatvorPocasie();
-        }, 30000); 
+        pocasieTimer = setTimeout(() => { zatvorPocasie(); }, 30000); 
     }
 
     function zatvorPocasie(e) {
-        if (e) {
-            e.stopPropagation();
-            if (e.cancelable) e.preventDefault();
-        }
+        if (e) { e.stopPropagation(); if (e.cancelable) e.preventDefault(); }
         clearTimeout(pocasieTimer);
         
         document.body.classList.remove('weather-details-mode');
-
         if (weatherOpenedFrom === 'screensaver') {
             document.body.classList.add('screensaver-mode');
             clearTimeout(idleTimer);
             idleTimer = setTimeout(() => document.body.classList.add('screensaver-mode'), 20000);
-        } else {
-            resetIdleTimer();
-        }
+        } else { resetIdleTimer(); }
     }
 
-    // Spustenie
     inicializujPocasie();
     </script>
 </body>
