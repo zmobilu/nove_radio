@@ -93,10 +93,8 @@
         body.screensaver-mode #komerce-links-container { display: none !important; }
         body.screensaver-mode .ss-only { display: flex !important; }
         
-        /* ZAMENENÉ: Prehodené poradie stĺpcov z (1.3fr 0.7fr) na (0.7fr 1.3fr) */
         body.screensaver-mode .clock-section { flex: 1; border: none; display: grid; grid-template-columns: 0.7fr 1.3fr; align-items: stretch; }
 
-        /* ZAMENENÉ: Zmena border-right na border-left pre vizuálne delenie sprava doľava */
         .ss-left-col { display: flex; flex-direction: column; justify-content: flex-start !important; align-items: center; background: #000; padding: 0; width: 100%; border-right: 1px solid #1a1a1a; }
         
         body.screensaver-mode #time { font-size: 32vw; transform: scaleY(1.30); letter-spacing: -1vw; margin-top: 8vh; }
@@ -157,7 +155,6 @@
         }
         body.screensaver-mode #ss-radio-info { display: flex !important; }
         
-        /* ZAMENENÉ: Pravý stĺpec dostal border-left na mieste pôvodného delenia */
         .ss-right-col { display: flex; flex-direction: column; justify-content: flex-start !important; align-items: center; padding: 0; width: 100%; }
         .current-weather-group { margin-top: 4vh; text-align: center; }
         .meteo-icon-large { font-size: 15vw; margin-bottom: 5px; }
@@ -183,7 +180,6 @@
         
         .day-box-active { border: 1px solid #ff9f0a !important; background: #111 !important; }
 
-        /* VYLEPŠENÉ: Štýl pre spodné 5-dňové tlačidlá predpovede */
         .forecast-day-box {
             background: #050505; 
             border: 1px solid #111; 
@@ -621,10 +617,16 @@
         });
     }
 
+    // VYLEPŠENÉ: Funkcia teraz automaticky vyvolá predpoveď, ak je spustená zo šetriča
     function prepniDenGrafu(e, dayIndex) {
         if (e) {
             e.stopPropagation();
             if (e.cancelable) e.preventDefault();
+        }
+        
+        // AK sme v režime šetriča a predpoveď ešte nie je otvorená, otvoríme ju
+        if (document.body.classList.contains('screensaver-mode') && !document.body.classList.contains('weather-details-mode')) {
+            otvorPocasie(null, 'screensaver');
         }
         
         vykresliGraf(dayIndex);
@@ -782,12 +784,10 @@
         weatherOpenedFrom = zdroj;
         
         document.querySelectorAll('.forecast-day-box').forEach(box => { box.classList.remove('day-box-active'); });
-        vykresliGraf(null);
         
         document.body.classList.add('weather-details-mode');
         
         document.querySelectorAll('.mini-item').forEach(box => box.classList.remove('day-box-active'));
-        document.querySelector('.mini-item:nth-child(1)').classList.add('day-box-active');
         
         clearTimeout(pocasieTimer);
         pocasieTimer = setTimeout(() => { zatvorPocasie(); }, 30000); 
@@ -821,7 +821,11 @@
         if (weatherEl) {
             weatherEl.addEventListener('pointerdown', (e) => {
                 if (!document.body.classList.contains('weather-details-mode')) {
-                    otvorPocasie(e, 'screensaver');
+                    // Kliknutie mimo mini-tlačidiel otvorí predpoveď (Dnes - index 0)
+                    if (!e.target.closest('.mini-item')) {
+                        otvorPocasie(e, 'screensaver');
+                        prepniDenGrafu(null, 0);
+                    }
                 }
             });
         }
