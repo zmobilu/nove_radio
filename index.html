@@ -161,7 +161,18 @@
         .hum-val { font-size: 6.5vw; font-weight: 200; color: #aaa; letter-spacing: 1px; opacity: 0.8; white-space: nowrap; }
 
         #mini-forecast-strip { display: flex; flex-direction: row !important; flex-wrap: nowrap; justify-content: space-around; width: 100%; border-top: 1px solid #222; padding-top: 1vh; margin-bottom: 3.5vh; }
-        .mini-item { display: flex; flex-direction: column; align-items: center; width: 48%; cursor: pointer; }
+        .mini-item { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    width: 48%; 
+    cursor: pointer;
+    /* Pridané pre peknú obrubu: */
+    border: 1px solid transparent; 
+    border-radius: 12px; 
+    padding: 4px 0;
+    transition: all 0.2s;
+}
         .mini-day { font-size: 1.8vw; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
         .mini-icon { font-size: 6vw; }
         .mini-temp { font-size: 4.5vw; font-weight: 300; color: #fff; white-space: nowrap; }
@@ -612,25 +623,31 @@
     }
 
     function prepniDenGrafu(e, dayIndex) {
-        if (e) {
-            e.stopPropagation();
-            if (e.cancelable) e.preventDefault();
-        }
-        
-        vykresliGraf(dayIndex);
-        
-        // Reset aktívnych okrajov na spodných aj bočných boxoch
-        document.querySelectorAll('.forecast-day-box, .mini-item').forEach(box => {
-            box.classList.remove('day-box-active');
-        });
-        
-        // Zvýraznenie spodného boxu ak existuje
-        const aktivnyBox = document.querySelector(`.forecast-day-box[data-index="${dayIndex}"]`);
-        if (aktivnyBox) aktivnyBox.classList.add('day-box-active');
-        
-        clearTimeout(pocasieTimer);
-        pocasieTimer = setTimeout(() => { zatvorPocasie(e); }, 30000);
+    if (e) {
+        e.stopPropagation();
+        if (e.cancelable) e.preventDefault();
     }
+    
+    vykresliGraf(dayIndex);
+    
+    // Vyčistíme staré obruby zo všetkých prvkov
+    document.querySelectorAll('.forecast-day-box, .mini-item').forEach(box => {
+        box.classList.remove('day-box-active');
+    });
+    
+    if (dayIndex === 0 || dayIndex === 1) {
+        // Ak klikneme na Dnes (0) alebo Zajtra (1), zvýrazníme pravé mini-tlačidlo
+        const praveTlacidlo = document.querySelectorAll('.mini-item')[dayIndex];
+        if (praveTlacidlo) praveTlacidlo.classList.add('day-box-active');
+    } else {
+        // Inak zvýrazníme spodný box podľa indexu
+        const aktivnySpodnyBox = document.querySelector(`.forecast-day-box[data-index="${dayIndex}"]`);
+        if (aktivnySpodnyBox) aktivnySpodnyBox.classList.add('day-box-active');
+    }
+    
+    clearTimeout(pocasieTimer);
+    pocasieTimer = setTimeout(() => { zatvorPocasie(e); }, 30000);
+}
 
     // --- AUDIO LOGIKA ---
     const audio = document.getElementById('audioPlayer');
@@ -772,30 +789,58 @@
     let pocasieTimer;
         
     function otvorPocasie(e, zdroj = 'radio') {
-        if (e) { e.stopPropagation(); if (e.cancelable) e.preventDefault(); }
-        weatherOpenedFrom = zdroj;
-        
-        document.querySelectorAll('.forecast-day-box').forEach(box => { box.classList.remove('day-box-active'); });
-        vykresliGraf(null);
-        
-        // Prepnutie do režimu počasia - skryje hodiny a dátum, vysunie graf a 5-dňovú predpoveď
-        document.body.classList.add('weather-details-mode');
-        
-        clearTimeout(pocasieTimer);
-        pocasieTimer = setTimeout(() => { zatvorPocasie(); }, 30000); 
+    if (e) { e.stopPropagation(); if (e.cancelable) e.preventDefault(); }
+    weatherOpenedFrom = zdroj;
+    
+    document.querySelectorAll('.forecast-day-box').forEach(box => { box.classList.remove('day-box-active'); });
+    vykresliGraf(null);
+    
+    document.body.classList.add('weather-details-mode');
+    
+    // Zvýrazníme pravé tlačidlo "Dnes", keďže graf štartuje aktuálnym dňom
+    document.querySelectorAll('.mini-item').forEach(box => box.classList.remove('day-box-active'));
+    document.querySelector('.mini-item:nth-child(1)').classList.add('day-box-active');
+    
+    clearTimeout(pocasieTimer);
+    pocasieTimer = setTimeout(() => { zatvorPocasie(); }, 30000); 
+}
+
+function zatvorPocasie(e) {
+    if (e) { e.stopPropagation(); if (e.cancelable) e.preventDefault(); }
+    clearTimeout(pocasieTimer);
+    
+    document.body.classList.remove('weather-details-mode');
+    document.querySelectorAll('.mini-item').forEach(box => box.classList.remove('day-box-active'));
+
+    if (weatherOpenedFrom === 'screensaver') {
+        document.body.classList.add('screensaver-mode');
+        clearTimeout(idleTimer);
+        idleTimer = setTimeout(() => document.body.classList.add('screensaver-mode'), 20000);
+    } else { resetIdleTimer(); }
+}
+
+// NOVÉ: Okamžité naviazanie kliknutia na graf a veľkú ikonu pre zatvorenie
+document.addEventListener('DOMContentLoaded', () => {
+    // Klik na graf (iba ak je aktívny detail počasia)
+    const grafContainer = document.getElementById('weather-details-top-inline');
+    if (grafContainer) {
+        grafContainer.addEventListener('pointerdown', (e) => {
+            if (document.body.classList.contains('weather-details-mode') && !e.target.closest('button')) {
+                zatvorPocasie(e);
+            }
+        });
     }
 
-    function zatvorPocasie(e) {
-        if (e) { e.stopPropagation(); if (e.cancelable) e.preventDefault(); }
-        clearTimeout(pocasieTimer);
-        
-        document.body.classList.remove('weather-details-mode');
-        if (weatherOpenedFrom === 'screensaver') {
-            document.body.classList.add('screensaver-mode');
-            clearTimeout(idleTimer);
-            idleTimer = setTimeout(() => document.body.classList.add('screensaver-mode'), 20000);
-        } else { resetIdleTimer(); }
+    // Klik na veľkú ikonu počasia vpravo pre zatvorenie
+    const velkaIkona = document.getElementById('ss-weather-trigger');
+    if (velkaIkona) {
+        velkaIkona.addEventListener('pointerdown', (e) => {
+            if (document.body.classList.contains('weather-details-mode')) {
+                zatvorPocasie(e);
+            }
+        });
     }
+});
 
     inicializujPocasie();
     </script>
