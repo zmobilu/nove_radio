@@ -11,6 +11,13 @@
     <link rel="icon" href="data:,">
     
     <style>
+        /* Keď NIE JE aktívny detail počasia, prvky s touto triedou sú skryté */
+        body:not(.weather-details-mode) .weather-details-only { display: none !important; }
+
+        /* Keď JE aktívny detail počasia, skryjeme hodiny a rádio info, ale zosvetlíme kontajner pre počasie */
+        body.weather-details-mode .weather-details-hide { display: none !important; }
+        body.weather-details-mode .weather-details-only { display: flex !important; }
+        
         body { margin: 0; padding: 0; background-color: #000; color: #fff;
             font-family: -apple-system-short-condensed, -apple-system, BlinkMacSystemFont, sans-serif;
             display: flex; height: 100vh; width: 100vw; overflow: hidden;
@@ -197,13 +204,35 @@
 
     <div class="clock-section">
         <div class="ss-left-col">
-            
-            <div id="time" style="cursor: pointer;">
-                <span id="h-part" class="hours-part">00</span>
-                <span id="m-part" class="minutes-part">00</span>
-            </div>
-            <div id="ss-radio-info"></div>
-            
+    
+    <!-- Veľké hodiny, ktoré tam už máš -->
+    <div id="time" style="cursor: pointer;" class="weather-details-hide">
+        <span id="h-part" class="hours-part">00</span>
+        <span id="m-part" class="minutes-part">00</span>
+    </div>
+    <div id="ss-radio-info" class="weather-details-hide"></div>
+
+    <!-- ================================================================= -->
+    <!-- SEM VLOŽÍŠ NOVÚ ČASŤ DETALOV POČASIA, KTORÁ SA UKÁŽE NAMIESTO HODÍN -->
+    <!-- ================================================================= -->
+    <div id="weather-details-inline" class="weather-details-only" style="display: none; flex-direction: column; width: 100%; height: 60vh; padding: 10px; box-sizing: border-box; justify-content: space-between;">
+        
+        <!-- Horný riadok s polohou a tlačidlom Zatvor presne podľa obrázka Nápad počasie.png -->
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; height: 5vh;">
+            <span id="weather-location" style="color: #666; font-size: 2.5vw; font-weight: 400; text-transform: uppercase; letter-spacing: 2px;">---</span>
+            <button onclick="zatvorPocasie(event)" style="background: #222; color: #ff9f0a; border: 2px solid #ff9f0a; padding: 2px 15px; border-radius: 8px; font-size: 2.5vw; font-weight: bold; cursor: pointer;">Zatvor</button>
+        </div>
+
+        <!-- Kontajner pre 12h graf stĺpikov -->
+        <div style="height: 28vh; width: 100%; display: flex; align-items: flex-end;">
+            <div id="hourly-chart-container" style="display: flex; justify-content: space-around; align-items: flex-end; height: 100%; width: 100%;"></div>
+        </div>
+
+        <!-- Kontajner pre 5-dňovú predpoveď boxov -->
+        <div id="extended-forecast-container" style="display: flex; justify-content: space-between; gap: 8px; width: 100%; height: 22vh; border-top: 1px solid #111; padding-top: 8px;"></div>
+    </div>
+    <!-- ================================================================= -->
+                   
             <div class="radio-info-wrapper ss-hide">
                 <span id="weather-temp-mini">--°C</span>
                 <span class="separator">|</span>
@@ -307,18 +336,6 @@
         </div>
     </div>  
         
-   <div id="weather-details-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 9999; padding: 20px; box-sizing: border-box; flex-direction: column; justify-content: space-between;">      
-     <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; height: 6vh;">
-        <span id="weather-location" style="color: #666; font-size: 3.5vw; font-weight: 400; text-transform: uppercase; letter-spacing: 2px;">---</span>
-        <button onclick="zatvorPocasie(event)" style="background: #222; color: #ff9f0a; border: 2px solid #ff9f0a; padding: 5px 20px; border-radius: 12px; font-size: 4vw; font-weight: bold; cursor: pointer;">Zatvor</button>
-    </div>
-        <div style="background: #000; height: 52vh; width: 100%; display: flex; align-items: flex-end;">
-            <div id="hourly-chart-container" style="display: flex; justify-content: space-around; align-items: flex-end; height: 100%; width: 100%;"></div>
-        </div>
-
-        <div id="extended-forecast-container" style="display: flex; justify-content: space-between; gap: 10px; width: 100%; height: 35vh; border-top: 1px solid #111; padding-top: 15px;"></div>
-    </div>
-
     <script>
     // GLOBÁLNA MAPA HLASITOSTÍ
     const VOLUME_MAP = { 
@@ -326,6 +343,14 @@
         'fun': 1.0, 'funchill': 0.5, 'funczsk': 0.5, 'fun8090': 0.5, 'milenialky': 0.5,
         'expres': 0.5, 'europa2': 0.5, 'melody': 0.5, 'vlna': 0.5,
     };
+    
+    function getTempColor(t) {
+        if (t < 0) return '#00bfff';
+        if (t < 10) return '#87CEEB';
+        if (t < 22) return '#98FB98';
+        if (t < 28) return '#ffa500';
+        return '#ff4500';
+    }
     
     const RODINA = ['Dominik', 'Janka', 'Patrik', 'Martin', 'Andrea', 'Roman', 'Emília', 'Ján', 'Mária', 'Juraj', 'Tatiana', 'Rastislav', 'Viktor', 'Adela', 'Linda', 'Michal', 'Ondrej', 'Jana', 'Viliam', 'Nataša', 'Kristína', 'Tibor', 'Ema'];
     const KOLEGOVIA = ['Ivana', 'Mária', 'Iveta', 'Nina', 'Adriana', 'Jaroslava', 'Eva', 'Jana', 'Judita', 'Martin', 'Jozef', 'Marcel', 'Karol', 'Anna', 'Petra', 'Dominika'];
@@ -335,14 +360,6 @@
     const WEATHER_CODES = { 0: 'fa-sun', 1: 'fa-cloud-sun', 2: 'fa-cloud-sun', 3: 'fa-cloud', 45: 'fa-smog', 48: 'fa-smog', 51: 'fa-cloud-rain', 61: 'fa-cloud-showers-heavy', 71: 'fa-snowflake', 95: 'fa-bolt' };
     const WEATHER_COLORS = { 0: '#ffcc00', 1: '#ffdb58', 2: '#aaa', 3: '#888', 45: '#777', 51: '#4dabff', 61: '#007bff', 71: '#fff', 95: '#ffeb3b' };
     
-    function getTempColor(t) {
-        if (t < 0) return '#00bfff';
-        if (t < 10) return '#87CEEB';
-        if (t < 22) return '#98FB98';
-        if (t < 28) return '#ffa500';
-        return '#ff4500';
-    }
-
     let dnesneMeno = ""; 
     let poslednyDatumMenin = "";
     let weatherDataBackup = null; 
@@ -555,34 +572,6 @@ for (let i = 0; i <= 4; i++) {
         } catch (e) { console.log("Chyba počasia:", e); }
     }
     // Nová logika spúšťania počasia
-function inicializujPocasie() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                // Používateľ polohu povolil -> načítame počasie pre jeho súradnice
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
-                updateWeather(lat, lon);
-                
-                // Nastavíme interval, aby každých 10 minút aktualizoval polohu aj počasie
-                setInterval(() => updateWeather(lat, lon), 600000);
-            },
-            (error) => {
-                console.log("Poloha nepovolená, načítavam predvolenú:", error.message);
-                // Používateľ polohu zakázal -> načítame predvolenú polohu (Bratislava)
-                updateWeather(); 
-                setInterval(updateWeather, 600000);
-            }
-        );
-    } else {
-        // Prehliadač nepodporuje Geolocation -> fallback na predvolenú polohu
-        updateWeather();
-        setInterval(updateWeather, 600000);
-    }
-}
-
-// Spustíme hneď po načítaní scriptu
-inicializujPocasie();
 
     function vykresliGraf(targetDayIndex) {
         const chartContainer = document.getElementById('hourly-chart-container');
@@ -823,7 +812,7 @@ inicializujPocasie();
     document.addEventListener('touchstart', function(e) {
         if (e.target.closest('#time') || 
             e.target.closest('#ss-weather-trigger') || 
-            e.target.closest('#weather-details-modal')) {
+            e.target.closest('#weather-details-inline')) {
             return; // Ak klikáme na tieto prvky, globálny reset timeru sa nespustí
         }
         resetIdleTimer();
@@ -870,49 +859,81 @@ inicializujPocasie();
 
     // --- OVLÁDANIE OKNA POČASIA S AUTOMATICKÝM ČASOVAČOM (30 SEKÚND) ---
     let pocasieTimer;
+    
+    function inicializujPocasie() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                // Používateľ polohu povolil -> načítame počasie pre jeho súradnice
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                updateWeather(lat, lon);
+                
+                // Nastavíme interval, aby každých 10 minút aktualizoval polohu aj počasie
+                setInterval(() => updateWeather(lat, lon), 600000);
+            },
+            (error) => {
+                console.log("Poloha nepovolená, načítavam predvolenú:", error.message);
+                // Používateľ polohu zakázal -> načítame predvolenú polohu (Bratislava)
+                updateWeather(); 
+                setInterval(updateWeather, 600000);
+            }
+        );
+    } else {
+        // Prehliadač nepodporuje Geolocation -> fallback na predvolenú polohu
+        updateWeather();
+        setInterval(updateWeather, 600000);
+    }
+}
 
+
+        
     function otvorPocasie(e, zdroj = 'radio') {
-        if (e) {
-            e.stopPropagation();
-            if (e.cancelable) e.preventDefault();
-        }
-        
-        // Uložíme si, z akého režimu počasie otvárame
-        weatherOpenedFrom = zdroj;
-
-        // Pri otvorení zrušíme zvýraznenie dňa, lebo graf ukazuje aktuálnych 12 hodín (Teraz)
-        document.querySelectorAll('.forecast-day-box').forEach(box => {
-            box.classList.remove('day-box-active');
-        });
-
-        vykresliGraf(null);
-        document.getElementById('weather-details-modal').style.display = 'flex';
-        
-        clearTimeout(pocasieTimer);
-        pocasieTimer = setTimeout(() => {
-            zatvorPocasie();
-        }, 30000); 
+    if (e) {
+        e.stopPropagation();
+        if (e.cancelable) e.preventDefault();
     }
+    
+    weatherOpenedFrom = zdroj;
 
-    function zatvorPocasie(e) {
-        if (e) {
-            e.stopPropagation();
-            if (e.cancelable) e.preventDefault();
-        }
-        clearTimeout(pocasieTimer);
-        document.getElementById('weather-details-modal').style.display = 'none';
+    // Zrušíme zvýraznenie dňa v boxoch, graf ukazuje aktuálnych 12 hodín
+    document.querySelectorAll('.forecast-day-box').forEach(box => {
+        box.classList.remove('day-box-active');
+    });
 
-        // KLÚČOVÁ LOGIKA PRE NÁVRAT:
-        if (weatherOpenedFrom === 'screensaver') {
-            // Ak sme prišli zo šetriča, vrátime sa do šetriča a predĺžime mu čas, aby hneď nezhasol
-            document.body.classList.add('screensaver-mode');
-            clearTimeout(idleTimer);
-            idleTimer = setTimeout(() => document.body.classList.add('screensaver-mode'), 20000);
-        } else {
-            // Ak sme prišli z tlačidla z Page 2, normálne zresetujeme idle timer (skočí do rádia)
-            resetIdleTimer();
-        }
+    vykresliGraf(null);
+    
+    // AKTIVÁCIA: Pridáme triedu na body, čím schováme hodiny a ukážeme grafy priamo v šetriči
+    document.body.classList.add('weather-details-mode');
+    
+    clearTimeout(pocasieTimer);
+    pocasieTimer = setTimeout(() => {
+        zatvorPocasie();
+    }, 30000); 
+}
+
+function zatvorPocasie(e) {
+    if (e) {
+        e.stopPropagation();
+        if (e.cancelable) e.preventDefault();
     }
+    clearTimeout(pocasieTimer);
+    
+    // DEAKTIVÁCIA: Odstránime triedu, grafy zmiznú a hodiny sa vrátia späť
+    document.body.classList.remove('weather-details-mode');
+
+    // Návratová logika, ktorú si už mal hotovú
+    if (weatherOpenedFrom === 'screensaver') {
+        document.body.classList.add('screensaver-mode');
+        clearTimeout(idleTimer);
+        idleTimer = setTimeout(() => document.body.classList.add('screensaver-mode'), 20000);
+    } else {
+        resetIdleTimer();
+    }
+}
+    // Spustíme hneď po načítaní scriptu
+    inicializujPocasie();
+    
     </script>
 </body>
 </html>
