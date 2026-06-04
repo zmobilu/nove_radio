@@ -471,6 +471,7 @@ async function updateWeather() {
 
         // Cyklus for pre fc0 a fc1 nasleduje hneď tu a zostáva pôvodný...
 
+       // 1. Toto je správny koniec cyklu pre mini predpoveď (Dnes/Zajtra)
         for (let i = 0; i <= 1; i++) {
             const code = d.daily.weather_code[i];
             const max = d.daily.temperature_2m_max[i];
@@ -481,18 +482,12 @@ async function updateWeather() {
             iconEl.style.color = WEATHER_COLORS[code] || '#aaa';
         }
 
-        function vykresliGraf(targetDayIndex) {
-    const chartContainer = document.getElementById('hourly-chart-container');
-    if (!chartContainer) return;
-    
-    // NOVÁ POISTKA: Ak nemáme stiahnuté dáta, vyčistíme kontajner a nepokračujeme
-    if (!weatherDataBackup || !weatherDataBackup.hourly) {
-        chartContainer.innerHTML = '<span style="color:#666; font-size:2vw;">Čaká sa na dáta...</span>';
-        return;
-    }
-    
-    chartContainer.innerHTML = ''; 
-    // ... zvyšok funkcie zostáva úplne rovnaký
+        // 2. Volanie grafu (Musí tu byť iba toto jedno volanie, nie celá funkcia!)
+        vykresliGraf(null);
+
+        // 3. Plnenie spodných boxov s predpoveďou
+        const extendedContainer = document.getElementById('extended-forecast-container');
+        extendedContainer.innerHTML = ''; 
 
         const dniVTyzdni = ['Ned', 'Pon', 'Ut', 'Str', 'Štv', 'Pia', 'Sob'];
         const dnes = new Date();
