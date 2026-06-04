@@ -328,528 +328,527 @@
     </div>  
         
     <script>
-    const VOLUME_MAP = { 
-        'slovensko': 0.3, 'fm': 0.3, 'devin': 0.5, 'litera': 0.5, 'regina': 0.3,
-        'fun': 1.0, 'funchill': 0.5, 'funczsk': 0.5, 'fun8090': 0.5, 'milenialky': 0.5,
-        'expres': 0.5, 'europa2': 0.5, 'melody': 0.5, 'vlna': 0.5,
-    };
-    
-    function getTempColor(t) {
-        if (t < 0) return '#00bfff';
-        if (t < 10) return '#87CEEB';
-        if (t < 22) return '#98FB98';
-        if (t < 28) return '#ffa500';
-        return '#ff4500';
+const VOLUME_MAP = { 
+    'slovensko': 0.3, 'fm': 0.3, 'devin': 0.5, 'litera': 0.5, 'regina': 0.3,
+    'fun': 1.0, 'funchill': 0.5, 'funczsk': 0.5, 'fun8090': 0.5, 'milenialky': 0.5,
+    'expres': 0.5, 'europa2': 0.5, 'melody': 0.5, 'vlna': 0.5,
+};
+
+function getTempColor(t) {
+    if (t < 0) return '#00bfff';
+    if (t < 10) return '#87CEEB';
+    if (t < 22) return '#98FB98';
+    if (t < 28) return '#ffa500';
+    return '#ff4500';
+}
+
+const RODINA = ['Dominik', 'Janka', 'Patrik', 'Martin', 'Andrea', 'Roman', 'Emília', 'Ján', 'Mária', 'Juraj', 'Tatiana', 'Rastislav', 'Viktor', 'Adela', 'Linda', 'Michal', 'Ondrej', 'Jana', 'Viliam', 'Nataša', 'Kristína', 'Tibor', 'Ema'];
+const KOLEGOVIA = ['Ivana', 'Mária', 'Iveta', 'Nina', 'Adriana', 'Jaroslava', 'Eva', 'Jana', 'Judita', 'Martin', 'Jozef', 'Marcel', 'Karol', 'Anna', 'Petra', 'Dominika'];
+const SPOLUZIACI = ['Claudia', 'Bibiana','Zuzana', 'Kristína','Hana', 'Amanda','Viktória', 'Karin','Alexandra', 'Vanesa','Tamara', 'Zoe','Ela', 'Ema','Sebastian', 'Barbora','Jakub', 
+                    'Paula', 'Timothy', 'Maximilián','Adam', 'Milica','Alica', 'Linda', 'Róbert', 'Daniel','Laura', 'Lili', 'Oskar', 'Tomáš','Samuel','Maxim','Alex','Erik','Oliver'];
+const MOJE_MENA = ['Peter', 'Lenka', 'Daniel', 'Hana', 'Lucia', 'Katarína', 'Andrej', 'Zuzana', 'Radoslav', 'Martina', 'Róbert', 'Milan', 'Juraj', 'Ladislav', 'Pavol']; 
+const WEATHER_CODES = { 0: 'fa-sun', 1: 'fa-cloud-sun', 2: 'fa-cloud-sun', 3: 'fa-cloud', 45: 'fa-smog', 48: 'fa-smog', 51: 'fa-cloud-rain', 61: 'fa-cloud-showers-heavy', 71: 'fa-snowflake', 95: 'fa-bolt' };
+const WEATHER_COLORS = { 0: '#ffcc00', 1: '#ffdb58', 2: '#aaa', 3: '#888', 45: '#777', 51: '#4dabff', 61: '#007bff', 71: '#fff', 95: '#ffeb3b' };
+
+let dnesneMeno = ""; 
+let poslednyDatumMenin = "";
+let weatherDataBackup = null; 
+let currentPlayingType = ""; 
+let weatherOpenedFrom = ""; 
+
+async function updateNameday() {
+    const now = new Date();
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const dd = String(now.getDate()).padStart(2, '0');
+    const targetDate = `${mm}-${dd}`;
+    const dnesnyFormatnyDatum = `${now.getDate()}.${now.getMonth() + 1}.`;
+
+    if (poslednyDatumMenin === dnesnyFormatnyDatum && dnesneMeno !== "") {
+        return; 
     }
-    
-    const RODINA = ['Dominik', 'Janka', 'Patrik', 'Martin', 'Andrea', 'Roman', 'Emília', 'Ján', 'Mária', 'Juraj', 'Tatiana', 'Rastislav', 'Viktor', 'Adela', 'Linda', 'Michal', 'Ondrej', 'Jana', 'Viliam', 'Nataša', 'Kristína', 'Tibor', 'Ema'];
-    const KOLEGOVIA = ['Ivana', 'Mária', 'Iveta', 'Nina', 'Adriana', 'Jaroslava', 'Eva', 'Jana', 'Judita', 'Martin', 'Jozef', 'Marcel', 'Karol', 'Anna', 'Petra', 'Dominika'];
-    const SPOLUZIACI = ['Claudia', 'Bibiana','Zuzana', 'Kristína','Hana', 'Amanda','Viktória', 'Karin','Alexandra', 'Vanesa','Tamara', 'Zoe','Ela', 'Ema','Sebastian', 'Barbora','Jakub', 
-                        'Paula', 'Timothy', 'Maximilián','Adam', 'Milica','Alica', 'Linda', 'Róbert', 'Daniel','Laura', 'Lili', 'Oskar', 'Tomáš','Samuel','Maxim','Alex','Erik','Oliver'];
-    const MOJE_MENA = ['Peter', 'Lenka', 'Daniel', 'Hana', 'Lucia', 'Katarína', 'Andrej', 'Zuzana', 'Radoslav', 'Martina', 'Róbert', 'Milan', 'Juraj', 'Ladislav', 'Pavol']; 
-    const WEATHER_CODES = { 0: 'fa-sun', 1: 'fa-cloud-sun', 2: 'fa-cloud-sun', 3: 'fa-cloud', 45: 'fa-smog', 48: 'fa-smog', 51: 'fa-cloud-rain', 61: 'fa-cloud-showers-heavy', 71: 'fa-snowflake', 95: 'fa-bolt' };
-    const WEATHER_COLORS = { 0: '#ffcc00', 1: '#ffdb58', 2: '#aaa', 3: '#888', 45: '#777', 51: '#4dabff', 61: '#007bff', 71: '#fff', 95: '#ffeb3b' };
-    
-    let dnesneMeno = ""; 
-    let poslednyDatumMenin = "";
-    let weatherDataBackup = null; 
-    let currentPlayingType = ""; 
-    let weatherOpenedFrom = ""; 
-
-    async function updateNameday() {
-        const now = new Date();
-        const mm = String(now.getMonth() + 1).padStart(2, '0');
-        const dd = String(now.getDate()).padStart(2, '0');
-        const targetDate = `${mm}-${dd}`;
-        const dnesnyFormatnyDatum = `${now.getDate()}.${now.getMonth() + 1}.`;
-
-        if (poslednyDatumMenin === dnesnyFormatnyDatum && dnesneMeno !== "") {
-            return; 
-        }
-        try {
-            const url = 'https://raw.githubusercontent.com/spacek/slovensky-kalendar-menin/master/sk-meniny.csv';
-            const response = await fetch(url);
-            if (!response.ok) throw new Error('Súbor nedostupný');
-            const text = await response.text();
-            const lines = text.split('\n');
-            let found = "";
-            
-            for (let line of lines) {
-                if (line.includes(targetDate)) {
-                    const parts = line.split(/[;,]/);
-                    if (parts.length > 1) {
-                        found = parts[1].trim();
-                    }
-                    break;
+    try {
+        const url = 'https://raw.githubusercontent.com/spacek/slovensky-kalendar-menin/master/sk-meniny.csv';
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Súbor nedostupný');
+        const text = await response.text();
+        const lines = text.split('\n');
+        let found = "";
+        
+        for (let line of lines) {
+            if (line.includes(targetDate)) {
+                const parts = line.split(/[;,]/);
+                if (parts.length > 1) {
+                    found = parts[1].trim();
                 }
+                break;
             }
-            dnesneMeno = found;
-            if (dnesneMeno !== "") {
-                poslednyDatumMenin = dnesnyFormatnyDatum;
-            }
-        } catch (e) { 
-            console.log("Chyba menín:", e); 
-            dnesneMeno = ""; 
         }
+        dnesneMeno = found;
+        if (dnesneMeno !== "") {
+            poslednyDatumMenin = dnesnyFormatnyDatum;
+        }
+    } catch (e) { 
+        console.log("Chyba menín:", e); 
+        dnesneMeno = ""; 
     }
+}
 
-    updateNameday();
-    setInterval(updateNameday, 3600000);
-
-    function updateClock() {
-        const now = new Date();
-        let h = String(now.getHours()).padStart(2, '0');
-        let m = String(now.getMinutes()).padStart(2, '0');
-        
-        let h_display = h;
-        if (h[0] === '1') {
-            h_display = `<span class="blue-digit">1</span>${h.substring(1)}`;
-        } else if (h[0] === '2') {
-            h_display = `<span class="red-digit">2</span>${h.substring(1)}`;
-        }
-        
-        document.getElementById('h-part').innerHTML = h_display;
-        document.getElementById('m-part').textContent = m;
-        
-        const formattedDate = `${now.getDate()}.${now.getMonth() + 1}.`;
-        document.getElementById('date-display').textContent = formattedDate;
-        document.getElementById('radio-date').textContent = formattedDate;
-        
-        const menoElementSS = document.getElementById('day-display');
-        const menoElementRadio = document.getElementById('radio-name');
-        
-        if (menoElementSS) menoElementSS.textContent = dnesneMeno;
-        if (menoElementRadio) menoElementRadio.textContent = dnesneMeno;
-
-        if (dnesneMeno) {
-            const listyTried = [menoElementSS, menoElementRadio];
-            const menoLower = dnesneMeno.toLowerCase().trim();
-
-            listyTried.forEach(el => {
-                if (!el) return;
-                
-                el.classList.remove('name-female', 'name-male', 'name-moje', 'name-family', 'name-colleagues', 'name-classmates');
-                el.style.color = '';
-
-                const skontroluj = (zoznam) => zoznam.some(m => m.toLowerCase().trim() === menoLower);
-
-                if (skontroluj(RODINA)) { el.classList.add('name-family'); } 
-                else if (skontroluj(MOJE_MENA)) { el.classList.add('name-moje'); } 
-                else if (skontroluj(KOLEGOVIA)) { el.classList.add('name-colleagues'); } 
-                else if (skontroluj(SPOLUZIACI)) { el.classList.add('name-classmates'); } 
-                else {
-                    const poslednePismeno = menoLower.slice(-1);
-                    const vynimky = ['gejza', 'attila', 'boba'];
-                    if (poslednePismeno === 'a' && !vynimky.includes(menoLower)) { el.classList.add('name-female'); } else { el.classList.add('name-male'); }
-                }
-            });
-        }
-    }
-
-    setInterval(updateClock, 1000); updateClock();
+function updateClock() {
+    const now = new Date();
+    let h = String(now.getHours()).padStart(2, '0');
+    let m = String(now.getMinutes()).padStart(2, '0');
     
-    async function updateWeather(lat = 48.1421, lon = 17.1964) {
-        try {
-            const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m&hourly=temperature_2m,precipitation,cloud_cover,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FBratislava&wind_speed_unit=kmh&forecast_days=6`);
-            const d = await r.json();
-            weatherDataBackup = d; 
-
-            if (d.timezone && d.timezone.includes('/')) {
-                const nazovMesta = d.timezone.split('/')[1].replace(/_/g, ' ');
-                document.getElementById('weather-location').textContent = nazovMesta;
-            } else {
-                document.getElementById('weather-location').textContent = `${lat.toFixed(2)}°N, ${lon.toFixed(2)}°E`;
-            }
-
-            const rawTemp = d.current.temperature_2m;
-            const rawApparent = d.current.apparent_temperature; 
-            const currentTemp = Math.round(rawTemp) + '°C';
-            const currentHum = Math.round(d.current.relative_humidity_2m) + '%';
-            const currentCode = d.current.weather_code;
-            const tColor = getTempColor(rawTemp);
-            const appColor = getTempColor(rawApparent);
-
-            document.getElementById('weather-temp-mini').textContent = currentTemp;
-            document.getElementById('weather-temp-mini').style.color = tColor;
-            document.getElementById('outdoor-temp').textContent = currentTemp;
-            document.getElementById('outdoor-temp').style.color = tColor;
-            document.getElementById('apparent-temp').textContent = Math.round(rawApparent) + '°';
-            document.getElementById('apparent-temp').style.color = appColor; 
-            document.getElementById('outdoor-hum').textContent = currentHum;
-
-            const windSpeed = Math.round(d.current.wind_speed_10m);
-            const windDir = d.current.wind_direction_10m;
-            document.getElementById('wind-speed').textContent = windSpeed + ' km/h';
-            document.getElementById('wind-icon').style.transform = `rotate(${windDir}deg)`;
-
-            const mainIconEl = document.getElementById('weather-icon-main');
-            mainIconEl.className = 'fas ' + (WEATHER_CODES[currentCode] || 'fa-cloud') + ' meteo-icon-large';
-            mainIconEl.style.color = WEATHER_COLORS[currentCode] || '#aaa';
-
-            for (let i = 0; i <= 1; i++) {
-                const code = d.daily.weather_code[i];
-                const max = d.daily.temperature_2m_max[i];
-                const min = Math.round(d.daily.temperature_2m_min[i]);
-                document.getElementById(`fc${i}-temp`).innerHTML = `<span style="color:${getTempColor(max)}">${Math.round(max)}°</span> <span style="color:#aaa; font-size:0.8em">/ ${min}°</span>`;
-                const iconEl = document.getElementById(`fc${i}-icon`);
-                iconEl.className = 'fas ' + (WEATHER_CODES[code] || 'fa-cloud') + ' mini-icon';
-                iconEl.style.color = WEATHER_COLORS[code] || '#aaa';
-            }
-
-            vykresliGraf(null);
-
-            const extendedContainer = document.getElementById('extended-forecast-container');
-            extendedContainer.innerHTML = ''; 
-
-            const dniVTyzdni = ['Ned', 'Pon', 'Ut', 'Str', 'Štv', 'Pia', 'Sob'];
-            const dnes = new Date();
-
-            for (let i = 2; i <= 6; i++) {
-                if(i >= d.daily.weather_code.length) break;
-                const code = d.daily.weather_code[i];
-                const max = d.daily.temperature_2m_max[i];
-                const min = Math.round(d.daily.temperature_2m_min[i]);
-                
-                const buduciDen = new Date(dnes);
-                buduciDen.setDate(dnes.getDate() + i);
-                let nazovDna = dniVTyzdni[buduciDen.getDay()];
-
-                const dayBox = document.createElement('div');
-                dayBox.className = 'forecast-day-box';
-                dayBox.setAttribute('data-index', i);
-                dayBox.setAttribute('onpointerdown', `prepniDenGrafu(event, ${i})`);
-                
-                dayBox.ontouchstart = () => { if(!dayBox.classList.contains('day-box-active')) dayBox.style.background = '#151515'; };
-                dayBox.ontouchend = () => { if(!dayBox.classList.contains('day-box-active')) dayBox.style.background = '#050505'; };
-
-                dayBox.innerHTML = `
-                    <span style="font-size: 3vw; font-weight: 500; text-transform: uppercase; color: #aaa; transform: scaleY(1.1);">${nazovDna}</span>
-                    <i class="fas ${WEATHER_CODES[code] || 'fa-cloud'}" style="font-size: 7vw; color: ${WEATHER_COLORS[code] || '#aaa'}; margin: 3px 0;"></i>
-                    <div style="font-size: 3.2vw; font-weight: 400; white-space: nowrap;">
-                        <span style="color:${getTempColor(max)}">${Math.round(max)}°</span>
-                        <span style="color:#444; font-size:0.85em">/ ${min}°</span>
-                    </div>
-                `;
-                extendedContainer.appendChild(dayBox);
-            }
-
-        } catch (e) { console.log("Chyba počasia:", e); }
+    let h_display = h;
+    if (h[0] === '1') {
+        h_display = `<span class="blue-digit">1</span>${h.substring(1)}`;
+    } else if (h[0] === '2') {
+        h_display = `<span class="red-digit">2</span>${h.substring(1)}`;
     }
+    
+    document.getElementById('h-part').innerHTML = h_display;
+    document.getElementById('m-part').textContent = m;
+    
+    const formattedDate = `${now.getDate()}.${now.getMonth() + 1}.`;
+    document.getElementById('date-display').textContent = formattedDate;
+    document.getElementById('radio-date').textContent = formattedDate;
+    
+    const menoElementSS = document.getElementById('day-display');
+    const menoElementRadio = document.getElementById('radio-name');
+    
+    if (menoElementSS) menoElementSS.textContent = dnesneMeno;
+    if (menoElementRadio) menoElementRadio.textContent = dnesneMeno;
 
-    function inicializujPocasie() {
-        // 1. KROK: Okamžite a bez čakania natiahni Bratislavu (Ružinov)
-        updateWeather(48.1421, 17.1964);
+    if (dnesneMeno) {
+        const listyTried = [menoElementSS, menoElementRadio];
+        const menoLower = dnesneMeno.toLowerCase().trim();
 
-        // Nastavíme bezpečný interval na pozadí pre Bratislavu (poistka)
-        window.weatherInterval = setInterval(() => {
-            // Ak medzičasom GPS nezmenilo súradnice, toč stále Bratislavu
-            const aktuálnyLat = window.customLat || 48.1421;
-            const aktuálnyLon = window.customLon || 17.1964;
-            updateWeather(aktuálnyLat, aktuálnyLon);
-        }, 600000);
-
-        const isSecure = window.location.protocol === 'https:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        if (!isSecure) {
-            console.log("Nezabezpečený protokol, končíme pri defaultnej Bratislave.");
-            return;
-        }
-
-        // 2. KROK: Skúsime na pozadí zistiť presnejšiu polohu (ak sme na HTTPS)
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    // Uložíme si nové GPS súradnice, aby ich používal aj interval vyššie
-                    window.customLat = position.coords.latitude;
-                    window.customLon = position.coords.longitude;
-                    
-                    // Okamžite prepíšeme počasie presnou polohou
-                    updateWeather(window.customLat, window.customLon);
-                },
-                (error) => {
-                    console.log("GPS nedostupné alebo zamietnuté, zostáva Bratislava. Dôvod:", error.message);
-                },
-                { timeout: 3000, maximumAge: 60000 }
-            );
-        }
-    } // <-- Terajší správny koniec funkcie bez duplicity
-
-    function vykresliGraf(targetDayIndex) {
-        const chartContainer = document.getElementById('hourly-chart-container');
-        if (!chartContainer || !weatherDataBackup) return;
-        chartContainer.innerHTML = ''; 
-
-        let temps = [], rain = [], cloud = [], wind = [], labels = [];
-
-        if (targetDayIndex === null || targetDayIndex === 0) {
-            const currentHourIndex = new Date().getHours();
-            temps = weatherDataBackup.hourly.temperature_2m.slice(currentHourIndex, currentHourIndex + 12);
-            rain = (weatherDataBackup.hourly.precipitation || weatherDataBackup.hourly.rain || []).slice(currentHourIndex, currentHourIndex + 12);
-            cloud = (weatherDataBackup.hourly.cloud_cover || []).slice(currentHourIndex, currentHourIndex + 12);
-            wind = (weatherDataBackup.hourly.wind_speed_10m || []).slice(currentHourIndex, currentHourIndex + 12);
+        listyTried.forEach(el => {
+            if (!el) return;
             
-            for (let idx = 0; idx < 12; idx++) {
-                labels.push(idx === 0 ? 'Teraz' : String((currentHourIndex + idx) % 24));
+            el.classList.remove('name-female', 'name-male', 'name-moje', 'name-family', 'name-colleagues', 'name-classmates');
+            el.style.color = '';
+
+            const skontroluj = (zoznam) => zoznam.some(m => m.toLowerCase().trim() === menoLower);
+
+            if (skontroluj(RODINA)) { el.classList.add('name-family'); } 
+            else if (skontroluj(MOJE_MENA)) { el.classList.add('name-moje'); } 
+            else if (skontroluj(KOLEGOVIA)) { el.classList.add('name-colleagues'); } 
+            else if (skontroluj(SPOLUZIACI)) { el.classList.add('name-classmates'); } 
+            else {
+                const poslednePismeno = menoLower.slice(-1);
+                const vynimky = ['gejza', 'attila', 'boba'];
+                if (poslednePismeno === 'a' && !vynimky.includes(menoLower)) { el.classList.add('name-female'); } else { el.classList.add('name-male'); }
             }
+        });
+    }
+}
+
+async function updateWeather(lat = 48.1421, lon = 17.1964) {
+    try {
+        const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m&hourly=temperature_2m,precipitation,cloud_cover,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FBratislava&wind_speed_unit=kmh&forecast_days=6`);
+        const d = await r.json();
+        weatherDataBackup = d; 
+
+        if (d.timezone && d.timezone.includes('/')) {
+            const nazovMesta = d.timezone.split('/')[1].replace(/_/g, ' ');
+            document.getElementById('weather-location').textContent = nazovMesta;
         } else {
-            const startHourOfTargetDay = targetDayIndex * 24;
-            for (let step = 0; step < 12; step++) {
-                const hourOffset = startHourOfTargetDay + (step * 2); 
-                temps.push(weatherDataBackup.hourly.temperature_2m[hourOffset]);
-                rain.push((weatherDataBackup.hourly.precipitation || weatherDataBackup.hourly.rain || [])[hourOffset]);
-                cloud.push((weatherDataBackup.hourly.cloud_cover || [])[hourOffset]);
-                wind.push((weatherDataBackup.hourly.wind_speed_10m || [])[hourOffset]);
-                
-                labels.push(String(step * 2));
-            }
+            document.getElementById('weather-location').textContent = `${lat.toFixed(2)}°N, ${lon.toFixed(2)}°E`;
         }
 
-        const maxGraphTemp = Math.max(...temps);
-        const minGraphTemp = Math.min(...temps);
-        const tempRange = (maxGraphTemp - minGraphTemp) || 1;
+        const rawTemp = d.current.temperature_2m;
+        const rawApparent = d.current.apparent_temperature; 
+        const currentTemp = Math.round(rawTemp) + '°C';
+        const currentHum = Math.round(d.current.relative_humidity_2m) + '%';
+        const currentCode = d.current.weather_code;
+        const tColor = getTempColor(rawTemp);
+        const appColor = getTempColor(rawApparent);
 
-        temps.forEach((temp, idx) => {
-            if (temp === undefined) return;
-            const roundedTemp = Math.round(temp);
-            const pct = ((temp - minGraphTemp) / tempRange) * 55 + 20; 
-            
-            const rainVal = rain[idx] ? parseFloat(rain[idx]) : 0;
-            const rainHtml = rainVal > 0 ? `<span style="font-size: 1.6vw; color: #4dabff; margin-bottom: 2px; font-weight: 500;">💧${rainVal.toFixed(1)}</span>` : `<span style="height: 1.8vw;"></span>`;
-            
-            const cloudVal = cloud[idx] ? Math.round(cloud[idx]) : 0;
-            const bgOpacity = 0.05 + (cloudVal / 100) * 0.15; 
-            const colBackground = `linear-gradient(to top, rgba(255,255,255, ${bgOpacity}), ${getTempColor(temp)})`;
-            
-            const windVal = wind[idx] ? Math.round(wind[idx]) : 0;
-            const windHtml = windVal > 0 ? `<span style="font-size: 1.6vw; color: #888; margin-top: 3px;"><i class="fas fa-wind" style="font-size:0.8em;"></i> ${windVal}</span>` : `<span style="height: 1.8vw;"></span>`;
+        document.getElementById('weather-temp-mini').textContent = currentTemp;
+        document.getElementById('weather-temp-mini').style.color = tColor;
+        document.getElementById('outdoor-temp').textContent = currentTemp;
+        document.getElementById('outdoor-temp').style.color = tColor;
+        document.getElementById('apparent-temp').textContent = Math.round(rawApparent) + '°';
+        document.getElementById('apparent-temp').style.color = appColor; 
+        document.getElementById('outdoor-hum').textContent = currentHum;
 
-            const column = document.createElement('div');
-            column.style.cssText = `display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 7.8%; flex-shrink: 0;`;
-            column.innerHTML = `
-                ${rainHtml}
-                <span style="font-size: 2.2vw; font-weight: bold; color: ${getTempColor(temp)}; margin-bottom: 3px;">${roundedTemp}°</span>
-                <div style="width: 100%; height: ${pct}%; background: ${colBackground}; border-radius: 4px 4px 0 0; border: 1px solid #222; border-bottom: none; box-sizing: border-box;"></div>
-                <span style="font-size: 1.8vw; color: #555; margin-top: 5px; font-weight: 500;">${labels[idx]}</span>
-                ${windHtml}
+        const windSpeed = Math.round(d.current.wind_speed_10m);
+        const windDir = d.current.wind_direction_10m;
+        document.getElementById('wind-speed').textContent = windSpeed + ' km/h';
+        document.getElementById('wind-icon').style.transform = `rotate(${windDir}deg)`;
+
+        const mainIconEl = document.getElementById('weather-icon-main');
+        mainIconEl.className = 'fas ' + (WEATHER_CODES[currentCode] || 'fa-cloud') + ' meteo-icon-large';
+        mainIconEl.style.color = WEATHER_COLORS[currentCode] || '#aaa';
+
+        for (let i = 0; i <= 1; i++) {
+            const code = d.daily.weather_code[i];
+            const max = d.daily.temperature_2m_max[i];
+            const min = Math.round(d.daily.temperature_2m_min[i]);
+            document.getElementById(`fc${i}-temp`).innerHTML = `<span style="color:${getTempColor(max)}">${Math.round(max)}°</span> <span style="color:#aaa; font-size:0.8em">/ ${min}°</span>`;
+            const iconEl = document.getElementById(`fc${i}-icon`);
+            iconEl.className = 'fas ' + (WEATHER_CODES[code] || 'fa-cloud') + ' mini-icon';
+            iconEl.style.color = WEATHER_COLORS[code] || '#aaa';
+        }
+
+        vykresliGraf(null);
+
+        const extendedContainer = document.getElementById('extended-forecast-container');
+        extendedContainer.innerHTML = ''; 
+
+        const dniVTyzdni = ['Ned', 'Pon', 'Ut', 'Str', 'Štv', 'Pia', 'Sob'];
+        const dnes = new Date();
+
+        for (let i = 2; i <= 6; i++) {
+            if(i >= d.daily.weather_code.length) break;
+            const code = d.daily.weather_code[i];
+            const max = d.daily.temperature_2m_max[i];
+            const min = Math.round(d.daily.temperature_2m_min[i]);
+            
+            const buduciDen = new Date(dnes);
+            buduciDen.setDate(dnes.getDate() + i);
+            let nazovDna = dniVTyzdni[buduciDen.getDay()];
+
+            const dayBox = document.createElement('div');
+            dayBox.className = 'forecast-day-box';
+            dayBox.setAttribute('data-index', i);
+            dayBox.setAttribute('onpointerdown', `prepniDenGrafu(event, ${i})`);
+            
+            dayBox.ontouchstart = () => { if(!dayBox.classList.contains('day-box-active')) dayBox.style.background = '#151515'; };
+            dayBox.ontouchend = () => { if(!dayBox.classList.contains('day-box-active')) dayBox.style.background = '#050505'; };
+
+            dayBox.innerHTML = `
+                <span style="font-size: 3vw; font-weight: 500; text-transform: uppercase; color: #aaa; transform: scaleY(1.1);">${nazovDna}</span>
+                <i class="fas ${WEATHER_CODES[code] || 'fa-cloud'}" style="font-size: 7vw; color: ${WEATHER_COLORS[code] || '#aaa'}; margin: 3px 0;"></i>
+                <div style="font-size: 3.2vw; font-weight: 400; white-space: nowrap;">
+                    <span style="color:${getTempColor(max)}">${Math.round(max)}°</span>
+                    <span style="color:#444; font-size:0.85em">/ ${min}°</span>
+                </div>
             `;
-            chartContainer.appendChild(column);
-        });
+            extendedContainer.appendChild(dayBox);
+        }
+
+    } catch (e) { console.log("Chyba počasia:", e); }
+}
+
+function inicializujPocasie() {
+    // 1. KROK: Okamžite a bez čakania natiahni Bratislavu (Ružinov)
+    updateWeather(48.1421, 17.1964);
+
+    // Nastavíme bezpečný interval na pozadí pre Bratislavu (poistka)
+    window.weatherInterval = setInterval(() => {
+        // Fix diakritiky v názvoch interných premenných
+        const aktualnyLat = window.customLat || 48.1421;
+        const aktualnyLon = window.customLon || 17.1964;
+        updateWeather(aktualnyLat, aktualnyLon);
+    }, 600000);
+
+    const isSecure = window.location.protocol === 'https:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    if (!isSecure) {
+        console.log("Nezabezpečený protokol, končíme pri defaultnej Bratislave.");
+        return;
     }
 
-    function prepniDenGrafu(e, dayIndex) {
-        if (e) {
-            e.stopPropagation();
-            if (e.cancelable) e.preventDefault();
+    // 2. KROK: Skúsime na pozadí zistiť presnejšiu polohu (ak sme na HTTPS)
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                window.customLat = position.coords.latitude;
+                window.customLon = position.coords.longitude;
+                updateWeather(window.customLat, window.customLon);
+            },
+            (error) => {
+                console.log("GPS nedostupné alebo zamietnuté, zostáva Bratislava. Dôvod:", error.message);
+            },
+            { timeout: 3000, maximumAge: 60000 }
+        );
+    }
+}
+
+function vykresliGraf(targetDayIndex) {
+    const chartContainer = document.getElementById('hourly-chart-container');
+    if (!chartContainer || !weatherDataBackup) return;
+    chartContainer.innerHTML = ''; 
+
+    let temps = [], rain = [], cloud = [], wind = [], labels = [];
+
+    if (targetDayIndex === null || targetDayIndex === 0) {
+        const currentHourIndex = new Date().getHours();
+        temps = weatherDataBackup.hourly.temperature_2m.slice(currentHourIndex, currentHourIndex + 12);
+        rain = (weatherDataBackup.hourly.precipitation || weatherDataBackup.hourly.rain || []).slice(currentHourIndex, currentHourIndex + 12);
+        cloud = (weatherDataBackup.hourly.cloud_cover || []).slice(currentHourIndex, currentHourIndex + 12);
+        wind = (weatherDataBackup.hourly.wind_speed_10m || []).slice(currentHourIndex, currentHourIndex + 12);
+        
+        for (let idx = 0; idx < 12; idx++) {
+            labels.push(idx === 0 ? 'Teraz' : String((currentHourIndex + idx) % 24));
         }
-        
-        vykresliGraf(dayIndex);
-        
-        document.querySelectorAll('.forecast-day-box, .mini-item').forEach(box => {
-            box.classList.remove('day-box-active');
-        });
-        
-        if (dayIndex === 0 || dayIndex === 1) {
-            const praveTlacidlo = document.querySelectorAll('.mini-item')[dayIndex];
-            if (praveTlacidlo) praveTlacidlo.classList.add('day-box-active');
-        } else {
-            const aktivnySpodnyBox = document.querySelector(`.forecast-day-box[data-index="${dayIndex}"]`);
-            if (aktivnySpodnyBox) aktivnySpodnyBox.classList.add('day-box-active');
+    } else {
+        const startHourOfTargetDay = targetDayIndex * 24;
+        for (let step = 0; step < 12; step++) {
+            const hourOffset = startHourOfTargetDay + (step * 2); 
+            temps.push(weatherDataBackup.hourly.temperature_2m[hourOffset]);
+            rain.push((weatherDataBackup.hourly.precipitation || weatherDataBackup.hourly.rain || [])[hourOffset]);
+            cloud.push((weatherDataBackup.hourly.cloud_cover || [])[hourOffset]);
+            wind.push((weatherDataBackup.hourly.wind_speed_10m || [])[hourOffset]);
+            
+            labels.push(String(step * 2));
         }
-        
-        clearTimeout(pocasieTimer);
-        pocasieTimer = setTimeout(() => { zatvorPocasie(e); }, 30000);
     }
 
-    // --- AUDIO LOGIKA ---
-    const audio = document.getElementById('audioPlayer');
+    const maxGraphTemp = Math.max(...temps);
+    const minGraphTemp = Math.min(...temps);
+    const tempRange = (maxGraphTemp - minGraphTemp) || 1;
 
-    function playRadio(url, element, type) {
-        currentPlayingType = type; 
-        document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('playing'));
-        document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('playing'));
-        element.classList.add('playing');
+    temps.forEach((temp, idx) => {
+        if (temp === undefined) return;
+        const roundedTemp = Math.round(temp);
+        const pct = ((temp - minGraphTemp) / tempRange) * 55 + 20; 
         
-        if (['fm', 'devin', 'litera', 'regina'].includes(type)) {
-            const hlavnyRozhlas = document.querySelector('.rozhlas');
-            if (hlavnyRozhlas) hlavnyRozhlas.classList.add('playing');
-        }
-        if (['funchill', 'funczsk', 'fun8090', 'milenialky'].includes(type)) {
-            const hlavnyFun = document.querySelector('.btn.fun');
-            if (hlavnyFun) hlavnyFun.classList.add('playing');
-        }
-        if (['expres', 'europa2', 'melody', 'vlna'].includes(type)) {
-            const hlavnyJazz = document.getElementById('jazz-main-btn');
-            if (hlavnyJazz) hlavnyJazz.classList.add('playing');
-        }
-        aktualizujSubPanely(type);
-        audio.volume = VOLUME_MAP[type] || 1.0;
-        audio.src = url; 
-        audio.play();
-        resetIdleTimer();
-        document.getElementById('ss-radio-info').innerHTML = `<small style="font-size: 0.6em; opacity: 0.7; text-transform: none; margin-right: 8px;">hrá:</small>${type}`;
+        const rainVal = rain[idx] ? parseFloat(rain[idx]) : 0;
+        const rainHtml = rainVal > 0 ? `<span style="font-size: 1.6vw; color: #4dabff; margin-bottom: 2px; font-weight: 500;">💧${rainVal.toFixed(1)}</span>` : `<span style="height: 1.8vw;"></span>`;
+        
+        const cloudVal = cloud[idx] ? Math.round(cloud[idx]) : 0;
+        const bgOpacity = 0.05 + (cloudVal / 100) * 0.15; 
+        const colBackground = `linear-gradient(to top, rgba(255,255,255, ${bgOpacity}), ${getTempColor(temp)})`;
+        
+        const windVal = wind[idx] ? Math.round(wind[idx]) : 0;
+        const windHtml = windVal > 0 ? `<span style="font-size: 1.6vw; color: #888; margin-top: 3px;"><i class="fas fa-wind" style="font-size:0.8em;"></i> ${windVal}</span>` : `<span style="height: 1.8vw;"></span>`;
+
+        const column = document.createElement('div');
+        column.style.cssText = `display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 7.8%; flex-shrink: 0;`;
+        column.innerHTML = `
+            ${rainHtml}
+            <span style="font-size: 2.2vw; font-weight: bold; color: ${getTempColor(temp)}; margin-bottom: 3px;">${roundedTemp}°</span>
+            <div style="width: 100%; height: ${pct}%; background: ${colBackground}; border-radius: 4px 4px 0 0; border: 1px solid #222; border-bottom: none; box-sizing: border-box;"></div>
+            <span style="font-size: 1.8vw; color: #555; margin-top: 5px; font-weight: 500;">${labels[idx]}</span>
+            ${windHtml}
+        `;
+        chartContainer.appendChild(column);
+    });
+}
+
+function prepniDenGrafu(e, dayIndex) {
+    if (e) {
+        e.stopPropagation();
+        if (e.cancelable) e.preventDefault();
     }
     
-    function aktualizujSubPanely(type) {
-        const slovenskoContainer = document.getElementById('slovensko-links-container');
-        const funContainer = document.getElementById('fun-links-container');
-        const komerceContainer = document.getElementById('komerce-links-container');
-        const spotifyContainer = document.getElementById('spotify-links-container');
-
-        slovenskoContainer.style.display = ['slovensko', 'fm', 'devin', 'litera', 'regina'].includes(type) ? 'flex' : 'none';
-        funContainer.style.display = ['fun', 'funchill', 'funczsk', 'fun8090', 'milenialky'].includes(type) ? 'flex' : 'none';
-        komerceContainer.style.display = ['jazz', 'expres', 'europa2', 'melody', 'vlna'].includes(type) ? 'flex' : 'none';
-        spotifyContainer.style.display = (type === 'spotify') ? 'flex' : 'none';
+    vykresliGraf(dayIndex);
+    
+    document.querySelectorAll('.forecast-day-box, .mini-item').forEach(box => {
+        box.classList.remove('day-box-active');
+    });
+    
+    if (dayIndex === 0 || dayIndex === 1) {
+        const praveTlacidlo = document.querySelectorAll('.mini-item')[dayIndex];
+        if (praveTlacidlo) praveTlacidlo.classList.add('day-box-active');
+    } else {
+        const aktivnySpodnyBox = document.querySelector(`.forecast-day-box[data-index="${dayIndex}"]`);
+        if (aktivnySpodnyBox) aktivnySpodnyBox.classList.add('day-box-active');
     }
+    
+    clearTimeout(pocasieTimer);
+    pocasieTimer = setTimeout(() => { zatvorPocasie(e); }, 30000);
+}
+
+// --- AUDIO LOGIKA ---
+const audio = document.getElementById('audioPlayer');
+
+function playRadio(url, element, type) {
+    currentPlayingType = type; 
+    document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('playing'));
+    document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('playing'));
+    element.classList.add('playing');
+    
+    if (['fm', 'devin', 'litera', 'regina'].includes(type)) {
+        const hlavnyRozhlas = document.querySelector('.rozhlas');
+        if (hlavnyRozhlas) hlavnyRozhlas.classList.add('playing');
+    }
+    if (['funchill', 'funczsk', 'fun8090', 'milenialky'].includes(type)) {
+        const hlavnyFun = document.querySelector('.btn.fun');
+        if (hlavnyFun) hlavnyFun.classList.add('playing');
+    }
+    if (['expres', 'europa2', 'melody', 'vlna'].includes(type)) {
+        const hlavnyJazz = document.getElementById('jazz-main-btn');
+        if (hlavnyJazz) hlavnyJazz.classList.add('playing');
+    }
+    aktualizujSubPanely(type);
+    audio.volume = VOLUME_MAP[type] || 1.0;
+    audio.src = url; 
+    audio.play();
+    resetIdleTimer();
+    document.getElementById('ss-radio-info').innerHTML = `<small style="font-size: 0.6em; opacity: 0.7; text-transform: none; margin-right: 8px;">hrá:</small>${type}`;
+}
+
+function aktualizujSubPanely(type) {
+    const slovenskoContainer = document.getElementById('slovensko-links-container');
+    const funContainer = document.getElementById('fun-links-container');
+    const komerceContainer = document.getElementById('komerce-links-container');
+    const spotifyContainer = document.getElementById('spotify-links-container');
+
+    slovenskoContainer.style.display = ['slovensko', 'fm', 'devin', 'litera', 'regina'].includes(type) ? 'flex' : 'none';
+    funContainer.style.display = ['fun', 'funchill', 'funczsk', 'fun8090', 'milenialky'].includes(type) ? 'flex' : 'none';
+    komerceContainer.style.display = ['jazz', 'expres', 'europa2', 'melody', 'vlna'].includes(type) ? 'flex' : 'none';
+    spotifyContainer.style.display = (type === 'spotify') ? 'flex' : 'none';
+}
+    
+function stopRadio() {
+    audio.pause(); audio.src = "";
+    currentPlayingType = ""; 
+    document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('playing'));
+    document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('playing')); 
+    document.getElementById('jazz-main-btn').classList.remove('playing');
+    document.getElementById('spotify-links-container').style.display = 'none';
+    document.getElementById('slovensko-links-container').style.display = 'none'; 
+    document.getElementById('fun-links-container').style.display = 'none';
+    document.getElementById('komerce-links-container').style.display = 'none'; 
+    resetIdleTimer();
+    document.getElementById('ss-radio-info').textContent = "";
+}
+    
+function showSpotify() {
+    stopRadio();
+    currentPlayingType = "spotify";
+    aktualizujSubPanely("spotify");
+    document.querySelector('.spotify').classList.add('playing');
+    resetIdleTimer();
+    document.getElementById('ss-radio-info').innerHTML = `<small style="font-size: 0.6em; opacity: 0.7; text-transform: none; margin-right: 8px;">hrá:</small>SPOTIFY`;
+}
+
+function showKomerce() {
+    stopRadio();
+    currentPlayingType = "jazz";
+    aktualizujSubPanely("jazz");
+    document.getElementById('jazz-main-btn').classList.add('playing');
+    resetIdleTimer();
+    document.getElementById('ss-radio-info').innerHTML = `<small style="font-size: 0.6em; opacity: 0.7; text-transform: none; margin-right: 8px;">hrá:</small>JAZZ`;
+}
+    
+function openSpotify(id) {
+    let url = id === 'search' ? "https://open.spotify.com/search" : `https://open.spotify.com/playlist/${id}`;
+    window.location.href = url; 
+}
+
+function changePage(pageNumber) {
+    if (pageNumber === 1) {
+        document.getElementById('page-1').classList.remove('hidden');
+        document.getElementById('page-2').classList.add('hidden');
+        document.getElementById('radio-label').textContent = 'Radio 1';
+        if (currentPlayingType !== "") {
+            aktualizujSubPanely(currentPlayingType);
+            if (['slovensko', 'fm', 'devin', 'litera', 'regina'].includes(currentPlayingType)) {
+                document.querySelector('.rozhlas').classList.add('playing');
+            } else if (['fun', 'funchill', 'funczsk', 'fun8090', 'milenialky'].includes(currentPlayingType)) {
+                document.querySelector('.btn.fun').classList.add('playing');
+            } else if (['rock'].includes(currentPlayingType)) {
+                document.querySelector('.btn.rock').classList.add('playing');
+            }
+            document.querySelectorAll('.sub-btn').forEach(btn => {
+                if (btn.getAttribute('onclick').includes(`'${currentPlayingType}'`)) btn.classList.add('playing');
+            });
+        } else { aktualizujSubPanely(""); }
+    } else {
+        document.getElementById('page-1').classList.add('hidden');
+        document.getElementById('page-2').classList.remove('hidden');
+        document.getElementById('radio-label').textContent = 'Radio 2';
+        if (!['jazz', 'expres', 'europa2', 'melody', 'vlna', 'spotify'].includes(currentPlayingType)) {
+            aktualizujSubPanely("");
+        } else { aktualizujSubPanely(currentPlayingType); }
+    }
+    resetIdleTimer();
+}
+
+// --- ŠETRIČ A DOTYKY ---
+let idleTimer;
+
+function resetIdleTimer() {
+    document.body.classList.remove('screensaver-mode');
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(() => document.body.classList.add('screensaver-mode'), 20000);
+}
+
+document.addEventListener('touchstart', function(e) {
+    if (e.target.closest('#time') || e.target.closest('#ss-weather-trigger') || e.target.closest('#weather-details-top-inline') || e.target.closest('#extended-forecast-container')) {
+        return; 
+    }
+    resetIdleTimer();
+}, { passive: true });
+
+function klikNaHodiny(e) {
+    if (e) { e.stopPropagation(); e.preventDefault(); }
+    if (document.body.classList.contains('screensaver-mode')) { resetIdleTimer(); } 
+    else { clearTimeout(idleTimer); document.body.classList.add('screensaver-mode'); }
+}
+
+// --- OVLÁDANIE AUTOMATICKÉHO ČASOVAČA ---
+let pocasieTimer;
         
-    function stopRadio() {
-        audio.pause(); audio.src = "";
-        currentPlayingType = ""; 
-        document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('playing'));
-        document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('playing')); 
-        document.getElementById('jazz-main-btn').classList.remove('playing');
-        document.getElementById('spotify-links-container').style.display = 'none';
-        document.getElementById('slovensko-links-container').style.display = 'none'; 
-        document.getElementById('fun-links-container').style.display = 'none';
-        document.getElementById('komerce-links-container').style.display = 'none'; 
-        resetIdleTimer();
-        document.getElementById('ss-radio-info').textContent = "";
-    }
-        
-    function showSpotify() {
-        stopRadio();
-        currentPlayingType = "spotify";
-        aktualizujSubPanely("spotify");
-        document.querySelector('.spotify').classList.add('playing');
-        resetIdleTimer();
-        document.getElementById('ss-radio-info').innerHTML = `<small style="font-size: 0.6em; opacity: 0.7; text-transform: none; margin-right: 8px;">hrá:</small>SPOTIFY`;
-    }
+function otvorPocasie(e, zdroj = 'radio') {
+    if (e) { e.stopPropagation(); if (e.cancelable) e.preventDefault(); }
+    weatherOpenedFrom = zdroj;
+    
+    document.querySelectorAll('.forecast-day-box').forEach(box => { box.classList.remove('day-box-active'); });
+    vykresliGraf(null);
+    
+    document.body.classList.add('weather-details-mode');
+    
+    document.querySelectorAll('.mini-item').forEach(box => box.classList.remove('day-box-active'));
+    document.querySelector('.mini-item:nth-child(1)').classList.add('day-box-active');
+    
+    clearTimeout(pocasieTimer);
+    pocasieTimer = setTimeout(() => { zatvorPocasie(); }, 30000); 
+}
 
-    function showKomerce() {
-        stopRadio();
-        currentPlayingType = "jazz";
-        aktualizujSubPanely("jazz");
-        document.getElementById('jazz-main-btn').classList.add('playing');
-        resetIdleTimer();
-        document.getElementById('ss-radio-info').innerHTML = `<small style="font-size: 0.6em; opacity: 0.7; text-transform: none; margin-right: 8px;">hrá:</small>JAZZ`;
-    }
-        
-    function openSpotify(id) {
-        let url = id === 'search' ? "https://open.spotify.com/search" : `https://open.spotify.com/playlist/${id}`;
-        window.location.href = url; 
-    }
+function zatvorPocasie(e) {
+    if (e) { e.stopPropagation(); if (e.cancelable) e.preventDefault(); }
+    clearTimeout(pocasieTimer);
+    
+    document.body.classList.remove('weather-details-mode');
+    document.querySelectorAll('.mini-item').forEach(box => box.classList.remove('day-box-active'));
 
-    function changePage(pageNumber) {
-        if (pageNumber === 1) {
-            document.getElementById('page-1').classList.remove('hidden');
-            document.getElementById('page-2').classList.add('hidden');
-            document.getElementById('radio-label').textContent = 'Radio 1';
-            if (currentPlayingType !== "") {
-                aktualizujSubPanely(currentPlayingType);
-                if (['slovensko', 'fm', 'devin', 'litera', 'regina'].includes(currentPlayingType)) {
-                    document.querySelector('.rozhlas').classList.add('playing');
-                } else if (['fun', 'funchill', 'funczsk', 'fun8090', 'milenialky'].includes(currentPlayingType)) {
-                    document.querySelector('.btn.fun').classList.add('playing');
-                } else if (['rock'].includes(currentPlayingType)) {
-                    document.querySelector('.btn.rock').classList.add('playing');
-                }
-                document.querySelectorAll('.sub-btn').forEach(btn => {
-                    if (btn.getAttribute('onclick').includes(`'${currentPlayingType}'`)) btn.classList.add('playing');
-                });
-            } else { aktualizujSubPanely(""); }
-        } else {
-            document.getElementById('page-1').classList.add('hidden');
-            document.getElementById('page-2').classList.remove('hidden');
-            document.getElementById('radio-label').textContent = 'Radio 2';
-            if (!['jazz', 'expres', 'europa2', 'melody', 'vlna', 'spotify'].includes(currentPlayingType)) {
-                aktualizujSubPanely("");
-            } else { aktualizujSubPanely(currentPlayingType); }
-        }
-        resetIdleTimer();
-    }
-
-    // --- ŠETRIČ A DOTYKY ---
-    let idleTimer;
-
-    function resetIdleTimer() {
-        document.body.classList.remove('screensaver-mode');
+    if (weatherOpenedFrom === 'screensaver') {
+        document.body.classList.add('screensaver-mode');
         clearTimeout(idleTimer);
         idleTimer = setTimeout(() => document.body.classList.add('screensaver-mode'), 20000);
+    } else { resetIdleTimer(); }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const timeEl = document.getElementById('time');
+    const weatherEl = document.getElementById('ss-weather-trigger');
+    const grafContainer = document.getElementById('weather-details-top-inline');
+
+    if (timeEl) {
+        timeEl.addEventListener('pointerdown', (e) => {
+            klikNaHodiny(e);
+        });
     }
 
-    document.addEventListener('touchstart', function(e) {
-        if (e.target.closest('#time') || e.target.closest('#ss-weather-trigger') || e.target.closest('#weather-details-top-inline') || e.target.closest('#extended-forecast-container')) {
-            return; 
-        }
-        resetIdleTimer();
-    }, { passive: true });
-
-    function klikNaHodiny(e) {
-        if (e) { e.stopPropagation(); e.preventDefault(); }
-        if (document.body.classList.contains('screensaver-mode')) { resetIdleTimer(); } 
-        else { clearTimeout(idleTimer); document.body.classList.add('screensaver-mode'); }
+    if (weatherEl) {
+        weatherEl.addEventListener('pointerdown', (e) => {
+            if (!document.body.classList.contains('weather-details-mode')) {
+                otvorPocasie(e, 'screensaver');
+            }
+        });
     }
 
-    // --- OVLÁDANIE AUTOMATICKÉHO ČASOVAČA ---
-    let pocasieTimer;
-            
-    function otvorPocasie(e, zdroj = 'radio') {
-        if (e) { e.stopPropagation(); if (e.cancelable) e.preventDefault(); }
-        weatherOpenedFrom = zdroj;
-        
-        document.querySelectorAll('.forecast-day-box').forEach(box => { box.classList.remove('day-box-active'); });
-        vykresliGraf(null);
-        
-        document.body.classList.add('weather-details-mode');
-        
-        document.querySelectorAll('.mini-item').forEach(box => box.classList.remove('day-box-active'));
-        document.querySelector('.mini-item:nth-child(1)').classList.add('day-box-active');
-        
-        clearTimeout(pocasieTimer);
-        pocasieTimer = setTimeout(() => { zatvorPocasie(); }, 30000); 
+    if (grafContainer) {
+        grafContainer.addEventListener('pointerdown', (e) => {
+            if (document.body.classList.contains('weather-details-mode') && !e.target.closest('button')) {
+                zatvorPocasie(e);
+            }
+        });
     }
+});
 
-    function zatvorPocasie(e) {
-        if (e) { e.stopPropagation(); if (e.cancelable) e.preventDefault(); }
-        clearTimeout(pocasieTimer);
-        
-        document.body.classList.remove('weather-details-mode');
-        document.querySelectorAll('.mini-item').forEach(box => box.classList.remove('day-box-active'));
+// Volanie všetkých inicializačných funkcií na úplnom konci kódu
+updateNameday();
+setInterval(updateNameday, 3600000);
 
-        if (weatherOpenedFrom === 'screensaver') {
-            document.body.classList.add('screensaver-mode');
-            clearTimeout(idleTimer);
-            idleTimer = setTimeout(() => document.body.classList.add('screensaver-mode'), 20000);
-        } else { resetIdleTimer(); }
-    }
+setInterval(updateClock, 1000); 
+updateClock();
 
-    document.addEventListener('DOMContentLoaded', () => {
-        const timeEl = document.getElementById('time');
-        const weatherEl = document.getElementById('ss-weather-trigger');
-        const grafContainer = document.getElementById('weather-details-top-inline');
-
-        if (timeEl) {
-            timeEl.addEventListener('pointerdown', (e) => {
-                klikNaHodiny(e);
-            });
-        }
-
-        if (weatherEl) {
-            weatherEl.addEventListener('pointerdown', (e) => {
-                if (!document.body.classList.contains('weather-details-mode')) {
-                    otvorPocasie(e, 'screensaver');
-                }
-            });
-        }
-
-        if (grafContainer) {
-            grafContainer.addEventListener('pointerdown', (e) => {
-                if (document.body.classList.contains('weather-details-mode') && !e.target.closest('button')) {
-                    zatvorPocasie(e);
-                }
-            });
-        }
-    });
-
-    inicializujPocasie();
-    </script>
+inicializujPocasie();
+</script>
 </body>
 </html>
