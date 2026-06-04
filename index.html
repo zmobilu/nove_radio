@@ -152,7 +152,7 @@
         .ss-date { font-size: 14vw; font-weight: 300; color: #fff; line-height: 1; }
 
         .ss-day { 
-            font-size: 5.0vw; font-weight: 500; text-transform: uppercase; text-align: left; line-height: 1; max-width: 35vw; 
+            font-size: 5.0vw; font-weight: 500; text-transform: uppercase; text-align: left; line-height: 0.9; max-width: 35vw; 
             white-space: normal; display: inline-block; transform: scaleY(2.2); transform-origin: bottom; position: relative; top: 0.6vw;
         }
 
@@ -432,7 +432,6 @@ function updateClock() {
 setInterval(updateClock, 1000); updateClock();
 
 async function updateWeather(lat, lon) {
-    // Ak by náhodou prišla prázdna poloha, istíme to Bratislavou
     const currentLat = lat || 48.1421;
     const currentLon = lon || 17.1964;
     
@@ -523,22 +522,18 @@ async function updateWeather(lat, lon) {
 }
 
 function inicializujPocasie() {
-    // KROK 1: OKAMŽITE načítaj Bratislavu, aby zmizli pomlčky
     window.customLat = 48.1421;
     window.customLon = 17.1964;
     updateWeather(window.customLat, window.customLon);
 
-    // KROK 2: Spusť periodickú aktualizáciu každých 10 minút
     if (window.weatherInterval) clearInterval(window.weatherInterval);
     window.weatherInterval = setInterval(() => {
         updateWeather(window.customLat, window.customLon);
     }, 600000);
 
-    // KROK 3: Pokus o spresnenie cez GPS (iba ak ho zariadenie a protokol dovolia)
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             (position) => {
-                // Ak GPS prejde, prepíšeme predvolenú BA súradnicami z GPS
                 window.customLat = position.coords.latitude;
                 window.customLon = position.coords.longitude;
                 updateWeather(window.customLat, window.customLon);
@@ -546,7 +541,7 @@ function inicializujPocasie() {
             (error) => { 
                 console.log("GPS odmietnuté alebo nedostupné. Bežíme fixne na Bratislava."); 
             },
-            { timeout: 4000, maximumAge: 60000, enableHighAccuracy: false }
+            { timeout: 7000, maximumAge: 60000, enableHighAccuracy: false }
         );
     }
 }
