@@ -42,8 +42,12 @@
         .blue-digit { color: #307CEB !important; }
         
         /* Štýl pre info riadok v rádio režime */
+        /* Štýl pre info riadok v rádio režime */
         .radio-info-wrapper { display: flex;  align-items: center;  gap: 12px; margin-top: 10px;  font-size: 3.5vw; font-weight: 300; color: #aaa;}
         .radio-info-wrapper .separator { color: #222; font-weight: 200; }
+        
+        /* PRIDANÉ: Skrytie textu rádio labelu (Radio 1 / Radio 2), keďže máme len jednu stranu */
+        #radio-label, #radio-label + .separator { display: none !important; }
         
         #radio-name { font-weight: 400; text-transform: uppercase; }
         #weather-temp-mini { margin-top: 0 !important; }
@@ -694,10 +698,17 @@ const audio = document.getElementById('audioPlayer');
 
 function playRadio(url, element, type) {
     currentPlayingType = type; 
+    
+    // Odstránime oranžový rámček zo všetkých tlačidiel
     document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('playing'));
     document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('playing'));
-    element.classList.add('playing');
     
+    // Pridáme oranžový rámček iba presne tomu tlačidlu, na ktoré sme klikli (ak existuje)
+    if (element && element.classList) {
+        element.classList.add('playing');
+    }
+    
+    // Ak klikneme na sub-stanicu, rozsvietime aj jej materské tlačidlo, ktoré je vedľa
     if (['fm', 'devin', 'litera', 'regina'].includes(type)) {
         const hlavnyRozhlas = document.querySelector('.rozhlas');
         if (hlavnyRozhlas) hlavnyRozhlas.classList.add('playing');
@@ -706,17 +717,24 @@ function playRadio(url, element, type) {
         const hlavnyFun = document.querySelector('.btn.fun');
         if (hlavnyFun) hlavnyFun.classList.add('playing');
     }
-    // FIX: Hlavné tlačidlo Blaníku zostane svietiť oranžovo, aj keď preklikneš na sub-stanice (Expres, Vlna...)
-    if (['blanik', 'expres', 'europa2', 'melody', 'vlna'].includes(type)) {
+    if (['expres', 'europa2', 'melody', 'vlna', 'blanik'].includes(type)) {
         const hlavnyBlanik = document.getElementById('blanik-main-btn');
         if (hlavnyBlanik) hlavnyBlanik.classList.add('playing');
     }
+
+    // Otvoríme spodný riadok s malými stanicami
     aktualizujSubPanely(type);
+    
     audio.volume = VOLUME_MAP[type] || 1.0;
     audio.src = url; 
     audio.play();
     resetIdleTimer();
-    document.getElementById('ss-radio-info').innerHTML = `<small style="font-size: 0.6em; opacity: 0.7; text-transform: none; margin-right: 8px;">hrá:</small>${type}`;
+    
+    // Bezpečný zápis textu pre šetrič, ktorý nespôsobí pád WebKitu
+    const radioInfoEl = document.getElementById('ss-radio-info');
+    if (radioInfoEl) {
+        radioInfoEl.innerHTML = `<small style="font-size: 0.6em; opacity: 0.7; text-transform: none; margin-right: 8px;">hrá:</small>${type.toUpperCase()}`;
+    }
 }
 
 function aktualizujSubPanely(type) {
@@ -725,11 +743,10 @@ function aktualizujSubPanely(type) {
     const komerceContainer = document.getElementById('komerce-links-container');
     const spotifyContainer = document.getElementById('spotify-links-container');
 
-    slovenskoContainer.style.display = ['slovensko', 'fm', 'devin', 'litera', 'regina'].includes(type) ? 'flex' : 'none';
-    funContainer.style.display = ['fun', 'funchill', 'funczsk', 'fun8090', 'milenialky'].includes(type) ? 'flex' : 'none';
-    // Spodný riadok sa rozbalí pri type 'blanik' aj pri slovenských komerčných rádiách
-    komerceContainer.style.display = ['blanik', 'expres', 'europa2', 'melody', 'vlna'].includes(type) ? 'flex' : 'none';
-    spotifyContainer.style.display = (type === 'spotify') ? 'flex' : 'none';
+    if (slovenskoContainer) slovenskoContainer.style.display = ['slovensko', 'fm', 'devin', 'litera', 'regina'].includes(type) ? 'flex' : 'none';
+    if (funContainer) funContainer.style.display = ['fun', 'funchill', 'funczsk', 'fun8090', 'milenialky'].includes(type) ? 'flex' : 'none';
+    if (komerceContainer) komerceContainer.style.display = ['blanik', 'expres', 'europa2', 'melody', 'vlna'].includes(type) ? 'flex' : 'none';
+    if (spotifyContainer) spotifyContainer.style.display = (type === 'spotify') ? 'flex' : 'none';
 }
     
 function stopRadio() {
@@ -737,63 +754,41 @@ function stopRadio() {
     currentPlayingType = ""; 
     document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('playing'));
     document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('playing')); 
-    document.getElementById('blanik-main-btn').classList.remove('playing');
-    document.getElementById('spotify-links-container').style.display = 'none';
-    document.getElementById('slovensko-links-container').style.display = 'none'; 
-    document.getElementById('fun-links-container').style.display = 'none';
-    document.getElementById('komerce-links-container').style.display = 'none'; 
+    const blanikBtn = document.getElementById('blanik-main-btn');
+    if (blanikBtn) blanikBtn.classList.remove('playing');
+    
+    aktualizujSubPanely("");
     resetIdleTimer();
-    document.getElementById('ss-radio-info').textContent = "";
+    const radioInfoEl = document.getElementById('ss-radio-info');
+    if (radioInfoEl) radioInfoEl.textContent = "";
 }
     
 function showSpotify() {
     stopRadio();
     currentPlayingType = "spotify";
     aktualizujSubPanely("spotify");
-    document.querySelector('.spotify').classList.add('playing');
+    const spotifyBtn = document.querySelector('.spotify');
+    if (spotifyBtn) spotifyBtn.classList.add('playing');
     resetIdleTimer();
-    document.getElementById('ss-radio-info').innerHTML = `<small style="font-size: 0.6em; opacity: 0.7; text-transform: none; margin-right: 8px;">hrá:</small>SPOTIFY`;
+    const radioInfoEl = document.getElementById('ss-radio-info');
+    if (radioInfoEl) {
+        radioInfoEl.innerHTML = `<small style="font-size: 0.6em; opacity: 0.7; text-transform: none; margin-right: 8px;">hrá:</small>SPOTIFY`;
+    }
 }
 
-// HOTOVO: Nastavený stream pre Český Blaník, ktorý po kliknutí okamžite rozbalí spodnú lištu
 function showBlanik() {
     const blanikBtn = document.getElementById('blanik-main-btn');
-    playRadio('https://ice.abradio.cz/blanikcz128.mp3', blanikBtn, 'blanik'); //playRadio('http://ice.abradio.cz/ceskyblanik128.mp3', blanikBtn, 'blanik'); 
-    document.getElementById('ss-radio-info').innerHTML = `<small style="font-size: 0.6em; opacity: 0.7; text-transform: none; margin-right: 8px;">hrá:</small>ČESKÝ BLANÍK`;
+    playRadio('https://ice.abradio.cz/blanikcz128.mp3', blanikBtn, 'blanik');
 }
+
+// STARÁ FUNKCIA changePage BOLA KOMPLETNE ODSTRÁNENÁ, KEĎŽE JE ZBYTOČNÁ
     
 function openSpotify(id) {
     let url = id === 'search' ? "https://open.spotify.com/search" : `https://open.spotify.com/playlist/${id}`;
     window.location.href = url; 
 }
 
-function changePage(pageNumber) {
-    if (pageNumber === 1) {
-        document.getElementById('page-1').classList.remove('hidden');
-        document.getElementById('page-2').classList.add('hidden');
-        document.getElementById('radio-label').textContent = 'Radio 1';
-        if (currentPlayingType !== "") {
-            aktualizujSubPanely(currentPlayingType);
-            if (['slovensko', 'fm', 'devin', 'litera', 'regina'].includes(currentPlayingType)) {
-                document.querySelector('.rozhlas').classList.add('playing');
-            } else if (['fun', 'funchill', 'funczsk', 'fun8090', 'milenialky'].includes(currentPlayingType)) {
-                document.querySelector('.btn.fun').classList.add('playing');
-            } else if (['rock'].includes(currentPlayingType)) {
-                document.querySelector('.btn.rock').classList.add('playing');
-            }
-            document.querySelectorAll('.sub-btn').forEach(btn => {
-                if (btn.getAttribute('onclick').includes(`'${currentPlayingType}'`)) btn.classList.add('playing');
-            });
-        } else { aktualizujSubPanely(""); }
-    } else {
-        document.getElementById('page-1').classList.add('hidden');
-        document.getElementById('page-2').classList.remove('hidden');
-        document.getElementById('radio-label').textContent = 'Radio 2';
-        // ZMENENÉ: Doplnená kontrola pre 'blanik' pri prepínaní stránok
-        if (!['blanik', 'expres', 'europa2', 'melody', 'vlna', 'spotify'].includes(currentPlayingType)) {
-            aktualizujSubPanely("");
-        } else { aktualizujSubPanely(currentPlayingType); }
-    }
+
     resetIdleTimer();
 }
 
