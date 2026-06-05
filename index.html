@@ -227,6 +227,8 @@ body.screensaver-mode .clock-section {
         }
     </style>
 </head>
+
+    
 <body id="mainBody">
 
     <audio id="audioPlayer" preload="none" playsinline></audio>
@@ -253,7 +255,35 @@ body.screensaver-mode .clock-section {
     </div>   
 
     <div class="clock-section">
-        <div class="ss-left-col">
+        
+        <div class="ss-left-col ss-only">
+            <div id="ss-weather-trigger" style="cursor: pointer; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
+                <div class="current-weather-group">
+                    <i id="weather-icon-main" class="fas fa-sun meteo-icon-large"></i>
+                    <div class="temp-val" id="outdoor-temp">--°C</div>
+            
+                    <div class="sub-info-row">
+                        <span id="apparent-temp" class="hum-val">--°</span>
+                        <span id="outdoor-hum" class="hum-val">--%</span>
+                    </div>
+                </div>
+      
+                <div id="mini-forecast-strip">
+                    <div class="mini-item" onpointerdown="otvorPocasie(event, 'screensaver'); prepniDenGrafu(event, 0)">
+                        <span id="fc0-day" class="mini-day">Dnes</span>
+                        <i id="fc0-icon" class="fas fa-cloud mini-icon"></i>
+                        <span id="fc0-temp" class="mini-temp">-- / --</span>
+                    </div>
+                    <div class="mini-item" onpointerdown="otvorPocasie(event, 'screensaver'); prepniDenGrafu(event, 1)">
+                        <span id="fc1-day" class="mini-day">Zajtra</span>
+                        <i id="fc1-icon" class="fas fa-cloud mini-icon"></i>
+                        <span id="fc1-temp" class="mini-temp">-- / --</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="ss-right-col">
         
             <div id="time" style="cursor: pointer;" class="weather-details-hide">
                 <span id="h-part" class="hours-part">00</span>
@@ -326,6 +356,8 @@ body.screensaver-mode .clock-section {
                 </div>
             </div>
         </div>
+
+    </div>
         
         <div class="ss-right-col ss-only">
             <div id="ss-weather-trigger" style="cursor: pointer; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
