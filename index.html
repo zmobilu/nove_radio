@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Hodiny z MojeRadio </title>
+    <title>Hodiny z MojeRadio</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="icon" href="data:,">
     
@@ -318,20 +318,21 @@
 
         <div id="page-2" class="page-group hidden"> 
             <button onclick="showSpotify()" class="btn spotify"><i class="fa-brands fa-spotify"></i></button>
-            <button id="jazz-main-btn" onclick="showKomerce()" class="btn jazz" style="background:#111;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoJazz.png" style="max-width:80%; max-height:70%; object-fit:contain;"></button>
+            <button id="blanik-main-btn" onclick="showBlanik()" class="btn blanik" style="background:#005ea6;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoBlanik.png" style="max-width:80%; max-height:70%; object-fit:contain;"></button>
             <button onclick="changePage(1)" class="btn btn-nav"><i class="fa-solid fa-circle-arrow-left"></i>SRo FUN ROCK</button>
             <button onclick="otvorPocasie(event)" class="btn" style="background: #ffffff; color: #000000; font-weight: bold; padding: 5px;">
                 <i class="fas fa-cloud-sun-rain" style="font-size: 40px; color: #000; margin-bottom: 5px;"></i>
                 <span style="font-size: 11px; text-transform: uppercase;">Predpoveď počasia TU</span>
             </button>
         </div>
-    </div>  
+    </div>   
         
     <script>
 const VOLUME_MAP = { 
     'slovensko': 0.3, 'fm': 0.3, 'devin': 0.5, 'litera': 0.5, 'regina': 0.3,
     'fun': 1.0, 'funchill': 0.5, 'funczsk': 0.5, 'fun8090': 0.5, 'milenialky': 0.5,
     'expres': 0.5, 'europa2': 0.5, 'melody': 0.5, 'vlna': 0.5,
+    'blanik': 0.5 // ZMENENÉ: Pridaný Blaník do mapy hlasitostí
 };
 
 function getTempColor(t) {
@@ -537,7 +538,6 @@ function inicializujPocasie() {
 
     // Nastavíme bezpečný interval na pozadí pre Bratislavu (poistka)
     window.weatherInterval = setInterval(() => {
-        // Fix diakritiky v názvoch interných premenných
         const aktualnyLat = window.customLat || 48.1421;
         const aktualnyLon = window.customLon || 17.1964;
         updateWeather(aktualnyLat, aktualnyLon);
@@ -668,9 +668,10 @@ function playRadio(url, element, type) {
         const hlavnyFun = document.querySelector('.btn.fun');
         if (hlavnyFun) hlavnyFun.classList.add('playing');
     }
-    if (['expres', 'europa2', 'melody', 'vlna'].includes(type)) {
-        const hlavnyJazz = document.getElementById('jazz-main-btn');
-        if (hlavnyJazz) hlavnyJazz.classList.add('playing');
+    // FIX: Hlavné tlačidlo Blaníku zostane svietiť oranžovo, aj keď preklikneš na sub-stanice (Expres, Vlna...)
+    if (['blanik', 'expres', 'europa2', 'melody', 'vlna'].includes(type)) {
+        const hlavnyBlanik = document.getElementById('blanik-main-btn');
+        if (hlavnyBlanik) hlavnyBlanik.classList.add('playing');
     }
     aktualizujSubPanely(type);
     audio.volume = VOLUME_MAP[type] || 1.0;
@@ -688,7 +689,8 @@ function aktualizujSubPanely(type) {
 
     slovenskoContainer.style.display = ['slovensko', 'fm', 'devin', 'litera', 'regina'].includes(type) ? 'flex' : 'none';
     funContainer.style.display = ['fun', 'funchill', 'funczsk', 'fun8090', 'milenialky'].includes(type) ? 'flex' : 'none';
-    komerceContainer.style.display = ['jazz', 'expres', 'europa2', 'melody', 'vlna'].includes(type) ? 'flex' : 'none';
+    // Spodný riadok sa rozbalí pri type 'blanik' aj pri slovenských komerčných rádiách
+    komerceContainer.style.display = ['blanik', 'expres', 'europa2', 'melody', 'vlna'].includes(type) ? 'flex' : 'none';
     spotifyContainer.style.display = (type === 'spotify') ? 'flex' : 'none';
 }
     
@@ -697,7 +699,7 @@ function stopRadio() {
     currentPlayingType = ""; 
     document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('playing'));
     document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('playing')); 
-    document.getElementById('jazz-main-btn').classList.remove('playing');
+    document.getElementById('blanik-main-btn').classList.remove('playing');
     document.getElementById('spotify-links-container').style.display = 'none';
     document.getElementById('slovensko-links-container').style.display = 'none'; 
     document.getElementById('fun-links-container').style.display = 'none';
@@ -715,13 +717,11 @@ function showSpotify() {
     document.getElementById('ss-radio-info').innerHTML = `<small style="font-size: 0.6em; opacity: 0.7; text-transform: none; margin-right: 8px;">hrá:</small>SPOTIFY`;
 }
 
-function showKomerce() {
-    stopRadio();
-    currentPlayingType = "jazz";
-    aktualizujSubPanely("jazz");
-    document.getElementById('jazz-main-btn').classList.add('playing');
-    resetIdleTimer();
-    document.getElementById('ss-radio-info').innerHTML = `<small style="font-size: 0.6em; opacity: 0.7; text-transform: none; margin-right: 8px;">hrá:</small>JAZZ`;
+// HOTOVO: Nastavený stream pre Český Blaník, ktorý po kliknutí okamžite rozbalí spodnú lištu
+function showBlanik() {
+    const blanikBtn = document.getElementById('blanik-main-btn');
+    playRadio('http://ice.abradio.cz/ceskyblanik128.mp3', blanikBtn, 'blanik'); // playRadio('http://ice.abradio.cz/blanikcz128.mp3', blanikBtn, 'blanik');
+    document.getElementById('ss-radio-info').innerHTML = `<small style="font-size: 0.6em; opacity: 0.7; text-transform: none; margin-right: 8px;">hrá:</small>ČESKÝ BLANÍK`;
 }
     
 function openSpotify(id) {
@@ -751,7 +751,8 @@ function changePage(pageNumber) {
         document.getElementById('page-1').classList.add('hidden');
         document.getElementById('page-2').classList.remove('hidden');
         document.getElementById('radio-label').textContent = 'Radio 2';
-        if (!['jazz', 'expres', 'europa2', 'melody', 'vlna', 'spotify'].includes(currentPlayingType)) {
+        // ZMENENÉ: Doplnená kontrola pre 'blanik' pri prepínaní stránok
+        if (!['blanik', 'expres', 'europa2', 'melody', 'vlna', 'spotify'].includes(currentPlayingType)) {
             aktualizujSubPanely("");
         } else { aktualizujSubPanely(currentPlayingType); }
     }
