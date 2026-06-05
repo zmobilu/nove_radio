@@ -79,18 +79,16 @@
 
         .sub-btn.playing { border: 2px solid #ff9f0a !important; }
         
-        /* Sekcia s tlačidlami rádia (vľavo) bude mať presne 35% */
-/* Sekcia s tlačidlami rádia (vľavo v rádio režime) */
-.buttons-section { 
-            width: 35%; 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            grid-template-rows: 0.7fr 1fr 1fr; 
-            gap: 8px; 
-            padding: 10px; 
-            background: #050505; 
-            box-sizing: border-box;
-        }
+       .buttons-section { 
+    width: 35%; 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    grid-template-rows: 0.6fr 1fr 1fr 1fr; /* ZMENENÉ: Pridaný štvrtý riadok s pomerom 1fr */
+    gap: 8px; 
+    padding: 10px; 
+    background: #050505; 
+    box-sizing: border-box;
+}
         
         .page-group { display: contents; }
         .page-group.hidden { display: none !important; }
@@ -248,25 +246,20 @@ body.screensaver-mode .clock-section {
 <body id="mainBody">
 
     <audio id="audioPlayer" preload="none" playsinline></audio>
-    <div class="buttons-section">
-        
+    
+   <div class="buttons-section">
         <button onclick="stopRadio()" class="btn vypni"><i class="fa-solid fa-power-off"></i></button>
         
-        <div id="page-1" class="page-group">
-            <button onclick="playRadio('https://icecast.stv.livebox.sk/slovensko_128.mp3', this, 'slovensko')" class="btn rozhlas" style="background:#00547E;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoSRo.png" style="max-width:80%; max-height:70%; object-fit:contain;"></button>
-            <button onclick="playRadio('https://stream.funradio.sk/fun192.mp3', this, 'fun')" class="btn fun" style="background:#ffffff;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoFunRadio.png" style="max-width:75%; max-height:70%; object-fit:contain;"></button>
-            <button onclick="playRadio('https://stream.bauermedia.sk/rock-hi.mp3', this, 'rock')" class="btn rock" style="background:#000000;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoAntenaROCK.png" style="max-width:70%; max-height:60%; object-fit:contain;"></button>
-            <button onclick="changePage(2)" class="btn btn-nav"><i class="fa-solid fa-circle-arrow-right"></i>SPOTIFY a iné</button>
-        </div>
-
-        <div id="page-2" class="page-group hidden"> 
-            <button onclick="showSpotify()" class="btn spotify"><i class="fa-brands fa-spotify"></i></button>
-            <button id="blanik-main-btn" onclick="showBlanik()" class="btn blanik" style="background:#005ea6;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoBlanik.png" style="max-width:80%; max-height:70%; object-fit:contain;"></button>
-            <button onclick="changePage(1)" class="btn btn-nav"><i class="fa-solid fa-circle-arrow-left"></i>SRo FUN ROCK</button>
-            <button class="btn" style="background: #151515; cursor: default;"></button>
-        </div>
-    </div>   
-
+        <button onclick="playRadio('https://icecast.stv.livebox.sk/slovensko_128.mp3', this, 'slovensko')" class="btn rozhlas" style="background:#00547E;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoSRo.png" style="max-width:80%; max-height:70%; object-fit:contain;"></button>
+        <button onclick="playRadio('https://stream.funradio.sk/fun192.mp3', this, 'fun')" class="btn fun" style="background:#ffffff;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoFunRadio.png" style="max-width:75%; max-height:70%; object-fit:contain;"></button>
+        
+        <button onclick="playRadio('https://stream.bauermedia.sk/rock-hi.mp3', this, 'rock')" class="btn rock" style="background:#000000;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoAntenaROCK.png" style="max-width:70%; max-height:60%; object-fit:contain;"></button>
+        <button id="blanik-main-btn" onclick="showBlanik()" class="btn blanik" style="background:#005ea6;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoBlanik.png" style="max-width:80%; max-height:70%; object-fit:contain;"></button>
+        
+        <button onclick="showSpotify()" class="btn spotify"><i class="fa-brands fa-spotify"></i></button>
+        <button class="btn" style="background: #151515; cursor: default;"></button>
+    </div>
+    
     <div class="clock-section">
         
         <div class="ss-left-col ss-only">
