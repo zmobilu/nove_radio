@@ -23,15 +23,16 @@
 
         /* --- REŽIM RÁDIO --- */
         /* Sekcia s hodinami (vpravo) bude zaberať presne 65% */
+/* Sekcia s hodinami/grafom (vpravo v rádio režime) */
 .clock-section { 
     width: 65%; 
     display: flex; 
     flex-direction: column; 
     justify-content: center; 
     align-items: center; 
-    border-right: 1px solid #222; 
-    transition: all 0.5s ease-in-out; 
+    border-left: 1px solid #222; /* Zmenené z border-right na border-left, keďže rádio bude vľavo */
     position: relative; 
+    /* ODSTRÁNENÉ: transition pre plynulý prechod vymazané */
 }
         
         #time { font-size: 24vw; line-height: 0.8; letter-spacing: -4px; display: flex; align-items: baseline; 
@@ -80,6 +81,7 @@
         .sub-btn.playing { border: 2px solid #ff9f0a !important; }
         
         /* Sekcia s tlačidlami rádia (vľavo) bude mať presne 35% */
+/* Sekcia s tlačidlami rádia (vľavo v rádio režime) */
 .buttons-section { 
     width: 35%; 
     display: grid; 
@@ -88,7 +90,7 @@
     gap: 8px; 
     padding: 10px; 
     background: #050505; 
-    box-sizing: border-box; /* Poistka, aby padding neroširoval blok */
+    box-sizing: border-box;
 }
         
         .page-group { display: contents; }
@@ -113,11 +115,12 @@
         body.screensaver-mode .ss-only { display: flex !important; }
         
         /* Pri šetriči roztiahneme celý kontajner na 100vw, ale vnútorné stĺpce si udržia podiel */
+/* Úprava pre šetrič obrazovky */
 body.screensaver-mode .clock-section { 
     width: 100vw; 
     border: none; 
     display: flex; 
-    flex-direction: row-reverse; 
+    flex-direction: row; /* Zmenené z row-reverse na row, aby počasie vľavo (35%) sedelo presne nad rádiom */
     align-items: stretch; 
 }
 
@@ -227,6 +230,27 @@ body.screensaver-mode .clock-section {
 <body id="mainBody">
 
     <audio id="audioPlayer" preload="none" playsinline></audio>
+    <div class="buttons-section">
+        
+        <button onclick="stopRadio()" class="btn vypni"><i class="fa-solid fa-power-off"></i></button>
+        
+        <div id="page-1" class="page-group">
+            <button onclick="playRadio('https://icecast.stv.livebox.sk/slovensko_128.mp3', this, 'slovensko')" class="btn rozhlas" style="background:#00547E;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoSRo.png" style="max-width:80%; max-height:70%; object-fit:contain;"></button>
+            <button onclick="playRadio('https://stream.funradio.sk/fun192.mp3', this, 'fun')" class="btn fun" style="background:#ffffff;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoFunRadio.png" style="max-width:75%; max-height:70%; object-fit:contain;"></button>
+            <button onclick="playRadio('https://stream.bauermedia.sk/rock-hi.mp3', this, 'rock')" class="btn rock" style="background:#000000;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoAntenaROCK.png" style="max-width:70%; max-height:60%; object-fit:contain;"></button>
+            <button onclick="changePage(2)" class="btn btn-nav"><i class="fa-solid fa-circle-arrow-right"></i>SPOTIFY a iné</button>
+        </div>
+
+        <div id="page-2" class="page-group hidden"> 
+            <button onclick="showSpotify()" class="btn spotify"><i class="fa-brands fa-spotify"></i></button>
+            <button id="blanik-main-btn" onclick="showBlanik()" class="btn blanik" style="background:#005ea6;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoBlanik.png" style="max-width:80%; max-height:70%; object-fit:contain;"></button>
+            <button onclick="changePage(1)" class="btn btn-nav"><i class="fa-solid fa-circle-arrow-left"></i>SRo FUN ROCK</button>
+            <button onclick="otvorPocasie(event)" class="btn" style="background: #ffffff; color: #000000; font-weight: bold; padding: 5px;">
+                <i class="fas fa-cloud-sun-rain" style="font-size: 40px; color: #000; margin-bottom: 5px;"></i>
+                <span style="font-size: 11px; text-transform: uppercase;">Predpoveď počasia TU</span>
+            </button>
+        </div>
+    </div>   
 
     <div class="clock-section">
         <div class="ss-left-col">
@@ -331,27 +355,7 @@ body.screensaver-mode .clock-section {
         </div>
     </div>
 
-    <div class="buttons-section">
-        <button onclick="stopRadio()" class="btn vypni"><i class="fa-solid fa-power-off"></i></button>
-        
-        <div id="page-1" class="page-group">
-            <button onclick="playRadio('https://icecast.stv.livebox.sk/slovensko_128.mp3', this, 'slovensko')" class="btn rozhlas" style="background:#00547E;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoSRo.png" style="max-width:80%; max-height:70%; object-fit:contain;"></button>
-            <button onclick="playRadio('https://stream.funradio.sk/fun192.mp3', this, 'fun')" class="btn fun" style="background:#ffffff;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoFunRadio.png" style="max-width:75%; max-height:70%; object-fit:contain;"></button>
-            <button onclick="playRadio('https://stream.bauermedia.sk/rock-hi.mp3', this, 'rock')" class="btn rock" style="background:#000000;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoAntenaROCK.png" style="max-width:70%; max-height:60%; object-fit:contain;"></button>
-            <button onclick="changePage(2)" class="btn btn-nav"><i class="fa-solid fa-circle-arrow-right"></i>SPOTIFY a iné</button>
-        </div>
-
-        <div id="page-2" class="page-group hidden"> 
-            <button onclick="showSpotify()" class="btn spotify"><i class="fa-brands fa-spotify"></i></button>
-            <button id="blanik-main-btn" onclick="showBlanik()" class="btn blanik" style="background:#005ea6;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoBlanik.png" style="max-width:80%; max-height:70%; object-fit:contain;"></button>
-            <button onclick="changePage(1)" class="btn btn-nav"><i class="fa-solid fa-circle-arrow-left"></i>SRo FUN ROCK</button>
-            <button onclick="otvorPocasie(event)" class="btn" style="background: #ffffff; color: #000000; font-weight: bold; padding: 5px;">
-                <i class="fas fa-cloud-sun-rain" style="font-size: 40px; color: #000; margin-bottom: 5px;"></i>
-                <span style="font-size: 11px; text-transform: uppercase;">Predpoveď počasia TU</span>
-            </button>
-        </div>
-    </div>   
-        
+           
     <script>
 const VOLUME_MAP = { 
     'slovensko': 0.3, 'fm': 0.3, 'devin': 0.5, 'litera': 0.5, 'regina': 0.3,
