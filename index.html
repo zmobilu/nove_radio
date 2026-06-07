@@ -243,33 +243,22 @@ body.screensaver-mode .clock-section {
             cursor: pointer; 
             transition: all 0.2s;
         }
-        /* Zmenšenie spodných tlačidiel dní predpovede, aby uvoľnili miesto pre graf */
-        .forecast-day-box span { font-size: 2.2vw !important; }
-        .forecast-day-box i { font-size: 5.5vw !important; margin: 1px 0 !important; }
-        .forecast-day-box div { font-size: 2.5vw !important; }
-
-        /* Vlastné CSS pre elementy vnútri stĺpcov grafu */
-        .chart-rain-info {
-            font-size: 1.4vw !important;
-            color: #4dabff;
-            font-weight: 500;
-            height: 1.6vw;
-            line-height: 1.6vw;
-            display: block;
+        /* Zjednotenie veľkosti spodných boxov s hornými (Dnes/Zajtra) */
+        .forecast-day-box span { 
+            font-size: 1.8vw !important; /* Presne ako mini-day */
+            color: #aaa !important; 
+            text-transform: uppercase !important; 
+            letter-spacing: 1px !important;
+            transform: none !important;
         }
-        .chart-icon-info {
-            font-size: 2.3vw !important;
-            height: 2.6vw;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 1px 0 3px 0 !important; /* ZMENENÉ: Pridaný 3px odstup dole smerom k teplote */
+        .forecast-day-box i { 
+            font-size: 6vw !important; /* Presne ako mini-icon */
+            margin: 4px 0 !important; 
         }
-        .chart-temp-info {
-            font-size: 2.0vw !important;
-            font-weight: bold;
-            margin-bottom: 2px !important;
-            display: block;
+        .forecast-day-box div { 
+            font-size: 4.5vw !important; /* Presne ako mini-temp */
+            font-weight: 300 !important;
+            color: #fff !important;
         }
         
     </style>
@@ -675,8 +664,9 @@ function vykresliGraf(targetDayIndex) {
     temps.forEach((temp, idx) => {
         if (temp === undefined) return;
         const roundedTemp = Math.round(temp);
-        // Znížený koeficient na 46, aby zostalo dosť miesta pre mini ikonku hore
-        const pct = ((temp - minGraphTemp) / tempRange) * 46 + 20; 
+        
+        // Ešte o niečo viac stlačíme stĺpce (koeficient 35) a základňu dáme na 8, aby klesli nižšie
+        const pct = ((temp - minGraphTemp) / tempRange) * 35 + 8;
         
         const rainVal = rain[idx] ? parseFloat(rain[idx]) : 0;
         const rainHtml = rainVal > 0 ? `<span class="chart-rain-info">💧${rainVal.toFixed(1)}</span>` : `<span class="chart-rain-info"></span>`;
