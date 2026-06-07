@@ -320,7 +320,7 @@ body.screensaver-mode .clock-section {
             
             <div id="ss-radio-info" class="weather-details-hide"></div>
 
-            <div id="weather-details-top-inline" class="weather-details-only" style="display: none; flex-direction: column; width: 100%; height: 53vh; padding: 10px 10px 0 10px; box-sizing: border-box; justify-content: space-between;">
+            <<div id="weather-details-top-inline" class="weather-details-only" style="display: none; flex-direction: column; width: 100%; height: 68vh; padding: 10px 10px 0 10px; box-sizing: border-box; justify-content: space-between;">
                 <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; height: 5vh;">
                     <span id="weather-location" style="color: #666; font-size: 2.5vw; font-weight: 400; text-transform: uppercase; letter-spacing: 2px;">---</span>
                     <button onclick="zatvorPocasie(event)" style="background: #222; color: #ff9f0a; border: 2px solid #ff9f0a; padding: 2px 15px; border-radius: 8px; font-size: 2.5vw; font-weight: bold; cursor: pointer;">Zatvor</button>
@@ -374,7 +374,7 @@ body.screensaver-mode .clock-section {
                     <span id="day-display" class="ss-day">---</span>
                 </div>
                 
-                <div id="extended-forecast-container" class="weather-details-only" style="display: none; justify-content: space-between; gap: 6px; width: 100%; height: 35vh; padding-right: 1.5vw; box-sizing: border-box;"></div>
+                <div id="extended-forecast-container" class="weather-details-only" style="display: none; justify-content: space-between; gap: 6px; width: 100%; height: 20vh; padding-right: 1.5vw; box-sizing: border-box;"></div> 
                 
                 <span class="ss-separator weather-details-hide">|</span>
                 
@@ -666,7 +666,7 @@ function vykresliGraf(targetDayIndex) {
         const roundedTemp = Math.round(temp);
         
         // Ešte o niečo viac stlačíme stĺpce (koeficient 35) a základňu dáme na 8, aby klesli nižšie
-        const pct = ((temp - minGraphTemp) / tempRange) * 35 + 8;
+        const pct = ((temp - minGraphTemp) / tempRange) * 52 + 12;
         
         const rainVal = rain[idx] ? parseFloat(rain[idx]) : 0;
         const rainHtml = rainVal > 0 ? `<span class="chart-rain-info">💧${rainVal.toFixed(1)}</span>` : `<span class="chart-rain-info"></span>`;
