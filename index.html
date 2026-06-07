@@ -22,7 +22,9 @@
             -webkit-user-select: none; user-select: none; }
 
         /* --- REŽIM RÁDIO --- */
-        .clock-section { 
+        /* Sekcia s hodinami (vpravo) bude zaberať presne 65% */
+/* Sekcia s hodinami/grafom (vpravo v rádio režime) */
+.clock-section { 
             width: 65%; 
             display: flex; 
             flex-direction: column; 
@@ -39,9 +41,12 @@
         .red-digit { color: #eb0028 !important; } 
         .blue-digit { color: #307CEB !important; }
         
+        /* Štýl pre info riadok v rádio režime */
+        /* Štýl pre info riadok v rádio režime */
         .radio-info-wrapper { display: flex;  align-items: center;  gap: 12px; margin-top: 10px;  font-size: 3.5vw; font-weight: 300; color: #aaa;}
         .radio-info-wrapper .separator { color: #222; font-weight: 200; }
         
+        /* PRIDANÉ: Skrytie textu rádio labelu (Radio 1 / Radio 2), keďže máme len jednu stranu */
         #radio-label, #radio-label + .separator { display: none !important; }
         
         #radio-name { font-weight: 400; text-transform: uppercase; }
@@ -79,15 +84,15 @@
         .sub-btn.playing { border: 2px solid #ff9f0a !important; }
         
        .buttons-section { 
-            width: 35%; 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            grid-template-rows: 0.6fr 1fr 1fr 1fr; 
-            gap: 8px; 
-            padding: 10px; 
-            background: #050505; 
-            box-sizing: border-box;
-        }
+    width: 35%; 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    grid-template-rows: 0.6fr 1fr 1fr 1fr; /* ZMENENÉ: Pridaný štvrtý riadok s pomerom 1fr */
+    gap: 8px; 
+    padding: 10px; 
+    background: #050505; 
+    box-sizing: border-box;
+}
         
         .page-group { display: contents; }
         .page-group.hidden { display: none !important; }
@@ -110,13 +115,15 @@
         body.screensaver-mode #komerce-links-container { display: none !important; }
         body.screensaver-mode .ss-only { display: flex !important; }
         
-        body.screensaver-mode .clock-section { 
-            width: 100vw; 
-            border: none; 
-            display: flex; 
-            flex-direction: row; 
-            align-items: stretch; 
-        }
+        /* Pri šetriči roztiahneme celý kontajner na 100vw, ale vnútorné stĺpce si udržia podiel */
+/* Úprava pre šetrič obrazovky */
+body.screensaver-mode .clock-section { 
+    width: 100vw; 
+    border: none; 
+    display: flex; 
+    flex-direction: row; /* Zmenené z row-reverse na row, aby počasie vľavo (35%) sedelo presne nad rádiom */
+    align-items: stretch; 
+}
 
         .ss-left-col { 
             display: flex; 
@@ -124,7 +131,8 @@
             justify-content: flex-start !important; 
             align-items: center; 
             padding: 0; 
-            width: 35%; 
+            width: 35%; /* ZMENENÉ: Zmenšené na 35%, aby to sedelo presne nad rádiom */
+            /* ODSTRÁNENÉ: border-left, riadok nižšie ho pridáva na správnu stranu */
         }
         body.screensaver-mode #time { font-size: 30vw; transform: scaleY(1.30); letter-spacing: -1vw; margin-top: 8vh; }
         
@@ -136,7 +144,7 @@
             box-sizing: border-box; 
             margin-top: auto; 
             margin-bottom: 3.5vh; 
-            padding-left: 2vw; 
+            padding-left: 2vw; /* Výmena paddingov pre zachovanie symetrie na opačnej strane */
             padding-right: 0.5vw; 
         }
 
@@ -170,7 +178,7 @@
         #ss-radio-info {
             position: absolute;
             bottom: 25vh;
-            left: 40vw; 
+            left: 40vw; /* FIX: Posunuté viac doprava, aby text "HRA" nesedel pod počasím na ľavej strane */
             width: 38vw;
             font-size: 4.0vw;
             font-weight: 400;
@@ -183,6 +191,8 @@
             pointer-events: none;
         }
         body.screensaver-mode #ss-radio-info { display: flex !important; }
+        
+        /* Skryť info o rádiu, keď je spustený detailný prehľad počasia */
         body.weather-details-mode #ss-radio-info { display: none !important; }
 
         .ss-right-col { 
@@ -192,8 +202,8 @@
             align-items: center; 
             background: #000; 
             padding: 0; 
-            width: 65%; 
-            border-left: 1px solid #1a1a1a; 
+            width: 65%; /* ZMENENÉ: Zväčšené na 65% pre veľké hodiny a graf */
+            border-left: 1px solid #1a1a1a; /* PRIDANÉ: Deliaca čiara medzi 35% a 65% blokom */
         }
         .current-weather-group { margin-top: 4vh; text-align: center; }
         .meteo-icon-large { font-size: 15vw; margin-bottom: 5px; }
@@ -219,6 +229,7 @@
         
         .day-box-active { border: 1px solid #ff9f0a !important; background: #111 !important; }
 
+        /* Štýl pre spodné 5-dňové tlačidlá predpovede */
         .forecast-day-box {
             background: #050505; 
             border: 1px solid #111; 
@@ -232,55 +243,39 @@
             cursor: pointer; 
             transition: all 0.2s;
         }
-        /* CSS pre upratanie textov a ikon v hodinovom grafe */
+        /* Zmenšenie spodných tlačidiel dní predpovede, aby uvoľnili miesto pre graf */
+        .forecast-day-box span { font-size: 2.2vw !important; }
+        .forecast-day-box i { font-size: 5.5vw !important; margin: 1px 0 !important; }
+        .forecast-day-box div { font-size: 2.5vw !important; }
+
+        /* Vlastné CSS pre elementy vnútri stĺpcov grafu */
         .chart-rain-info {
-            font-size: 1.5vw !important;
+            font-size: 1.4vw !important;
             color: #4dabff;
             font-weight: 500;
-            height: 1.8vw;
-            line-height: 1.8vw;
+            height: 1.6vw;
+            line-height: 1.6vw;
             display: block;
         }
         .chart-icon-info {
-            font-size: 2.5vw !important;
-            height: 3.0vw;
+            font-size: 2.3vw !important;
+            height: 2.6vw;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 1px 0 !important;
+            margin: 1px 0 3px 0 !important; /* ZMENENÉ: Pridaný 3px odstup dole smerom k teplote */
         }
         .chart-temp-info {
             font-size: 2.0vw !important;
             font-weight: bold;
-            margin-bottom: 3px !important;
+            margin-bottom: 2px !important;
             display: block;
         }
-        /* CSS pre upratanie textov a ikon v hodinovom grafe */
-        .chart-rain-info {
-            font-size: 1.5vw !important;
-            color: #4dabff;
-            font-weight: 500;
-            height: 1.8vw;
-            line-height: 1.8vw;
-            display: block;
-        }
-        .chart-icon-info {
-            font-size: 2.5vw !important;
-            height: 3.0vw;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 1px 0 !important;
-        }
-        .chart-temp-info {
-            font-size: 2.0vw !important;
-            font-weight: bold;
-            margin-bottom: 3px !important;
-            display: block;
-        }
+        
     </style>
 </head>
 
+    
 <body id="mainBody">
 
     <audio id="audioPlayer" preload="none" playsinline></audio>
@@ -345,7 +340,7 @@
                     <div id="hourly-chart-container" style="display: flex; justify-content: space-around; align-items: flex-end; height: 100%; width: 100%;"></div>
                 </div>
             </div>
-                        
+                       
             <div class="radio-info-wrapper ss-hide">
                 <span id="weather-temp-mini">--°C</span>
                 <span class="separator">|</span>
@@ -408,7 +403,7 @@ const VOLUME_MAP = {
     'slovensko': 0.3, 'fm': 0.3, 'devin': 0.5, 'litera': 0.5, 'regina': 0.3,
     'fun': 1.0, 'funchill': 0.5, 'funczsk': 0.5, 'fun8090': 0.5, 'milenialky': 0.5,
     'expres': 0.5, 'europa2': 1.0, 'melody': 1.0, 'vlna': 0.5,
-    'blanik': 1.0 
+    'blanik': 1.0 // ZMENENÉ: Pridaný Blaník do mapy hlasitostí
 };
 
 function getTempColor(t) {
@@ -522,8 +517,7 @@ function updateClock() {
 
 async function updateWeather(lat = 48.1421, lon = 17.1964) {
     try {
-        /* PRIDANÉ: weather_code do hourly sekcie v URL adrese */
-        const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m&hourly=temperature_2m,precipitation,cloud_cover,wind_speed_10m,weather_code&timezone=Europe%2FBratislava&wind_speed_unit=kmh&forecast_days=6`);
+        const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m&hourly=temperature_2m,precipitation,cloud_cover,wind_speed_10m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FBratislava&wind_speed_unit=kmh&forecast_days=6`);
         const d = await r.json();
         weatherDataBackup = d; 
 
@@ -610,8 +604,10 @@ async function updateWeather(lat = 48.1421, lon = 17.1964) {
 }
 
 function inicializujPocasie() {
+    // 1. KROK: Okamžite a bez čakania natiahni Bratislavu (Ružinov)
     updateWeather(48.1421, 17.1964);
 
+    // Nastavíme bezpečný interval na pozadí pre Bratislavu (poistka)
     window.weatherInterval = setInterval(() => {
         const aktualnyLat = window.customLat || 48.1421;
         const aktualnyLon = window.customLon || 17.1964;
@@ -624,6 +620,7 @@ function inicializujPocasie() {
         return;
     }
 
+    // 2. KROK: Skúsime na pozadí zistiť presnejšiu polohu (ak sme na HTTPS)
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             (position) => {
@@ -678,12 +675,13 @@ function vykresliGraf(targetDayIndex) {
     temps.forEach((temp, idx) => {
         if (temp === undefined) return;
         const roundedTemp = Math.round(temp);
-        // Upravený koeficient výšky (48 + 20), aby zostalo viac miesta na ikony navrchu
-        const pct = ((temp - minGraphTemp) / tempRange) * 48 + 20; 
+        // Znížený koeficient na 46, aby zostalo dosť miesta pre mini ikonku hore
+        const pct = ((temp - minGraphTemp) / tempRange) * 46 + 20; 
         
         const rainVal = rain[idx] ? parseFloat(rain[idx]) : 0;
         const rainHtml = rainVal > 0 ? `<span class="chart-rain-info">💧${rainVal.toFixed(1)}</span>` : `<span class="chart-rain-info"></span>`;
         
+        // Získanie kódu počasia pre konkrétny stĺpec
         const cCode = codes[idx] !== undefined ? codes[idx] : 0;
         const iconClass = WEATHER_CODES[cCode] || 'fa-cloud';
         const iconColor = WEATHER_COLORS[cCode] || '#aaa';
@@ -699,6 +697,7 @@ function vykresliGraf(targetDayIndex) {
         const column = document.createElement('div');
         column.style.cssText = `display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 7.8%; flex-shrink: 0;`;
         
+        // Poskladané kompaktnejšie HTML s mini ikonou medzi zrážkami a teplotou
         column.innerHTML = `
             ${rainHtml}
             ${weatherIconHtml}
@@ -741,13 +740,16 @@ const audio = document.getElementById('audioPlayer');
 function playRadio(url, element, type) {
     currentPlayingType = type; 
     
+    // Odstránime oranžový rámček zo všetkých tlačidiel
     document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('playing'));
     document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('playing'));
     
+    // Pridáme oranžový rámček iba presne tomu tlačidlu, na ktoré sme klikli (ak existuje)
     if (element && element.classList) {
         element.classList.add('playing');
     }
     
+    // Ak klikneme na sub-stanicu, rozsvietime aj jej materské tlačidlo, ktoré je vedľa
     if (['fm', 'devin', 'litera', 'regina'].includes(type)) {
         const hlavnyRozhlas = document.querySelector('.rozhlas');
         if (hlavnyRozhlas) hlavnyRozhlas.classList.add('playing');
@@ -761,6 +763,7 @@ function playRadio(url, element, type) {
         if (hlavnyBlanik) hlavnyBlanik.classList.add('playing');
     }
 
+    // Otvoríme spodný riadok s malými stanicami
     aktualizujSubPanely(type);
     
     audio.volume = VOLUME_MAP[type] || 1.0;
@@ -768,6 +771,7 @@ function playRadio(url, element, type) {
     audio.play();
     resetIdleTimer();
     
+    // Bezpečný zápis textu pre šetrič, ktorý nespôsobí pád WebKitu
     const radioInfoEl = document.getElementById('ss-radio-info');
     if (radioInfoEl) {
         radioInfoEl.innerHTML = `<small style="font-size: 0.6em; opacity: 0.7; text-transform: none; margin-right: 8px;">hrá:</small>${type.toUpperCase()}`;
@@ -817,6 +821,8 @@ function showBlanik() {
     const blanikBtn = document.getElementById('blanik-main-btn');
     playRadio('https://ice.abradio.cz/blanikcz128.mp3', blanikBtn, 'blanik');
 }
+
+// STARÁ FUNKCIA changePage BOLA KOMPLETNE ODSTRÁNENÁ, KEĎŽE JE ZBYTOČNÁ
     
 function openSpotify(id) {
     let url = id === 'search' ? "https://open.spotify.com/search" : `https://open.spotify.com/playlist/${id}`;
@@ -906,6 +912,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// Volanie všetkých inicializačných funkcií na úplnom konci kódu
 updateNameday();
 setInterval(updateNameday, 3600000);
 
