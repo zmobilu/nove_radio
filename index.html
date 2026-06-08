@@ -257,7 +257,7 @@ body.screensaver-mode .clock-section {
     <audio id="audioPlayer" preload="none" playsinline></audio>
     
    <div class="buttons-section">
-        <button onclick="stopRadio()" class="btn vypni"><i class="fa-solid fa-power-off"></i></button>
+        <button onpointerdown="stopRadio()" class="btn vypni" style="padding: 20px 0; min-height: 90px; width: 100%;"><i class="fa-solid fa-power-off"></i></button>
         
         <button onclick="playRadio('https://icecast.stv.livebox.sk/slovensko_128.mp3', this, 'slovensko')" class="btn rozhlas" style="background:#00547E;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoSRo.png" style="max-width:80%; max-height:70%; object-fit:contain;"></button>
         <button onclick="playRadio('https://stream.funradio.sk/fun192.mp3', this, 'fun')" class="btn fun" style="background:#ffffff;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoFunRadio.png" style="max-width:75%; max-height:70%; object-fit:contain;"></button>
@@ -835,26 +835,29 @@ let pocasieTimer;
 function otvorPocasie(e, zdroj = 'radio') {
     if (e) { e.stopPropagation(); if (e.cancelable) e.preventDefault(); }
     weatherOpenedFrom = zdroj;
-    
-    // Zistíme, či už náhodou nejaké malé políčko (Dnes, Zajtra...) malo oranžový rámček
-    const uzBoloAktivnePolicko = document.querySelector('.forecast-day-box.day-box-active, .mini-item.day-box-active');
-    
-    // Na začiatok vyčistíme aktívne oranžové rámčeky zo všetkých buniek
+    // 1. Zistíme, či už sme v režime grafu
+    const uzSmeVGrafMode = document.body.classList.contains('weather-details-mode');
+    // 2. Zistíme, či bolo nejaké konkrétne kalendárne políčko (Dnes, Zajtra...) aktívne
+    const boloAktivnePolickoDna = document.querySelector('.forecast-day-box.day-box-active, .mini-item.day-box-active');
+    // 3. Ak sme už v grafe a klikli sme znova na veľkú ikonu počasia, pričom nebolo vybrané žiadne políčko dňa,
+    // znamená to, že už pozeráme trend "Teraz + 12h". Vtedy druhé kliknutie graf zatvorí a vráti veľké hodiny.
+    if (uzSmeVGrafMode && !boloAktivnePolickoDna && e && e.currentTarget && e.currentTarget.id === 'ss-weather-trigger') {
+        zatvorPocasie(e);
+        return;
+    }
+    // Vyčistíme aktívne oranžové rámčeky zo všetkých buniek
     document.querySelectorAll('.forecast-day-box, .mini-item').forEach(box => { 
         box.classList.remove('day-box-active'); 
     });
-    
     // Zapneme režim detailného grafu
     document.body.classList.add('weather-details-mode');
-    
-    // LOGIKA PREPÍNANIA:
-    // Ak klikáme na veľkú ikonu a predtým UŽ BOLO nejaké konkrétne políčko dňa aktívne (orámované),
-    // znamená to, že sme už v grafe boli a chceme sa vrátiť na režim "TERAZ + 12h".
-    // Rovnako to platí, ak klikáme priamo z čistého šetriča (kde žiadne políčko ešte aktívne nebolo).
-    if (!uzBoloAktivnePolicko || (e && e.currentTarget && e.currentTarget.id === 'ss-weather-trigger' && uzBoloAktivnePolicko)) {
-        vykresliGraf(null); // Vykreslí trend TERAZ + 12h, všetky malé dni zostanú bez oranžového rámčeka
+    // LOGIKA PREPÍNANIA GRAFU:
+    // Ak prichádzame z čistého šetriča (nebol zapnutý graf) -> ukážeme trend Teraz + 12h (index null)
+    // Ak už v grafe sme a svietil nejaký konkrétny deň (Dnes/Zajtra...) -> skočíme späť na trend Teraz + 12h (index null)
+    if (!uzSmeVGrafMode || boloAktivnePolickoDna) {
+        vykresliGraf(null); // Vykreslí trend TERAZ + 12h, malé dni zostanú bez oranžového rámčeka
     } else {
-        // Ak sa otvára odinakiaľ alebo bol graf prázdny, predvolíme ucelený dnešný deň (00-24) a orámujeme políčko DNES
+        // Poistka pre iné prípady vyvolania: predvolíme ucelený dnešný deň (00-24) a orámujeme políčko DNES
         vykresliGraf(0);
         const dnesPolicko = document.querySelectorAll('.mini-item')[0];
         if (dnesPolicko) dnesPolicko.classList.add('day-box-active');
@@ -891,9 +894,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (weatherEl) {
         weatherEl.addEventListener('pointerdown', (e) => {
-            if (!document.body.classList.contains('weather-details-mode')) {
-                otvorPocasie(e, 'screensaver');
-            }
+            // ZMENENÉ: Podmienka bola zmazaná, takže otvorPocasie sa spustí vždy – či už zo šetriča, alebo z grafu
+            otvorPocasie(e, 'screensaver');
         });
     }
 
