@@ -291,11 +291,12 @@
     
                     <span id="weather-location" style="color: #666; font-size: 2.5vw; font-weight: 400; text-transform: uppercase; letter-spacing: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 30vw;">---</span>
     
-                    <input  type="text" id="city-search-input" placeholder="Hľadaj mesto... (napr. Praha, Kosice)" 
+                    <!-- ZMENENÉ: Šírka inputu nastavená na pevných 30% (pôvodne sa rozťahoval cez flex-grow) -->
+                    <input type="text" id="city-search-input" placeholder="Mesto..." 
                             onpointerdown="event.stopPropagation()"
                             ontouchstart="event.stopPropagation()"
                             onkeydown="if(event.key === 'Enter') hladajMesto()"
-                            style="flex-grow: 1; background: #111; color: #fff; border: 1px solid #444; border-radius: 8px; padding: 4px 10px; font-size: 2.2vw; font-family: inherit; outline: none;">
+                            style="width: 30%; background: #111; color: #fff; border: 1px solid #444; border-radius: 8px; padding: 4px 10px; font-size: 2.2vw; font-family: inherit; outline: none;">
     
                     <button onclick="hladajMesto()" 
                             onpointerdown="event.stopPropagation()"
@@ -508,11 +509,16 @@ async function updateWeather(lat = 48.1421, lon = 17.1964) {
         const d = await r.json();
         weatherDataBackup = d; 
 
-        if (d.timezone && d.timezone.includes('/')) {
-            const nazovMesta = d.timezone.split('/')[1].replace(/_/g, ' ');
-            document.getElementById('weather-location').textContent = nazovMesta;
+        // NOVÝ SPRÁVNE OŠETRENÝ STAV:
+        if (window.customCityName) {
+        // Ak sme mesto vyhľadali ručne, použijeme jeho skutočný názov (napr. Košice)
+            document.getElementById('weather-location').textContent = window.customCityName;
+        } else if (d.timezone && d.timezone.includes('/')) {
+        // Inak použijeme predvolenú automatiku z časovej zóny
+        const nazovMesta = d.timezone.split('/')[1].replace(/_/g, ' ');
+        document.getElementById('weather-location').textContent = nazovMesta;
         } else {
-            document.getElementById('weather-location').textContent = `${lat.toFixed(2)}°N, ${lon.toFixed(2)}°E`;
+        document.getElementById('weather-location').textContent = `${lat.toFixed(2)}°N, ${lon.toFixed(2)}°E`;
         }
 
         const rawTemp = d.current.temperature_2m;
@@ -965,12 +971,12 @@ async function hladajMesto() {
         window.customLat = lat;
         window.customLon = lon;
 
-        // Vyčistíme textové pole
+        /// PRIDANÉ: Uložíme si presný názov mesta, ktorý vrátil vyhľadávač
+        window.customCityName = najdeneMesto.name;
+
         inputEl.value = '';
-        // Stratíme focus z klávesnice na mobilných zariadeniach
         inputEl.blur();
 
-        // Spustíme okamžitú manuálnu aktualizáciu počasia pre nové súradnice
         await updateWeather(lat, lon);
         
     } catch (error) {
