@@ -231,8 +231,8 @@ body.screensaver-mode .clock-section {
             transition: all 0.2s;
         }
         .forecast-day-label { 
-            font-size: 1.8vw !important; 
-            color: #aaa !important; 
+            font-size: 1.5vw !important; 
+            color: #fff !important; 
             text-transform: uppercase !important; 
             letter-spacing: 1px !important;
             margin-bottom: 2px !important;
@@ -544,7 +544,7 @@ async function updateWeather(lat = 48.1421, lon = 17.1964) {
         const extendedContainer = document.getElementById('extended-forecast-container');
         extendedContainer.innerHTML = ''; 
 
-        const dniVTyzdni = ['Ned', 'Pon', 'Ut', 'Str', 'Štv', 'Pia', 'Sob'];
+        const dniVTyzdni = ['Nedeľa', 'Pondelok', 'Utorok', 'Streda', 'Štvrtok', 'Piatok', 'Sobota'];
         const dnes = new Date();
 
         for (let i = 2; i <= 6; i++) {
@@ -671,7 +671,7 @@ function vykresliGraf(targetDayIndex) {
         const colBackground = `linear-gradient(to top, rgba(255,255,255, ${bgOpacity}), ${getTempColor(temp)})`;
         
         const windVal = wind[idx] ? Math.round(wind[idx]) : 0;
-        const windHtml = windVal > 0 ? `<span style="font-size: 1.6vw; color: #555; margin-top: 5px;"><i class="fas fa-wind" style="font-size:0.8em;"></i> ${windVal}</span>` : `<span style="height: 1.8vw;"></span>`;
+        const windHtml = windVal > 0 ? `<span style="font-size: 1.6vw; color: #fff; margin-top: 5px;"><i class="fas fa-wind" style="font-size:0.8em;"></i> ${windVal}</span>` : `<span style="height: 1.8vw;"></span>`;
 
         const column = document.createElement('div');
         column.style.cssText = `display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 7.8%; flex-shrink: 0;`;
@@ -681,7 +681,7 @@ function vykresliGraf(targetDayIndex) {
             ${weatherIconHtml}
             <span class="chart-temp-info" style="color: ${getTempColor(temp)};">${roundedTemp}°</span>
             <div style="width: 100%; height: ${pct}%; background: ${colBackground}; border-radius: 4px 4px 0 0; border: 1px solid #222; border-bottom: none; box-sizing: border-box;"></div>
-            <span style="font-size: 1.8vw; color: #555; margin-top: 5px; font-weight: 500;">${labels[idx]}</span>
+            <span style="font-size: 1.8vw; color: #fff; margin-top: 5px; font-weight: 500;">${labels[idx]}</span>
             ${windHtml}
         `;
         chartContainer.appendChild(column);
@@ -836,18 +836,25 @@ function otvorPocasie(e, zdroj = 'radio') {
     if (e) { e.stopPropagation(); if (e.cancelable) e.preventDefault(); }
     weatherOpenedFrom = zdroj;
     
+    // Zistíme, či už náhodou nejaké malé políčko (Dnes, Zajtra...) malo oranžový rámček
+    const uzBoloAktivnePolicko = document.querySelector('.forecast-day-box.day-box-active, .mini-item.day-box-active');
+    
     // Na začiatok vyčistíme aktívne oranžové rámčeky zo všetkých buniek
     document.querySelectorAll('.forecast-day-box, .mini-item').forEach(box => { 
         box.classList.remove('day-box-active'); 
     });
     
+    // Zapneme režim detailného grafu
     document.body.classList.add('weather-details-mode');
     
-    // ZISTENIE DUPLICITY: Ak sme klikli na veľkú hlavnú ikonu šetriča (id="ss-weather-trigger")
-    if (e && e.currentTarget && e.currentTarget.id === 'ss-weather-trigger') {
-        vykresliGraf(null); // Vykreslí iba 12h trend odteraz, žiadny malý deň nedostane rámček
+    // LOGIKA PREPÍNANIA:
+    // Ak klikáme na veľkú ikonu a predtým UŽ BOLO nejaké konkrétne políčko dňa aktívne (orámované),
+    // znamená to, že sme už v grafe boli a chceme sa vrátiť na režim "TERAZ + 12h".
+    // Rovnako to platí, ak klikáme priamo z čistého šetriča (kde žiadne políčko ešte aktívne nebolo).
+    if (!uzBoloAktivnePolicko || (e && e.currentTarget && e.currentTarget.id === 'ss-weather-trigger' && uzBoloAktivnePolicko)) {
+        vykresliGraf(null); // Vykreslí trend TERAZ + 12h, všetky malé dni zostanú bez oranžového rámčeka
     } else {
-        // Ak klikneme na hocičo iné (napríklad malé políčko DNES), spustí sa ucelený kalendárny deň
+        // Ak sa otvára odinakiaľ alebo bol graf prázdny, predvolíme ucelený dnešný deň (00-24) a orámujeme políčko DNES
         vykresliGraf(0);
         const dnesPolicko = document.querySelectorAll('.mini-item')[0];
         if (dnesPolicko) dnesPolicko.classList.add('day-box-active');
