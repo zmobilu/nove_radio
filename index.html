@@ -237,15 +237,12 @@
 
     <audio id="audioPlayer" preload="none" playsinline></audio>
     
-   <div class="buttons-section">
+    <div class="buttons-section">
         <button onpointerdown="stopRadio()" class="btn vypni" style="padding: 20px 0; min-height: 90px; width: 100%;"><i class="fa-solid fa-power-off"></i></button>
-        
         <button onclick="playRadio('https://icecast.stv.livebox.sk/slovensko_128.mp3', this, 'slovensko')" class="btn rozhlas" style="background:#00547E;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoSRo.png" style="max-width:80%; max-height:70%; object-fit:contain;"></button>
         <button onclick="playRadio('https://stream.funradio.sk/fun192.mp3', this, 'fun')" class="btn fun" style="background:#ffffff;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoFunRadio.png" style="max-width:75%; max-height:70%; object-fit:contain;"></button>
-        
         <button onclick="playRadio('https://stream.bauermedia.sk/rock-hi.mp3', this, 'rock')" class="btn rock" style="background:#000000;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoAntenaROCK.png" style="max-width:70%; max-height:60%; object-fit:contain;"></button>
-        <button id="blanik-main-btn" onclick="showBlanik()" class="btn blanik" style="background:#005ea6;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoBlanik.png" style="max-width:80%; max-height:70%; object-fit:contain;"></button>
-        
+        <button onclick="playRadio('https://ice.abradio.cz/blanikcz128.mp3', this, 'blanik')" class="btn blanik" style="background:#005ea6;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoBlanik.png" style="max-width:80%; max-height:70%; object-fit:contain;"></button>
         <button onclick="showSpotify()" class="btn spotify"><i class="fa-brands fa-spotify"></i></button>
         <button class="btn" style="background: #151515; cursor: default;"></button>
     </div>
@@ -292,24 +289,23 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; height: 5vh;">
                     <span id="weather-location" style="color: #666; font-size: 2.5vw; font-weight: 400; text-transform: uppercase; letter-spacing: 2px;">---</span>
                     <button onclick="zatvorPocasie(event)" style="background: #222; color: #ff9f0a; border: 2px solid #ff9f0a; padding: 2px 15px; border-radius: 8px; font-size: 2.5vw; font-weight: bold; cursor: pointer;">Zatvor</button>
-            </div>
+                </div>
 
-            <div style="display: flex; justify-content: space-around; width: 100%; height: 4vh; margin-bottom: -2vh; z-index: 10;">
-                <div style="background: #fff; color: #000; padding: 2px 8px; border-radius: 4px; font-size: 1.8vw; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.5);">
-                    <i class="fa-solid fa-sun-sunrise" style="color: #ff9f0a; font-size: 2vw;"></i>
-                    <span id="sun-rise-val">--:--</span>
-            </div>
-        
-                <div style="background: #fff; color: #000; padding: 2px 8px; border-radius: 4px; font-size: 1.8vw; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.5);">
-                    <i class="fa-solid fa-sun-sunset" style="color: #ff4500; font-size: 2vw;"></i>
-                    <span id="sun-set-val">--:--</span>
+                <div style="display: flex; justify-content: space-around; width: 100%; height: 4vh; margin-bottom: -2vh; z-index: 10;">
+                    <div style="background: #fff; color: #000; padding: 2px 8px; border-radius: 4px; font-size: 1.8vw; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+                        <i class="fa-solid fa-sun-sunrise" style="color: #ff9f0a; font-size: 2vw;"></i>
+                        <span id="sun-rise-val">--:--</span>
+                    </div>
+                    <div style="background: #fff; color: #000; padding: 2px 8px; border-radius: 4px; font-size: 1.8vw; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+                        <i class="fa-solid fa-sun-sunset" style="color: #ff4500; font-size: 2vw;"></i>
+                        <span id="sun-set-val">--:--</span>
+                    </div>
+                </div>
+
+                <div style="height: 44vh; width: 100%; display: flex; align-items: flex-end;">
+                    <div id="hourly-chart-container" style="display: flex; justify-content: space-around; align-items: flex-end; height: 100%; width: 100%;"></div>
                 </div>
             </div>
-
-    <div style="height: 44vh; width: 100%; display: flex; align-items: flex-end;">
-        <div id="hourly-chart-container" style="display: flex; justify-content: space-around; align-items: flex-end; height: 100%; width: 100%;"></div>
-    </div>
-</div>
                        
             <div class="radio-info-wrapper ss-hide">
                 <span id="weather-temp-mini">--°C</span>
@@ -336,7 +332,6 @@
             </div>
 
             <div id="rock-links-container" class="ss-hide" style="display: none; flex-direction: row; justify-content: center; gap: 12px; margin-top: 25px; width: 100%;">
-                <button onclick="playRadio('https://stream.bauermedia.sk/rock-hi.mp3', this, 'rock')" class="sub-btn"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoAntenaROCK.png"></button>
                 <button onclick="playRadio('https://stream.radiovlna.sk/rockovarepublika-hi.mp3', this, 'rockrepublika')" class="sub-btn"><img src="https://www.radia.sk/static/logos/radios/61_large.png" style="padding: 5px;"></button>
                 <button onclick="playRadio('https://ice.abradio.cz/beat128.mp3', this, 'beat')" class="sub-btn"><img src="https://www.radia.sk/static/logos/radios/142_large.png" style="padding: 4px;"></button>
                 <button onclick="playRadio('https://ice.abradio.cz/casrock128.mp3', this, 'casrock')" class="sub-btn"><img src="https://www.casrock.cz/wp-content/themes/casrock/assets/images/logo.png" style="padding: 6px;"></button>
@@ -747,8 +742,8 @@ function playRadio(url, element, type) {
         const hlavnyFun = document.querySelector('.btn.fun');
         if (hlavnyFun) hlavnyFun.classList.add('playing');
     }
-    // Pridané: Ak klikneme na akékoľvek pod-rockové rádio, rozsvieti sa hlavné tlačidlo Rock v mriežke
-    if (['rock', 'rockrepublika', 'beat', 'casrock'].includes(type)) {
+    // ZMENENÉ: Odstránili sme 'rock', zostali iba 3 sub-stanice, ktoré rozsvecujú hlavný ROCK gombík v mriežke
+    if (['rockrepublika', 'beat', 'casrock'].includes(type)) {
         const hlavnyRock = document.querySelector('.btn.rock');
         if (hlavnyRock) hlavnyRock.classList.add('playing');
     }
@@ -783,7 +778,8 @@ function aktualizujSubPanely(type) {
     if (funContainer) funContainer.style.display = ['fun', 'funchill', 'funczsk', 'fun8090', 'milenialky'].includes(type) ? 'flex' : 'none';
     if (komerceContainer) komerceContainer.style.display = ['blanik', 'expres', 'europa2', 'melody', 'vlna'].includes(type) ? 'flex' : 'none';
     if (spotifyContainer) spotifyContainer.style.display = (type === 'spotify') ? 'flex' : 'none';
-    if (rockContainer) rockContainer.style.display = ['rock', 'rockrepublika', 'beat', 'casrock'].includes(type) ? 'flex' : 'none'; // PRidane
+    // ZMENENÉ: Riadok sa otvorí len pri kliknutí na sub-stanice (keďže hlavný rock už v sub-paneli nie je)
+    if (rockContainer) rockContainer.style.display = ['rockrepublika', 'beat', 'casrock'].includes(type) ? 'flex' : 'none';
 }
     
 function stopRadio() {
@@ -813,13 +809,6 @@ function showSpotify() {
     }
 }
 
-function showBlanik() {
-    const blanikBtn = document.getElementById('blanik-main-btn');
-    playRadio('https://ice.abradio.cz/blanikcz128.mp3', blanikBtn, 'blanik');
-}
-
-// STARÁ FUNKCIA changePage BOLA KOMPLETNE ODSTRÁNENÁ, KEĎŽE JE ZBYTOČNÁ
-    
 function openSpotify(id) {
     let url = id === 'search' ? "https://open.spotify.com/search" : `https://open.spotify.com/playlist/${id}`;
     window.location.href = url; 
