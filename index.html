@@ -240,7 +240,6 @@
         <button onclick="playRadio('https://ice.abradio.cz/blanikcz128.mp3', this, 'blanik')" class="btn blanik" style="background:#005ea6;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoBlanik.png" style="max-width:80%; max-height:70%; object-fit:contain;"></button>
         <button onclick="showSpotify()" class="btn spotify"><i class="fa-brands fa-spotify"></i></button>
         <button onclick="playRadio('https://api.play.cz/radio/cro-pohoda128.mp3', this, 'cro')" class="btn cro" style="background:#dee3e8;"><img src="https://upload.wikimedia.org/wikipedia/commons/e/ee/%C4%8Cesk%C3%BD_rozhlas_logo_2022.svg" style="max-width:85%; max-height:65%; object-fit:contain;"></button>
-        <button class="btn" style="background: #151515; cursor: default;"></button>
     </div>
     
     <div class="clock-section">
@@ -774,7 +773,6 @@ function playRadio(url, element, type) {
     if (element && element.classList) {
         element.classList.add('playing');
     }
-    
     // Ak klikneme na sub-stanicu, rozsvietime aj jej materské tlačidlo, ktoré je vedľa
     if (['fm', 'devin', 'litera', 'regina'].includes(type)) {
         const hlavnyRozhlas = document.querySelector('.rozhlas');
