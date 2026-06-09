@@ -228,15 +228,6 @@
             white-space: nowrap !important;
             line-height: 1.0 !important;
         }
-        #weather-location-main {
-        font-size: 2.5vw !important; /* Mierne zmenšené z 3vw */
-        line-height: 1.1 !important; /* Zabezpečí, že ak budú dva riadky, nebudú zlepené */
-        max-width: 30vw;
-        word-wrap: break-word;
-        margin-bottom: 0.5vh !important;
-        }
-
-        .hide-on-iphone { display: none !important; }
         
     </style>
 </head>
@@ -259,20 +250,16 @@
     <div class="clock-section">
         
         <div class="ss-left-col ss-only">
-    <div id="ss-weather-trigger" style="cursor: pointer; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
-        <div class="current-weather-group">
-            <!-- NOVÝ NÁZOV MESTA -->
-            <div id="weather-location-main" style="font-size: 3vw; font-weight: 500; letter-spacing: 3px; color: #fff; margin-bottom: 1vh; text-transform: uppercase;">---</div>
-            <!-- Zmenšená ikona -->
-            <i id="weather-icon-main" class="fas fa-sun" style="font-size: 10vw; margin-bottom: 5px;"></i>
+            <div id="ss-weather-trigger" style="cursor: pointer; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
+                <div class="current-weather-group">
+                    <i id="weather-icon-main" class="fas fa-sun meteo-icon-large"></i>
+                    <div class="temp-val" id="outdoor-temp">--°C</div>
             
-            <div class="temp-val" id="outdoor-temp">--°C</div>
-    
-            <div class="sub-info-row">
-                <span id="apparent-temp" class="hum-val">--°</span>
-                <span id="outdoor-hum" class="hum-val">--%</span>
-            </div>
-        </div>
+                    <div class="sub-info-row">
+                        <span id="apparent-temp" class="hum-val">--°</span>
+                        <span id="outdoor-hum" class="hum-val">--%</span>
+                    </div>
+                </div>
       
                 <div id="mini-forecast-strip">
                     <div class="mini-item" onpointerdown="otvorPocasie(event, 'screensaver'); prepniDenGrafu(event, 0)">
@@ -301,11 +288,12 @@
             <div id="weather-details-top-inline" class="weather-details-only" style="display: none; flex-direction: column; width: 100%; height: 68vh; padding: 10px 10px 0 10px; box-sizing: border-box; justify-content: space-between;">
                <!-- NOVÁ LIŠTA S VYHĽADÁVANÍM -->
                 <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; height: 5vh; gap: 10px;">
-                      
+    
+                    <span id="weather-location" style="color: #666; font-size: 2.5vw; font-weight: 400; text-transform: uppercase; letter-spacing: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 30vw;">---</span>
+    
                     <!-- ZMENENÉ: Šírka inputu nastavená na pevných 30% (pôvodne sa rozťahoval cez flex-grow) -->
                     <div style="position: relative; width: 40%; display: flex; gap: 6px;" onpointerdown="event.stopPropagation()" ontouchstart="event.stopPropagation()">
-                        
-                        <div id="search-row" style="display: flex; justify-content: space-between; align-items: center; width: 100%; height: 5vh; gap: 10px;">
+    
                         <input type="text" id="city-search-input" placeholder="Mesto..." 
                                onfocus="zobrazHistoriu()"
                                onblur="setTimeout(skryHistoriu, 200)"
@@ -313,7 +301,7 @@
                                style="width: 100%; background: #111; color: #fff; border: 1px solid #444; border-radius: 8px; padding: 4px 10px; font-size: 2.2vw; font-family: inherit; outline: none;">
     
                         <button onclick="hladajMesto()" style="background: #222; color: #ff9f0a; border: 1px solid #ff9f0a; padding: 2px 10px; border-radius: 8px; font-size: 2.2vw; font-weight: bold; cursor: pointer; white-space: nowrap;">🔍</button>
-                          </div>
+
                         <div id="search-history-box" style="display: none; position: absolute; top: 110%; left: 0; width: 100%; background: #111; border: 1px solid #ff9f0a; border-radius: 8px; padding: 5px; box-sizing: border-box; z-index: 999; flex-direction: column; gap: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.8);">
                         </div>
                     </div>
@@ -519,20 +507,21 @@ function updateClock() {
 
 async function updateWeather(lat = 48.1421, lon = 17.1964) {
     try { 
+        // PRIDANÉ PARAMETRE: sunrise,sunset na konci adresy
         const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m&hourly=temperature_2m,precipitation,cloud_cover,wind_speed_10m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=Europe%2FBratislava&wind_speed_unit=kmh&forecast_days=6`);
         const d = await r.json();
         weatherDataBackup = d; 
 
-        // AKTUALIZÁCIA NÁZVU MESTA V ĽAVOM BLOKU
-        const locationEl = document.getElementById('weather-location-main');
-        if (locationEl) {
-            if (window.customCityName) {
-                locationEl.textContent = `SK / ${window.customCityName}`;
-            } else if (d.timezone && d.timezone.includes('/')) {
-                locationEl.textContent = d.timezone.split('/')[1].replace(/_/g, ' ');
-            } else {
-                locationEl.textContent = `${lat.toFixed(2)}°N, ${lon.toFixed(2)}°E`;
-            }
+        // NOVÝ SPRÁVNE OŠETRENÝ STAV:
+        if (window.customCityName) {
+        // Ak sme mesto vyhľadali ručne, použijeme jeho skutočný názov (napr. Košice)
+            document.getElementById('weather-location').textContent = window.customCityName;
+        } else if (d.timezone && d.timezone.includes('/')) {
+        // Inak použijeme predvolenú automatiku z časovej zóny
+        const nazovMesta = d.timezone.split('/')[1].replace(/_/g, ' ');
+        document.getElementById('weather-location').textContent = nazovMesta;
+        } else {
+        document.getElementById('weather-location').textContent = `${lat.toFixed(2)}°N, ${lon.toFixed(2)}°E`;
         }
 
         const rawTemp = d.current.temperature_2m;
@@ -873,45 +862,55 @@ function klikNaHodiny(e) {
 // --- OVLÁDANIE AUTOMATICKÉHO ČASOVAČA ---
 let pocasieTimer;
         
-// --- OVLÁDANIE AUTOMATICKÉHO ČASOVAČA ---
-// Odstránili sme premennú pocasieTimer a logiku, ktorá ho spúšťala na 30s
-        
 function otvorPocasie(e, zdroj = 'radio') {
     if (e) { e.stopPropagation(); if (e.cancelable) e.preventDefault(); }
     weatherOpenedFrom = zdroj;
+    // 1. Zistíme, či už sme v režime grafu
     const uzSmeVGrafMode = document.body.classList.contains('weather-details-mode');
+    // 2. Zistíme, či bolo nejaké konkrétne kalendárne políčko (Dnes, Zajtra...) aktívne
     const boloAktivnePolickoDna = document.querySelector('.forecast-day-box.day-box-active, .mini-item.day-box-active');
-    
+    // 3. Ak sme už v grafe a klikli sme znova na veľkú ikonu počasia, pričom nebolo vybrané žiadne políčko dňa,
+    // znamená to, že už pozeráme trend "Teraz + 12h". Vtedy druhé kliknutie graf zatvorí a vráti veľké hodiny.
     if (uzSmeVGrafMode && !boloAktivnePolickoDna && e && e.currentTarget && e.currentTarget.id === 'ss-weather-trigger') {
         zatvorPocasie(e);
         return;
     }
-    
+    // Vyčistíme aktívne oranžové rámčeky zo všetkých buniek
     document.querySelectorAll('.forecast-day-box, .mini-item').forEach(box => { 
         box.classList.remove('day-box-active'); 
     });
-    
+    // Zapneme režim detailného grafu
     document.body.classList.add('weather-details-mode');
-    
+    // LOGIKA PREPÍNANIA GRAFU:
+    // Ak prichádzame z čistého šetriča (nebol zapnutý graf) -> ukážeme trend Teraz + 12h (index null)
+    // Ak už v grafe sme a svietil nejaký konkrétny deň (Dnes/Zajtra...) -> skočíme späť na trend Teraz + 12h (index null)
     if (!uzSmeVGrafMode || boloAktivnePolickoDna) {
-        vykresliGraf(null);
+        vykresliGraf(null); // Vykreslí trend TERAZ + 12h, malé dni zostanú bez oranžového rámčeka
     } else {
+        // Poistka pre iné prípady vyvolania: predvolíme ucelený dnešný deň (00-24) a orámujeme políčko DNES
         vykresliGraf(0);
         const dnesPolicko = document.querySelectorAll('.mini-item')[0];
         if (dnesPolicko) dnesPolicko.classList.add('day-box-active');
     }
-    // Časovač na automatické zatvorenie grafu sme odstránili
+    
+    clearTimeout(pocasieTimer);
+    pocasieTimer = setTimeout(() => { zatvorPocasie(); }, 30000); 
 }
 
 function zatvorPocasie(e) {
     if (e) { e.stopPropagation(); if (e.cancelable) e.preventDefault(); }
+    clearTimeout(pocasieTimer);
     
     document.body.classList.remove('weather-details-mode');
     document.querySelectorAll('.mini-item').forEach(box => box.classList.remove('day-box-active'));
 
-    // TOTO JE DÔLEŽITÉ: 
-    // Odstránili sme volanie updateWeather, aby sa názov mesta neprepisoval späť.
-    // Dáta sú stále uložené vo weatherDataBackup, takže všetko zostáva správne.
+    // --- PRIDANÉ: Resetovanie polohy späť na domovskú pri zatvorení ---
+    window.customCityName = null; // Vymaže vyhľadané meno
+    // Ak predtým zbehlo GPS, vráti GPS súradnice, inak natiahne defaultnú Bratislavu
+    const domacaLat = window.navigator.geolocation ? (window.customLat || 48.1421) : 48.1421;
+    const domacaLon = window.navigator.geolocation ? (window.customLon || 17.1964) : 17.1964;
+    updateWeather(domacaLat, domacaLon);
+    // -----------------------------------------------------------------
     
     if (weatherOpenedFrom === 'screensaver') {
         document.body.classList.add('screensaver-mode');
@@ -919,6 +918,7 @@ function zatvorPocasie(e) {
         idleTimer = setTimeout(() => document.body.classList.add('screensaver-mode'), 20000);
     } else { resetIdleTimer(); }
 }
+
 document.addEventListener('DOMContentLoaded', () => {
     const timeEl = document.getElementById('time');
     const weatherEl = document.getElementById('ss-weather-trigger');
@@ -1044,54 +1044,15 @@ function skryHistoriu() {
     const box = document.getElementById('search-history-box');
     if (box) box.style.display = 'none';
 }
-    
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. Detekcia iPhone 8 a skrytie vyhľadávania
-    const isSmalliPhone = (window.innerWidth <= 375 && /iPhone/.test(navigator.userAgent));
-    if (isSmalliPhone) {
-        const searchRow = document.getElementById('search-row');
-        if (searchRow) searchRow.classList.add('hide-on-iphone');
-    }
 
-    // 2. Prepínanie šetriča cez klik na hodiny
-    const timeEl = document.getElementById('time');
-    if (timeEl) {
-        timeEl.addEventListener('pointerdown', (e) => {
-            e.stopPropagation();
-            document.body.classList.toggle('screensaver-mode');
-            // Ak ideme do režimu rádia, musíme resetovať časovač nečinnosti
-            if (!document.body.classList.contains('screensaver-mode')) {
-                resetIdleTimer();
-            } else {
-                clearTimeout(idleTimer);
-            }
-        });
-    }
+// Volanie všetkých inicializačných funkcií na úplnom konci kódu
+updateNameday();
+setInterval(updateNameday, 3600000);
 
-    // 3. Počasie trigger
-    const weatherEl = document.getElementById('ss-weather-trigger');
-    if (weatherEl) {
-        weatherEl.addEventListener('pointerdown', (e) => {
-            otvorPocasie(e, 'screensaver');
-        });
-    }
+setInterval(updateClock, 1000); 
+updateClock();
 
-    // 4. Zatvorenie detailov počasia kliknutím mimo tlačidiel
-    const grafContainer = document.getElementById('weather-details-top-inline');
-    if (grafContainer) {
-        grafContainer.addEventListener('pointerdown', (e) => {
-            if (document.body.classList.contains('weather-details-mode') && !e.target.closest('button')) {
-                zatvorPocasie(e);
-            }
-        });
-    }
-});
-    // Inicializácia
-    updateNameday();
-    setInterval(updateNameday, 3600000);
-    setInterval(updateClock, 1000); 
-    updateClock();
-    inicializujPocasie();
+inicializujPocasie();
 </script>
 </body>
 </html>
