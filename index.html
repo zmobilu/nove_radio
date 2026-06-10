@@ -22,8 +22,7 @@
             -webkit-user-select: none; user-select: none; }
 
         /* --- REŽIM RÁDIO --- */
-        /* Sekcia s hodinami (vpravo) bude zaberať presne 65% */
-    .clock-section { 
+        .clock-section { 
             width: 65%; 
             display: flex; 
             flex-direction: column; 
@@ -44,7 +43,6 @@
         .radio-info-wrapper { display: flex;  align-items: center;  gap: 12px; margin-top: 10px;  font-size: 3.5vw; font-weight: 300; color: #aaa;}
         .radio-info-wrapper .separator { color: #222; font-weight: 200; }
         
-        /* PRIDANÉ: Skrytie textu rádio labelu (Radio 1 / Radio 2), keďže máme len jednu stranu */
         #radio-label, #radio-label + .separator { display: none !important; }
         
         #radio-name { font-weight: 400; text-transform: uppercase; }
@@ -106,6 +104,8 @@
         body.screensaver-mode #komerce-links-container { display: none !important; }
         body.screensaver-mode #rock-links-container { display: none !important; }
         body.screensaver-mode #cro-links-container { display: none !important; }
+        body.screensaver-mode #spotify-links-container { display: none !important; }
+        body.screensaver-mode #integrated-spotify-container { display: none !important; }
         body.screensaver-mode .ss-only { display: flex !important; }
         
         body.screensaver-mode .clock-section { width: 100vw; border: none; display: flex; flex-direction: row; align-items: stretch; }
@@ -140,6 +140,7 @@
             max-width: 35vw; 
             white-space: normal; 
             display: inline-block; 
+            transform: scaleY(2.2); 
             transform: scaleY(2.2); 
             transform-origin: bottom; 
             position: relative;
@@ -223,11 +224,9 @@
             white-space: nowrap !important;
             line-height: 1.0 !important;
         }
-        
     </style>
 </head>
 
-    
 <body id="mainBody">
 
     <audio id="audioPlayer" preload="none" playsinline></audio>
@@ -329,6 +328,10 @@
                 <span id="radio-name">---</span>
             </div>
 
+            <div id="integrated-spotify-container" class="ss-hide" style="display: none; width: 100%; margin-top: 15px; padding: 0 10px; box-sizing: border-box;">
+                <iframe id="spotify-player-frame" src="" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" style="border-radius: 12px; border: none;"></iframe>
+            </div>
+
             <div id="slovensko-links-container" class="ss-hide" style="display: none; flex-direction: row; justify-content: center; gap: 12px; margin-top: 25px; width: 100%;">
                 <button onclick="playRadio('https://icecast.stv.livebox.sk/fm_128.mp3', this, 'fm')" class="sub-btn"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoRadioFM.png"></button>
                 <button onclick="playRadio('https://icecast.stv.livebox.sk/devin_128.mp3', this, 'devin')" class="sub-btn"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoRadioDevin.png"></button>
@@ -350,11 +353,11 @@
             </div>
 
             <div id="spotify-links-container" class="ss-hide" style="display: none; flex-direction: row; justify-content: center; gap: 12px; margin-top: 25px; width: 100%;">
-                    <button onclick="openSpotify('67q2IYkPShkkWCbV14rRil')" style="background:none; border:none; color:white; font-size:26px;">J</button>
-                    <button onclick="openSpotify('63bq913mo2Dv0KIOnnUzam')" style="background:none; border:none; color:white; font-size:24px;">D</button>
-                    <button onclick="openSpotify('2xLrXn0HleL3pJvnRWnRcJ')" style="background:none; border:none; color:white; font-size:24px;">Rock</button>
-                    <button onclick="openSpotify('collection')" style="background:none; border:none; color:#198c47; font-size:26px;">💚</button>
-                    <button onclick="openSpotify('search')" style="background:none; border:none; color:white; font-size:26px;">🔍</button>
+                <button onclick="playIntegratedSpotify('playlist/67q2IYkPShkkWCbV14rRil', this)" class="sub-btn" style="color:white; font-size:24px; background:#111; border:1px solid #333;">🎵</button>
+                <button onclick="playIntegratedSpotify('playlist/63bq913mo2Dv0KIOnnUzam', this)" class="sub-btn" style="color:white; font-size:24px; background:#111; border:1px solid #333;">🎸</button>
+                <button onclick="playIntegratedSpotify('playlist/2xLrXn0HleL3pJvnRWnRcJ', this)" class="sub-btn" style="color:white; font-size:20px; background:#111; border:1px solid #333;">Rock</button>
+                <button onclick="playIntegratedSpotify('collection', this)" class="sub-btn" style="color:#198c47; font-size:24px; font-weight:bold; background:#111; border:1px solid #333;">💚</button>
+                <button onclick="playIntegratedSpotify('search', this)" class="sub-btn" style="color:white; font-size:24px; background:#111; border:1px solid #333;">🔍</button>
             </div>
 
             <div id="komerce-links-container" class="ss-hide" style="display: none; flex-direction: row; justify-content: center; gap: 12px; margin-top: 25px; width: 100%;">
@@ -368,7 +371,8 @@
                 <button onclick="playRadio('https://stream.sunshine-live.de/schranz/mp3-192/', this, 'schranz')" class="sub-btn" style="color:#fff; font-weight:bold; font-size:14px; background:#111;">schranz</button>
                 <button onclick="playRadio('https://stream.sunshine-live.de/melodic_beats/mp3-192/', this, 'melodicke rytmy')" class="sub-btn" style="color:#fff; font-weight:bold; font-size:14px; background:#111;">melodic</button>
                 <button onclick="playRadio('https://stream.sunshine-live.de/hardtechno/mp3-192', this, 'hard techno')" class="sub-btn" style="color:#fff; font-weight:bold; font-size:14px; background:#111;">HM-hard techno</button>
-                <button onclick="playRadio('https://sl-techno.bayer-media.de/techno/mp3-192', this, 'Drumcode')" class="sub-btn" style="color:#fff; font-weight:bold; font-size:14px; background:#111;">Drumcode 🔊</button></div>
+                <button onclick="playRadio('https://sl-techno.bayer-media.de/techno/mp3-192', this, 'Drumcode')" class="sub-btn" style="color:#fff; font-weight:bold; font-size:14px; background:#111;">Drumcode 🔊</button>
+           </div>
 
             <div id="date-block" class="ss-only">
                 <div class="ss-date-wrapper weather-details-hide">
@@ -513,7 +517,6 @@ async function updateWeather(lat = 48.1421, lon = 17.1964) {
         const d = await r.json();
         weatherDataBackup = d; 
 
-        // --- ÚPRAVA: ZOBRAZENIE MESTA ---
         const locationMainEl = document.getElementById('weather-location-main');
         if (locationMainEl) {
             if (window.customCityName) {
@@ -526,7 +529,6 @@ async function updateWeather(lat = 48.1421, lon = 17.1964) {
             }
         }
 
-        // Aktualizácia názvu mesta v hornej lište (detailné zobrazenie počasia)
         const topLocationEl = document.getElementById('weather-location-topbar');
         if (topLocationEl) {
             if (window.customCityName) {
@@ -614,10 +616,8 @@ async function updateWeather(lat = 48.1421, lon = 17.1964) {
 }
 
 function inicializujPocasie() {
-    // Okamžite natiahni Bratislavu (Ružinov)
     updateWeather(48.1421, 17.1964);
 
-    // Nastavíme bezpečný interval na pozadí pre Bratislavu (poistka)
     window.weatherInterval = setInterval(() => {
         const aktualnyLat = window.customLat || 48.1421;
         const aktualnyLon = window.customLon || 17.1964;
@@ -630,7 +630,6 @@ function vykresliGraf(targetDayIndex) {
     if (!chartContainer || !weatherDataBackup) return;
     chartContainer.innerHTML = ''; 
 
-    // PRIDANÉ: Dynamický zápis východu a západu slnka pre navolený deň nad grafom
     if (weatherDataBackup.daily && weatherDataBackup.daily.sunrise && weatherDataBackup.daily.sunset) {
         const dayIdx = (targetDayIndex === null) ? 0 : targetDayIndex;
         if (weatherDataBackup.daily.sunrise[dayIdx] && weatherDataBackup.daily.sunset[dayIdx]) {
@@ -641,7 +640,6 @@ function vykresliGraf(targetDayIndex) {
 
     let temps = [], rain = [], cloud = [], wind = [], labels = [], codes = [];
 
-    // PRÍPAD A: Klik na veľkú ikonu počasia (targetDayIndex je null) -> 12 hodín od AKTUÁLNEJ hodiny
     if (targetDayIndex === null) {
         const currentHourIndex = new Date().getHours();
         temps = weatherDataBackup.hourly.temperature_2m.slice(currentHourIndex, currentHourIndex + 12);
@@ -653,9 +651,7 @@ function vykresliGraf(targetDayIndex) {
         for (let idx = 0; idx < 12; idx++) {
             labels.push(idx === 0 ? 'Teraz' : String((currentHourIndex + idx) % 24));
         }
-    } 
-    // PRÍPAD B: Klik na malé dni vrátane DNES (index 0, 1, 2...) -> Celý kalendárny deň od polnoci v 2-hodinových krokoch
-    else {
+    } else {
         const startHourOfTargetDay = targetDayIndex * 24;
         for (let step = 0; step < 12; step++) {
             const hourOffset = startHourOfTargetDay + (step * 2); 
@@ -665,7 +661,7 @@ function vykresliGraf(targetDayIndex) {
             wind.push((weatherDataBackup.hourly.wind_speed_10m || [])[hourOffset]);
             codes.push((weatherDataBackup.hourly.weather_code || [])[hourOffset]);
             
-            labels.push(String(step * 2)); // Popisky stĺpcov: 0, 2, 4, 6 ... 22
+            labels.push(String(step * 2));
         }
     }
 
@@ -677,7 +673,6 @@ function vykresliGraf(targetDayIndex) {
         if (temp === undefined) return;
         const roundedTemp = Math.round(temp);
         
-        // Zachovaný váš upravený vzorec pre stlačenie stĺpcov nižšie
         const pct = ((temp - minGraphTemp) / tempRange) * 52 + 12;
         
         const rainVal = rain[idx] ? parseFloat(rain[idx]) : 0;
@@ -740,15 +735,18 @@ const audio = document.getElementById('audioPlayer');
 function playRadio(url, element, type) {
     currentPlayingType = type; 
     
-    // Odstránime oranžový rámček zo všetkých tlačidiel
+    // Pred zapnutím rádia kompletne zmažeme a skryjeme integrované Spotify
+    const spotifyContainer = document.getElementById('integrated-spotify-container');
+    const spotifyFrame = document.getElementById('spotify-player-frame');
+    if (spotifyContainer) spotifyContainer.style.display = 'none';
+    if (spotifyFrame) spotifyFrame.src = "";
+
     document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('playing'));
     document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('playing'));
     
-    // Pridáme oranžový rámček iba presne tomu tlačidlu, na ktoré sme klikli (ak existuje)
     if (element && element.classList) {
         element.classList.add('playing');
     }
-    // Ak klikneme na sub-stanicu, rozsvietime aj jej materské tlačidlo, ktoré je vedľa
     if (['fm', 'devin', 'litera', 'regina'].includes(type)) {
         const hlavnyRozhlas = document.querySelector('.rozhlas');
         if (hlavnyRozhlas) hlavnyRozhlas.classList.add('playing');
@@ -757,13 +755,12 @@ function playRadio(url, element, type) {
         const hlavnyFun = document.querySelector('.btn.fun');
         if (hlavnyFun) hlavnyFun.classList.add('playing');
     }
-    // ZMENENÉ: Odstránili sme 'rock', zostali iba 3 sub-stanice, ktoré rozsvecujú hlavný ROCK gombík v mriežke
     if (['rock', 'rockrepublika', 'beat', 'casrock'].includes(type)) {
         const hlavnyRock = document.querySelector('.btn.rock');
         if (hlavnyRock) hlavnyRock.classList.add('playing');
     }
     if (['expres', 'europa2', 'melody', 'vlna', 'blanik'].includes(type)) {
-        const hlavnyBlanik = document.getElementById('blanik-main-btn');
+        const hlavnyBlanik = document.querySelector('.btn.blanik');
         if (hlavnyBlanik) hlavnyBlanik.classList.add('playing');
     }
     if (['Sunshine-techno', 'schranz', 'melodicke rytmy', 'hard techno', 'Drumcode'].includes(type)) {
@@ -771,7 +768,6 @@ function playRadio(url, element, type) {
         if (hlavnyCro) hlavnyCro.classList.add('playing');
     }
 
-    // Otvoríme spodný riadok s malými stanicami
     aktualizujSubPanely(type);
     
     audio.volume = VOLUME_MAP[type] || 1.0;
@@ -779,7 +775,6 @@ function playRadio(url, element, type) {
     audio.play();
     resetIdleTimer();
     
-    // Bezpečný zápis textu pre šetrič, ktorý nespôsobí pád WebKitu
     const radioInfoEl = document.getElementById('ss-radio-info');
     if (radioInfoEl) {
         radioInfoEl.innerHTML = `<small style="font-size: 0.6em; opacity: 0.7; text-transform: none; margin-right: 8px;">hrá:</small>${type.toUpperCase()}`;
@@ -799,7 +794,7 @@ function aktualizujSubPanely(type) {
     if (komerceContainer) komerceContainer.style.display = ['blanik', 'expres', 'europa2', 'melody', 'vlna'].includes(type) ? 'flex' : 'none';
     if (spotifyContainer) spotifyContainer.style.display = (type === 'spotify') ? 'flex' : 'none';
     if (rockContainer) rockContainer.style.display = ['rock','rockrepublika', 'beat', 'casrock'].includes(type) ? 'flex' : 'none';
-    if (croContainer) croContainer.style.display = ['Sunshine-techno', 'schranz', 'melodicke rytmy', 'hard techno', 'Drumcode'].includes(type) ? 'flex' : 'none'; // PRIDANÉ
+    if (croContainer) croContainer.style.display = ['Sunshine-techno', 'schranz', 'melodicke rytmy', 'hard techno', 'Drumcode'].includes(type) ? 'flex' : 'none';
 }
     
 function stopRadio() {
@@ -808,7 +803,11 @@ function stopRadio() {
     document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('playing'));
     document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('playing')); 
     
-    // ZJEDNODUŠENÉ: Schováme komplet všetky sub-panely jedným zavolaním
+    const container = document.getElementById('integrated-spotify-container');
+    const frame = document.getElementById('spotify-player-frame');
+    if (container) container.style.display = 'none';
+    if (frame) frame.src = "";
+    
     aktualizujSubPanely("none");
     resetIdleTimer();
     
@@ -817,36 +816,54 @@ function stopRadio() {
 }
     
 function showSpotify() {
-    stopRadio();
+    // Vypne bežné rádio, no neodstráni vizuálny panel
+    audio.pause(); audio.src = "";
+    
     currentPlayingType = "spotify";
     aktualizujSubPanely("spotify");
+    
+    document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('playing'));
     const spotifyBtn = document.querySelector('.spotify');
     if (spotifyBtn) spotifyBtn.classList.add('playing');
+    
+    // Načítame predvolene search, no gombíky sub-panelu zostanú čisté
+    playIntegratedSpotify('search', null);
     resetIdleTimer();
+}
+
+function playIntegratedSpotify(target, element) {
+    audio.pause(); audio.src = ""; // Stop rádio
+    
+    const container = document.getElementById('integrated-spotify-container');
+    const frame = document.getElementById('spotify-player-frame');
+    if (!container || !frame) return;
+    
+    // Vyčistíme staré vysvietenie pod-tlačidiel v Spotify skupine
+    document.querySelectorAll('#spotify-links-container .sub-btn').forEach(btn => btn.classList.remove('playing'));
+    
+    // Rozsvietime konkrétny sub-gombík, ak naň bolo reálne kliknuté
+    if (element) {
+        element.classList.add('playing');
+    }
+    
+    let embedUrl = "https://open.spotify.com/embed/";
+    
+    if (target === 'search') {
+        embedUrl += "search";
+    } else if (target === 'collection') {
+        embedUrl += "collection/tracks";
+    } else {
+        embedUrl += target;
+    }
+    
+    frame.src = embedUrl;
+    container.style.display = 'block';
+    
     const radioInfoEl = document.getElementById('ss-radio-info');
     if (radioInfoEl) {
         radioInfoEl.innerHTML = `<small style="font-size: 0.6em; opacity: 0.7; text-transform: none; margin-right: 8px;">hrá:</small>SPOTIFY`;
     }
 }
-function openSpotify(id) {
-    let url;
-    if (id === 'search') {
-        // Otvorí vyhľadávanie priamo v aplikácii Spotify
-        url = "spotify:search";
-    } else if (id === 'collection') {
-        // Otvorí tvoju knižnicu (Kolekciu) priamo v aplikácii Spotify
-        url = "spotify:collection";
-    } else {
-        // Otvorí konkrétny playlist priamo v aplikácii Spotify
-        url = `spotify:playlist:${id}`;
-    }
-    
-    window.location.href = url; 
-}
-//function openSpotify(id) {
-  //  let url = id === 'search' ? "https://open.spotify.com/search" : `https://open.spotify.com/playlist/${id}`;
-    //window.location.href = url; 
-//}
 
 // --- ŠETRIČ A DOTYKY ---
 let idleTimer;
@@ -876,29 +893,24 @@ let pocasieTimer;
 function otvorPocasie(e, zdroj = 'radio') {
     if (e) { e.stopPropagation(); if (e.cancelable) e.preventDefault(); }
     weatherOpenedFrom = zdroj;
-    // 1. Zistíme, či už sme v režime grafu
+    
     const uzSmeVGrafMode = document.body.classList.contains('weather-details-mode');
-    // 2. Zistíme, či bolo nejaké konkrétne kalendárne políčko (Dnes, Zajtra...) aktívne
     const boloAktivnePolickoDna = document.querySelector('.forecast-day-box.day-box-active, .mini-item.day-box-active');
-    // 3. Ak sme už v grafe a klikli sme znova na veľkú ikonu počasia, pričom nebolo vybrané žiadne políčko dňa,
-    // znamená to, že už pozeráme trend "Teraz + 12h". Vtedy druhé kliknutie graf zatvorí a vráti veľké hodiny.
+    
     if (uzSmeVGrafMode && !boloAktivnePolickoDna && e && e.currentTarget && e.currentTarget.id === 'ss-weather-trigger') {
         zatvorPocasie(e);
         return;
     }
-    // Vyčistíme aktívne oranžové rámčeky zo všetkých buniek
+    
     document.querySelectorAll('.forecast-day-box, .mini-item').forEach(box => { 
         box.classList.remove('day-box-active'); 
     });
-    // Zapneme režim detailného grafu
+    
     document.body.classList.add('weather-details-mode');
-    // LOGIKA PREPÍNANIA GRAFU:
-    // Ak prichádzame z čistého šetriča (nebol zapnutý graf) -> ukážeme trend Teraz + 12h (index null)
-    // Ak už v grafe sme a svietil nejaký konkrétny deň (Dnes/Zajtra...) -> skočíme späť na trend Teraz + 12h (index null)
+    
     if (!uzSmeVGrafMode || boloAktivnePolickoDna) {
-        vykresliGraf(null); // Vykreslí trend TERAZ + 12h, malé dni zostanú bez oranžového rámčeka
+        vykresliGraf(null);
     } else {
-        // Poistka pre iné prípady vyvolania: predvolíme ucelený dnešný deň (00-24) a orámujeme políčko DNES
         vykresliGraf(0);
         const dnesPolicko = document.querySelectorAll('.mini-item')[0];
         if (dnesPolicko) dnesPolicko.classList.add('day-box-active');
@@ -915,8 +927,6 @@ function zatvorPocasie(e) {
     document.body.classList.remove('weather-details-mode');
     document.querySelectorAll('.mini-item').forEach(box => box.classList.remove('day-box-active'));
 
-    // ÚPLNE ZMAZANÉ: Resetovanie polohy pri zatvorení. Takto sa mesto udrží trvalo!
-    
     if (weatherOpenedFrom === 'screensaver') {
         document.body.classList.add('screensaver-mode');
         clearTimeout(idleTimer);
@@ -977,7 +987,6 @@ async function hladajMesto() {
         const lon = najdeneMesto.longitude;
         const name = najdeneMesto.name;
 
-        // Uloženie dát
         window.customLat = lat;
         window.customLon = lon;
         window.customCityName = name;
@@ -994,23 +1003,16 @@ async function hladajMesto() {
         alert("Nepodarilo sa spojiť so serverom.");
     }
 }
-        // Funkcia na pridanie mesta do histórie (max 3 mestá, bez duplicít)
+
 function pridajDoHistorie(cityName, lat, lon) {
     let historia = JSON.parse(localStorage.getItem('kiosk_city_history')) || [];
-    
-    // Odstránime mesto z histórie, ak tam už bolo (aby sa posunulo na prvé miesto)
     historia = historia.filter(item => item.name.toLowerCase() !== cityName.toLowerCase());
-    
-    // Pridáme na začiatok nové mesto
     historia.unshift({ name: cityName, lat: lat, lon: lon });
     
-    // Osekáme históriu na maximálne 3 záznamy
     if (historia.length > 3) historia.pop();
-    
     localStorage.setItem('kiosk_city_history', JSON.stringify(historia));
 }
 
-// Zobrazenie boxu s históriou
 function zobrazHistoriu() {
     const box = document.getElementById('search-history-box');
     const historia = JSON.parse(localStorage.getItem('kiosk_city_history')) || [];
@@ -1021,7 +1023,6 @@ function zobrazHistoriu() {
         return;
     }
     
-    // Vygenerujeme klikateľné riadky pre uložené mestá
     box.innerHTML = '<div style="font-size: 1.5vw; color: #666; padding: 2px 5px; text-transform: uppercase;">Posledné hľadané:</div>';
     
     historia.forEach(mesto => {
@@ -1029,7 +1030,6 @@ function zobrazHistoriu() {
         row.style.cssText = "color: #fff; font-size: 2vw; padding: 6px 8px; cursor: pointer; border-radius: 4px; background: #222; text-align: left;";
         row.textContent = mesto.name;
         
-        // Po kliknutí na položku z histórie okamžite načítame počasie
         row.onpointerdown = async (e) => {
             e.stopPropagation();
             window.customLat = mesto.lat;
@@ -1044,13 +1044,11 @@ function zobrazHistoriu() {
     box.style.display = 'flex';
 }
 
-// Skrytie boxu histórie (volá sa s timeoutom po opustení inputu)
 function skryHistoriu() {
     const box = document.getElementById('search-history-box');
     if (box) box.style.display = 'none';
 }
         
-// Detekcia starého iOS 16 (iPhone 8) pre skrytie vyhľadávania
 const ua = navigator.userAgent;
 if (ua.includes('iPhone') && ua.includes('OS 16_')) {
     const searchRow = document.getElementById('weather-search-row');
@@ -1058,7 +1056,7 @@ if (ua.includes('iPhone') && ua.includes('OS 16_')) {
         searchRow.style.setProperty('display', 'none', 'important');
     }
 }
-// Volanie všetkých inicializačných funkcií na úplnom konci kódu
+
 updateNameday();
 setInterval(updateNameday, 3600000);
 
