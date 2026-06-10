@@ -32,10 +32,10 @@
             position: relative; 
         }
         
-        #time { font-size: 24vw; line-height: 0.8; letter-spacing: -3px; display: flex; align-items: baseline; 
-                  transform: scaleY(1.00); transform-origin: center; cursor: pointer; }
+        #time { font-size: 24vw; line-height: 0.8; letter-spacing: -4px; display: flex; align-items: baseline; 
+                  transform: scaleY(1.05); transform-origin: center; cursor: pointer; }
         .hours-part { font-weight: 500; color: #FFFfff; } 
-        .minutes-part { font-weight: 500; color: #FFFfff; margin-left: 1px; } 
+        .minutes-part { font-weight: 500; color: #FFFfff; margin-left: 1px; }    /* --- <span class="colon-part">:</span> --- */
         .red-digit { color: #eb0028 !important; } 
         .blue-digit { color: #307CEB !important; }
         
@@ -279,7 +279,7 @@
         
             <div id="time" class="weather-details-hide">
                 <span id="h-part" class="hours-part">00</span>
-                <span class="colon-part">:</span> <span id="m-part" class="minutes-part">00</span>
+                <span id="m-part" class="minutes-part">00</span> 
             </div>
             
             <div id="ss-radio-info" class="weather-details-hide"></div>
