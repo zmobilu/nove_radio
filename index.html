@@ -239,7 +239,7 @@
         <button onclick="playRadio('https://stream.bauermedia.sk/rock-hi.mp3', this, 'rock')" class="btn rock" style="background:#000000;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoAntenaROCK.png" style="max-width:70%; max-height:60%; object-fit:contain;"></button>
         <button onclick="playRadio('https://ice.abradio.cz/blanikcz128.mp3', this, 'blanik')" class="btn blanik" style="background:#005ea6;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoBlanik.png" style="max-width:80%; max-height:70%; object-fit:contain;"></button>
         <button onclick="showSpotify()" class="btn spotify"><i class="fa-brands fa-spotify"></i></button>
-        <button onclick="playRadio('https://stream.sunshine-live.de/techno/mp3-192/', this, 'cro')" class="btn cro" style="background:#000000; color:#307CEB;"><i class="fa-solid fa-bolt" style="font-size:60px;"></i></button>
+        <button onclick="playRadio('https://stream.sunshine-live.de/techno/mp3-192/', this, 'Sunshine-techno')" class="btn cro" style="background:#000000; color:#307CEB;"><i class="fa-solid fa-bolt" style="font-size:60px;"></i></button>
     </div>
     
     <div class="clock-section">
@@ -365,13 +365,13 @@
 
            <div id="cro-links-container" class="ss-hide">
                 <!-- Hirschmilch Techno -->
-                <button onclick="playRadio('https://hirschmilch.de:8443/techno.mp3', this, 'cropohoda')" class="sub-btn" style="color:#fff; font-weight:bold; font-size:14px; background:#111;">Hirsch 🇩🇪</button>
+                <button onclick="playRadio('https://xfer.hirschmilch.de:8001/techno.mp3', this, 'techno')" class="sub-btn" style="color:#fff; font-weight:bold; font-size:14px; background:#111;">HM-Techno</button>
                 <!-- Sunshine Live -->
-                <button onclick="playRadio('https://stream.sunshine-live.de/techno/mp3-192/', this, 'crojazz')" class="sub-btn" style="color:#fff; font-weight:bold; font-size:14px; background:#111;">Sunshine 🔥</button>
+                <button onclick="playRadio('https://hirschmilch.de:7000/organic-house.mp3', this, 'organic-house')" class="sub-btn" style="color:#fff; font-weight:bold; font-size:14px; background:#111;">HM-organic</button>
                 <!-- Schranz Hardtechno -->
-                <button onclick="playRadio('http://85.195.88.149:11810/stream', this, 'crowave')" class="sub-btn" style="color:#fff; font-weight:bold; font-size:14px; background:#111;">Hard ⚡</button>
+                <button onclick="playRadio('https://xfer.hirschmilch.de:8001/hypnotic.mp3', this, 'hypnotic')" class="sub-btn" style="color:#fff; font-weight:bold; font-size:14px; background:#111;">HM-Hypnotic</button>
                 <!-- Pôvodná Dvojka (alebo hocičo iné ako záloha) -->
-                <button onclick="playRadio('https://api.play.cz/radio/cro2-128.mp3', this, 'crodvojka')" class="sub-btn" style="color:#666; font-weight:bold; font-size:14px; background:#111;">Dvojka 📻</button>
+                <button onclick="playRadio('https://xfer.hirschmilch.de:8001/progressive.mp3', this, 'progressive')" class="sub-btn" style="color:#fff; font-weight:bold; font-size:14px; background:#111;">HM-Progressive</button>
             </div>
 
             <div id="date-block" class="ss-only">
@@ -399,7 +399,7 @@ const VOLUME_MAP = {
     'fun': 1.0, 'funchill': 0.5, 'funczsk': 0.5, 'fun8090': 0.5, 'milenialky': 0.5,
     'expres': 0.5, 'europa2': 1.0, 'melody': 1.0, 'vlna': 0.5,
     'blanik': 1.0, 'rock': 0.5, 'rockrepublika': 0.5, 'beat': 0.5, 'casrock': 0.5, 
-    'cro': 0.4, 'cropohoda': 0.4, 'crojazz': 0.5, 'crowave': 0.4, 'crodvojka': 0.4
+    'Sunshine-techno': 0.4, 'techno': 0.4, 'organic-house': 0.5, 'hypnotic': 0.4, 'progressive': 0.4
 };
 
 function getTempColor(t) {
@@ -791,7 +791,7 @@ function playRadio(url, element, type) {
         const hlavnyBlanik = document.getElementById('blanik-main-btn');
         if (hlavnyBlanik) hlavnyBlanik.classList.add('playing');
     }
-    if (['cro', 'cropohoda', 'crojazz', 'crowave', 'crodvojka'].includes(type)) {
+    if (['Sunshine-techno', 'techno', 'organic-house', 'hypnotic', 'progressive'].includes(type)) {
         const hlavnyCro = document.querySelector('.btn.cro');
         if (hlavnyCro) hlavnyCro.classList.add('playing');
     }
@@ -824,7 +824,7 @@ function aktualizujSubPanely(type) {
     if (komerceContainer) komerceContainer.style.display = ['blanik', 'expres', 'europa2', 'melody', 'vlna'].includes(type) ? 'flex' : 'none';
     if (spotifyContainer) spotifyContainer.style.display = (type === 'spotify') ? 'flex' : 'none';
     if (rockContainer) rockContainer.style.display = ['rock','rockrepublika', 'beat', 'casrock'].includes(type) ? 'flex' : 'none';
-    if (croContainer) croContainer.style.display = ['cro', 'cropohoda', 'crojazz', 'crowave', 'crodvojka'].includes(type) ? 'flex' : 'none'; // PRIDANÉ
+    if (croContainer) croContainer.style.display = ['Sunshine-techno', 'techno', 'organic-house', 'hypnotic', 'progressive'].includes(type) ? 'flex' : 'none'; // PRIDANÉ
 }
     
 function stopRadio() {
