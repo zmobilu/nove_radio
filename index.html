@@ -356,8 +356,7 @@
                 <button onclick="playIntegratedSpotify('playlist/67q2IYkPShkkWCbV14rRil', this)" class="sub-btn" style="color:white; font-size:24px; background:#111; border:1px solid #333;">🎵</button>
                 <button onclick="playIntegratedSpotify('playlist/63bq913mo2Dv0KIOnnUzam', this)" class="sub-btn" style="color:white; font-size:24px; background:#111; border:1px solid #333;">🎸</button>
                 <button onclick="playIntegratedSpotify('playlist/2xLrXn0HleL3pJvnRWnRcJ', this)" class="sub-btn" style="color:white; font-size:24px; background:#111; border:1px solid #333;">ROCK</button>
-                <button onclick="playIntegratedSpotify('https://open.spotify.com/collection/tracks', this)" class="sub-btn" style="color:white; font-size:24px; background:#111; border:1px solid #333;">💚</button>
-                <button onclick="playIntegratedSpotify('https://open.spotify.com/', this)" class="sub-btn" style="color:white; font-size:24px; background:#111; border:1px solid #333;">🔍</button>
+                <button onclick="playIntegratedSpotify('https://open.spotify.com/', this)" class="sub-btn" style="color:white; font-size:24px; background:#111; border:1px solid #333;">🔍+💚</button>
             </div>
 
             <div id="komerce-links-container" class="ss-hide" style="display: none; flex-direction: row; justify-content: center; gap: 12px; margin-top: 25px; width: 100%;">
@@ -838,8 +837,7 @@ function showSpotify() {
 function playIntegratedSpotify(target, element) {
     audio.pause(); audio.src = ""; // Stop rádio
     
-    // Ošetrenie špeciálne pre ikonu lupy/vyhľadávania, aby otvorila Edge okno
-    if (target === 'https://open.spotify.com/') {
+   if (target === 'https://open.spotify.com/') {
         const extUrl = "https://open.spotify.com/collection/tracks";
         try {
             // Skúsi vynútiť otvorenie v Microsoft Edge pomocou URL schémy
