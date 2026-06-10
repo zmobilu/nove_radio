@@ -238,7 +238,7 @@
         <button onclick="playRadio('https://stream.bauermedia.sk/rock-hi.mp3', this, 'rock')" class="btn rock" style="background:#000000;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoAntenaROCK.png" style="max-width:70%; max-height:60%; object-fit:contain;"></button>
         <button onclick="playRadio('https://ice.abradio.cz/blanikcz128.mp3', this, 'blanik')" class="btn blanik" style="background:#005ea6;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoBlanik.png" style="max-width:80%; max-height:70%; object-fit:contain;"></button>
         <button onclick="showSpotify()" class="btn spotify"><i class="fa-brands fa-spotify"></i></button>
-        <button onclick="playRadio('https://stream.sunshine-live.de/techno/mp3-192/', this, 'Sunshine-techno')" class="btn cro" style="background:#000000; color:#307CEB;"><i class="fa-solid fa-bolt" style="font-size:60px;"></i></button>
+        <button onclick="playRadio('https://stream.sunshine-live.de/techno/mp3-192/', this, 'S-techno')" class="btn cro" style="background:#000000; color:#307CEB;"><i class="fa-solid fa-bolt" style="font-size:60px;"></i></button>
     </div>
     
     <div class="clock-section">
@@ -353,10 +353,11 @@
             </div>
 
             <div id="spotify-links-container" class="ss-hide" style="display: none; flex-direction: row; justify-content: center; gap: 12px; margin-top: 25px; width: 100%;">
+                <button onclick="playIntegratedSpotify('https://open.spotify.com/', this)" class="sub-btn" style="color:white; font-size:24px; background:#111; border:1px solid #333;">🔍+💚</button>
+                <button onclick="playIntegratedSpotify('https://open.spotify.com/', this)" class="sub-btn" style="color:white; font-size:24px; background:#111; border:1px solid #333;">🔍+💚</button>
                 <button onclick="playIntegratedSpotify('playlist/67q2IYkPShkkWCbV14rRil', this)" class="sub-btn" style="color:white; font-size:24px; background:#111; border:1px solid #333;">🎵</button>
                 <button onclick="playIntegratedSpotify('playlist/63bq913mo2Dv0KIOnnUzam', this)" class="sub-btn" style="color:white; font-size:24px; background:#111; border:1px solid #333;">🎸</button>
                 <button onclick="playIntegratedSpotify('playlist/2xLrXn0HleL3pJvnRWnRcJ', this)" class="sub-btn" style="color:white; font-size:24px; background:#111; border:1px solid #333;">ROCK</button>
-                <button onclick="playIntegratedSpotify('https://open.spotify.com/', this)" class="sub-btn" style="color:white; font-size:24px; background:#111; border:1px solid #333;">🔍+💚</button>
             </div>
 
             <div id="komerce-links-container" class="ss-hide" style="display: none; flex-direction: row; justify-content: center; gap: 12px; margin-top: 25px; width: 100%;">
@@ -368,8 +369,8 @@
 
            <div id="cro-links-container" class="ss-hide">
                 <button onclick="playRadio('https://stream.sunshine-live.de/schranz/mp3-192/', this, 'schranz')" class="sub-btn" style="color:#fff; font-weight:bold; font-size:14px; background:#111;">schranz</button>
-                <button onclick="playRadio('https://stream.sunshine-live.de/melodic_beats/mp3-192/', this, 'melodicke rytmy')" class="sub-btn" style="color:#fff; font-weight:bold; font-size:14px; background:#111;">melodic</button>
-                <button onclick="playRadio('https://stream.sunshine-live.de/hardtechno/mp3-192', this, 'hard techno')" class="sub-btn" style="color:#fff; font-weight:bold; font-size:14px; background:#111;">HM-hard techno</button>
+                <button onclick="playRadio('https://stream.sunshine-live.de/melodic_beats/mp3-192/', this, 'melodic')" class="sub-btn" style="color:#fff; font-weight:bold; font-size:14px; background:#111;">melodic</button>
+                <button onclick="playRadio('https://stream.sunshine-live.de/hardtechno/mp3-192', this, 'h-techno')" class="sub-btn" style="color:#fff; font-weight:bold; font-size:14px; background:#111;">HM-h-techno</button>
                 <button onclick="playRadio('https://sl-techno.bayer-media.de/techno/mp3-192', this, 'Drumcode')" class="sub-btn" style="color:#fff; font-weight:bold; font-size:14px; background:#111;">Drumcode 🔊</button>
            </div>
 
@@ -398,7 +399,7 @@ const VOLUME_MAP = {
     'fun': 1.0, 'funchill': 0.5, 'funczsk': 0.5, 'fun8090': 0.5, 'milenialky': 0.5,
     'expres': 0.5, 'europa2': 1.0, 'melody': 1.0, 'vlna': 0.5,
     'blanik': 1.0, 'rock': 0.5, 'rockrepublika': 0.5, 'beat': 0.5, 'casrock': 0.5, 
-    'Sunshine-techno': 0.4, 'schranz': 0.4, 'melodicke rytmy': 0.5, 'hard techno': 0.4, 'Drumcode': 0.4
+    'S-techno': 0.4, 'schranz': 0.4, 'melodic': 0.5, 'h-techno': 0.4, 'Drumcode': 0.4
 };
 
 function getTempColor(t) {
@@ -762,7 +763,7 @@ function playRadio(url, element, type) {
         const hlavnyBlanik = document.querySelector('.btn.blanik');
         if (hlavnyBlanik) hlavnyBlanik.classList.add('playing');
     }
-    if (['Sunshine-techno', 'schranz', 'melodicke rytmy', 'hard techno', 'Drumcode'].includes(type)) {
+    if (['S-techno', 'schranz', 'melodic', 'h-techno', 'Drumcode'].includes(type)) {
         const hlavnyCro = document.querySelector('.btn.cro');
         if (hlavnyCro) hlavnyCro.classList.add('playing');
     }
@@ -793,7 +794,7 @@ function aktualizujSubPanely(type) {
     if (komerceContainer) komerceContainer.style.display = ['blanik', 'expres', 'europa2', 'melody', 'vlna'].includes(type) ? 'flex' : 'none';
     if (spotifyContainer) spotifyContainer.style.display = (type === 'spotify') ? 'flex' : 'none';
     if (rockContainer) rockContainer.style.display = ['rock','rockrepublika', 'beat', 'casrock'].includes(type) ? 'flex' : 'none';
-    if (croContainer) croContainer.style.display = ['Sunshine-techno', 'schranz', 'melodicke rytmy', 'hard techno', 'Drumcode'].includes(type) ? 'flex' : 'none';
+    if (croContainer) croContainer.style.display = ['S-techno', 'schranz', 'melodic', 'h-techno', 'Drumcode'].includes(type) ? 'flex' : 'none';
 }
     
 function stopRadio() {
