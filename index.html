@@ -228,6 +228,61 @@
             white-space: nowrap !important;
             line-height: 1.0 !important;
         }
+        /* --- PRISPÔSOBENIE PRE TABLETY A PC (Obrazovky na šírku) --- */
+        @media (min-width: 800px) {
+            /* 1. Zúženie ľavého menu s tlačidlami (z 35% na 22%, aby mal šetrič viac miesta) */
+            .buttons-section { width: 22%; }
+            .clock-section { width: 78%; }
+
+            /* 2. Zmena rozloženia šetriča */
+            body.screensaver-mode .ss-left-col { width: 30%; }
+            body.screensaver-mode .ss-right-col { width: 70%; }
+
+            /* 3. Prepnutie textov z VW (šírka) na VH (výška) - toto vyrieši čierny pruh */
+            #time { font-size: 28vh; }
+            body.screensaver-mode #time { font-size: 34vh; letter-spacing: -1vh; margin-top: 0; }
+            
+            .radio-info-wrapper { font-size: 3.5vh; }
+            #ss-radio-info { font-size: 4vh; bottom: 20vh; left: 35vw; }
+
+            /* Dátumovka a vietor */
+            #date-block { padding-left: 3vh; padding-right: 3vh; margin-bottom: 3vh; }
+            .ss-date { font-size: 12vh; }
+            .ss-separator { font-size: 6vh; top: 0; }
+            .ss-day { font-size: 4vh; transform: scaleY(1.8); top: 0.5vh; }
+            #wind-icon { font-size: 6vh; margin-bottom: 1.5vh; }
+            #wind-speed { font-size: 3.5vh; }
+
+            /* Aktuálne počasie vľavo */
+            #weather-location-main { font-size: 4vh; max-width: 100%; margin-bottom: 2vh; }
+            .meteo-icon-large { font-size: 16vh; }
+            .temp-val { font-size: 14vh; }
+            .hum-val { font-size: 5vh; }
+
+            /* Malé dni pod počasím (Dnes, Zajtra) */
+            .mini-day { font-size: 2.5vh; }
+            .mini-icon { font-size: 7vh; }
+            .mini-temp { font-size: 4vh; }
+
+            /* Rozkliknutá detailná predpoveď */
+            .forecast-day-label { font-size: 2.5vh !important; margin-bottom: 1vh !important; }
+            .forecast-day-icon { font-size: 6vh !important; margin-bottom: 1vh !important; }
+            .forecast-day-temp { font-size: 3.5vh !important; }
+
+            /* Hodinový graf vo vnútri */
+            .chart-rain-info { font-size: 2vh; height: 3vh; }
+            .chart-icon-info { font-size: 4vh; }
+            .chart-temp-info { font-size: 2.5vh; }
+
+            /* Vynútené veľkosti ikon na hlavných tlačidlách (aby neostali fixné v pixeloch) */
+            .vypni i { font-size: 10vh !important; }
+            .spotify i { font-size: 9vh !important; }
+            .btn.cro i { font-size: 9vh !important; }
+            
+            /* Input pre hľadanie mesta vo vnútri grafu */
+            #city-search-input { font-size: 3vh !important; padding: 1vh 2vh !important; }
+            #weather-search-row button { font-size: 3vh !important; }
+        }
     </style>
 </head>
 
