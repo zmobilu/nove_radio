@@ -228,72 +228,34 @@
             white-space: nowrap !important;
             line-height: 1.0 !important;
         }
-        /* --- PRISPÔSOBENIE PRE TABLETY A PC (Obrazovky na šírku) --- */
+       /* --- DYNAMICKÉ PRISPÔSOBENIE PRE TABLETY A PC --- */
         @media (min-width: 800px) {
-            /* Rozloženie: ľavý panel trošku užší (25%), pravý širší (75%) */
-            .buttons-section { width: 25%; padding: 2vh; gap: 1.5vh; }
-            .clock-section { width: 75%; }
+            .buttons-section { width: 22%; padding: 2vh; gap: 1.5vh; }
+            .clock-section { width: 78%; }
             
-            body.screensaver-mode .ss-left-col { width: 25%; }
-            body.screensaver-mode .ss-right-col { width: 75%; }
+            /* Hlavný čas: mix šírky a výšky pre "nezničiteľnú" veľkosť */
+            #time { font-size: calc(10vw + 10vh); }
+            body.screensaver-mode #time { font-size: calc(15vw + 15vh); margin-top: 2vh; }
 
-            /* --- OBROVSKÉ HODINY --- */
-            #time { font-size: 30vh; letter-spacing: -1.5vh; } 
-            body.screensaver-mode #time { font-size: 42vh; letter-spacing: -2vh; margin-top: 2vh; }
+            /* Spodný riadok v šetriči */
+            #date-block { padding: 0 4vw; margin-bottom: 2vh; }
+            .ss-date { font-size: calc(5vw + 4vh); }
+            .ss-day { font-size: calc(1.5vw + 1.5vh); transform: scaleY(2); }
+            .ss-separator { font-size: calc(2vw + 3vh); margin: 0 1vw; }
 
-            /* --- SPODNÝ RIADOK V ŠETRIČI (Dátum, Meno, Vietor) --- */
-            #date-block { padding-left: 5vh; padding-right: 5vh; margin-bottom: 4vh; }
-            .ss-date { font-size: 14vh; }
-            .ss-day { font-size: 4.5vh; transform: scaleY(1.8); transform-origin: bottom; top: 0; margin-left: 1vh; }
-            .ss-separator { font-size: 8vh; top: -1.5vh; margin: 0 2vh; }
-            #wind-icon { font-size: 7vh; margin-bottom: 1.5vh; }
-            #wind-speed { font-size: 4.5vh; }
-
-            /* --- RÁDIO INFO A POD-TLAČIDLÁ --- */
-            .radio-info-wrapper { font-size: 4vh; margin-top: 3vh; }
-            #ss-radio-info { font-size: 4.5vh; bottom: 25vh; left: auto; }
+            /* Počasie vľavo */
+            #weather-location-main { font-size: calc(1vw + 1vh); }
+            .meteo-icon-large { font-size: calc(5vw + 5vh); }
+            .temp-val { font-size: calc(5vw + 5vh); }
             
-            /* Zväčšenie štvorcových pod-tlačidiel (schranz, rock, atď.) */
-            .sub-btn { width: 14vh; height: 14vh; border-radius: 2vh; border-width: 3px; }
-            #cro-links-container .sub-btn { font-size: 2.5vh !important; }
-            #spotify-links-container .sub-btn { font-size: 3.5vh !important; }
+            /* Graf a detaily */
+            .forecast-day-label { font-size: calc(0.5vw + 1vh) !important; }
+            .forecast-day-icon { font-size: calc(2vw + 2vh) !important; }
+            .forecast-day-temp { font-size: calc(1vw + 1vh) !important; }
 
-            /* Hlavné menu tlačidlá (ikony v nich) */
-            .vypni i { font-size: 10vh !important; }
-            .spotify i { font-size: 10vh !important; }
-            .btn.cro i { font-size: 9vh !important; }
-
-            /* --- ĽAVÝ PANEL (Aktuálne počasie) --- */
-            #weather-location-main { font-size: 4.5vh; margin-bottom: 2vh; margin-top: 3vh; }
-            .meteo-icon-large { font-size: 20vh; margin-bottom: 1vh; }
-            .temp-val { font-size: 18vh; }
-            .hum-val { font-size: 6vh; }
-            .sub-info-row { gap: 3vh; margin-top: 1vh; }
-
-            /* Malé dni (Dnes/Zajtra) v ľavom paneli */
-            #mini-forecast-strip { padding-top: 2vh; margin-bottom: 4vh; }
-            .mini-day { font-size: 2.5vh; margin-bottom: 1vh; }
-            .mini-icon { font-size: 8vh; margin-bottom: 1vh; }
-            .mini-temp { font-size: 4.5vh; }
-
-            /* --- ROZKLIKNUTÉ POČASIE (Graf a Dni dole) --- */
-            /* Zväčšíme výšku kontajnera grafu a blokov (aby neboli stlačené) */
-            #weather-details-top-inline > div:nth-child(3) { height: 55vh !important; }
-            #extended-forecast-container { height: 25vh !important; }
-
-            /* Texty v grafe */
-            .chart-rain-info { font-size: 2.2vh; height: 3vh; }
-            .chart-icon-info { font-size: 5vh; margin: 1vh 0; }
-            .chart-temp-info { font-size: 3vh; margin-bottom: 1vh; }
-
-            /* Spodné dni v predpovedi */
-            .forecast-day-label { font-size: 2.5vh !important; margin-bottom: 1.5vh !important; }
-            .forecast-day-icon { font-size: 7vh !important; margin-bottom: 1.5vh !important; }
-            .forecast-day-temp { font-size: 3.5vh !important; }
-
-            /* Vyhľadávanie mesta */
-            #city-search-input { font-size: 3vh !important; padding: 1.5vh 2vh !important; }
-            #weather-search-row button { font-size: 3vh !important; padding: 1vh 3vh !important; }
+            /* Ovládacie prvky rádia */
+            .vypni i, .spotify i { font-size: calc(2vw + 3vh) !important; }
+            .sub-btn { width: calc(3vw + 4vh); height: calc(3vw + 4vh); border-radius: 1vw; }
         }
     </style>
 </head>
