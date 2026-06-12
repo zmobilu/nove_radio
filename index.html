@@ -91,7 +91,7 @@
         /* Pôvodné šírky 35% a 65% zostávajú nedotknuté, presne ako v tvojom základe */
         /* Iba stiahneme spodnú medzeru celého bloku o kúsok vyššie, aby vietor neutekal */
         #date-block { 
-        margin-bottom: 1.5vh !important; /* Pôvodne tam bolo 3.5vh, čo vytláčalo vietor von */ }
+        margin-bottom: 3.5vh !important; /* Pôvodne tam bolo 3.5vh, čo vytláčalo vietor von */ }
     }
         .page-group { display: contents; }
         .page-group.hidden { display: none !important; }
@@ -124,47 +124,84 @@
         
         body.screensaver-mode #time { font-size: 30vw; transform: scaleY(1.20); letter-spacing: -1vw; margin-top: 8vh; } /* --- 1.30 --- */
         
-        #date-block { 
-        display: flex; 
-        align-items: flex-end; 
-        justify-content: flex-start; /* Zmenené zo space-between na flex-start, aby bolo všetko vľavo */
-        width: 100%; 
-        box-sizing: border-box; 
-        margin-top: auto; 
-        margin-bottom: 3.5vh; 
-        padding-left: 0.5vw; /* Minimálny odskok od úplného okraja obrazovky */
-        padding-right: 2vw;  
-        }
+        /* Celkový kontajner spodného riadku v pravom stĺpci */
+#date-block { 
+    display: flex; 
+    align-items: flex-end; 
+    justify-content: flex-start; 
+    width: 100%; 
+    box-sizing: border-box; 
+    margin-top: auto; 
+    margin-bottom: 3.5vh; 
+    padding-left: 1.5vw; /* Mierny odskok od deliacej čiary stĺpcov */
+    padding-right: 2vw;  
+}
 
-        #wind-block {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;     /* Šípka aj text budú presne pod sebou na stred */
-        justify-content: center !important;
-        width: 100%;
-        margin-top: 1vh;
-        margin-bottom: 1vh;
-    }
+        /* 3. NOVÝ Štýl pre VIETOR (umiestnený vedľa menín, vysoký a úzky) */
+#wind-block {
+    display: flex !important;
+    flex-direction: row !important; /* Šípka a text budú vedľa seba v jednom riadku */
+    align-items: flex-end !important;
+    gap: 0.8vw;
+    line-height: 1.0;
+    white-space: nowrap;
+    display: inline-block;
+    font-size: 5.0vw;
+    font-weight: 400;
+    color: #fff;
+    transform: scaleX(0.75) scaleY(2.15);
+    transform-origin: bottom left;
+}
+        /* Samostatné ošetrenie veľkosti ikony šípky vetra v riadku */
+#wind-icon {
+    font-size: 4.5vw !important;
+    color: #aaa;
+    transition: transform 0.5s ease-in-out;
+    transform-origin: center;
+    /* Drobné posunutie, aby ikona šípky opticky neskákala nad text rýchlosti */
+    position: relative;
+    bottom: -0.2vw; 
+}
+        /* Odstránenie vplyvu starého formátovania rýchlosti vetra */
+#wind-speed {
+    font-size: inherit !important;
+    font-weight: inherit !important;
+    color: inherit !important;
+}
 
         .ss-separator { color: #222; font-size: 5.5vw; font-weight: 200; line-height: 1; position: relative; top: 0.5vw; }
-        #date-display { line-height: 1; color: #ffffff; position: relative; top: 1.4vw; margin-right: 2px; }
-        .ss-date-wrapper { display: flex; align-items: flex-end; justify-content: flex-start; gap: 2vw; width: 100%; }
-        .ss-date { font-size: 14vw; font-weight: 300; color: #fff; line-height: 0.85; }
+        /* Spoločný obal pre všetky textové prvky v riadku */
+.ss-date-wrapper { 
+    display: flex; 
+    align-items: flex-end; 
+    justify-content: flex-start;
+    gap: 3vw; /* Bezpečný rozostup medzi blokmi (Dátum - Meno - Vietor) */
+    width: 100%;
+}
+        /* 1. Štýl pre DÁTUM (teraz vysoký a úzky) */
+.ss-date { 
+    font-size: 10vw; /* Upravená základná veľkosť pre lepšiu mierku transformácie */
+    font-weight: 300; 
+    color: #fff; 
+    line-height: 1.0;
+    white-space: nowrap;
+    display: inline-block;
+    transform: scaleX(0.65) scaleY(2.2); 
+    transform-origin: bottom left;
+}
 
-        .ss-day { 
-            font-size: 5.5vw; 
-            font-weight: 500; 
-            text-transform: uppercase; 
-            text-align: left; 
-            line-height: 0.85;
-            white-space: nowrap; 
-            display: inline-block; 
-            /* Úzke a natiahnuté písmo, aby lícovalo s hranami 14vw dátumu */
-            transform: scaleX(0.7) scaleY(2.3); 
-            transform-origin: bottom left; /* Kotva vľavo dole zaručí, že spodky budú dokonale v jednej línii */
-            position: relative;
-            top: 0.1vw;
-        }
+        /* 2. Štýl pre MENINY (zostáva zachovaný vysoký a úzky) */
+.ss-day { 
+    font-size: 5.5vw; 
+    font-weight: 500; 
+    text-transform: uppercase; 
+    text-align: left; 
+    line-height: 1.0;
+    white-space: nowrap; 
+    display: inline-block; 
+    transform: scaleX(0.7) scaleY(2.15); 
+    transform-origin: bottom left;
+}
 
         .name-female { color: #FFB6C1 !important; } 
         .name-male { color: #87CEEB !important; }    
@@ -275,12 +312,7 @@
                         <span id="outdoor-hum" class="hum-val">--%</span>
                     </div>
                 </div>
-
-                <div id="wind-block" class="weather-details-hide" style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin: auto 0;">
-                    <i id="wind-icon" class="fas fa-arrow-up" style="font-size: 5.5vw; color: #aaa; transition: transform 0.5s ease-in-out; transform-origin: center; margin-bottom: 1vh;"></i>
-                    <span id="wind-speed" style="font-size: 4.5vw; font-weight: 400; color: #fff; white-space: nowrap; line-height: 1;">-- km/h</span>
-                </div>
-      
+    
                 <div id="mini-forecast-strip">
                     <div class="mini-item" onpointerdown="otvorPocasie(event, 'screensaver'); prepniDenGrafu(event, 0)">
                         <span id="fc0-day" class="forecast-day-label">Dnes</span>
@@ -399,11 +431,21 @@
             </div>
             
             <div id="date-block" class="ss-only">
-                <div id="extended-forecast-container" class="weather-details-only" style="display: none; justify-content: space-between; gap: 6px; width: 100%; height: 20vh; padding-right: 1.5vw; box-sizing: border-box;"></div> 
+            <!-- Kontajner pre graf predpovede (zostáva nezmenený) -->
+            <div id="extended-forecast-container" class="weather-details-only" style="display: none; justify-content: space-between; gap: 6px; width: 100%; height: 20vh; padding-right: 1.5vw; box-sizing: border-box;"></div> 
     
-                <div class="ss-date-wrapper weather-details-hide">
-                    <span id="date-display" class="ss-date">--.--.</span>
-                    <span id="day-display" class="ss-day">---</span>
+            <!-- Spodný kompaktný riadok šetriča: Dátum | Meniny | Vietor -->
+            <div class="ss-date-wrapper weather-details-hide">
+                <!-- 1. Dátum -->
+                <span id="date-display" class="ss-date">--.--.</span>
+        
+                <!-- 2. Meniny -->
+                <span id="day-display" class="ss-day">---</span>
+        
+                <!-- 3. Vietor (Šípka smeru a rýchlosť v jednom riadku na konci) -->
+                <div id="wind-block">
+                    <i id="wind-icon" class="fas fa-arrow-up"></i>
+                    <span id="wind-speed">-- km/h</span>
                 </div>
             </div>
         </div>
