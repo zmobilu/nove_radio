@@ -118,37 +118,73 @@
         
         body.screensaver-mode #time { font-size: 30vw; transform: scaleY(1.20); letter-spacing: -1vw; margin-top: 8vh; } /* --- 1.30 --- */
         
+        /* Celkový kontajner spodného riadku v pravom stĺpci */
         #date-block { 
             display: flex; 
             align-items: flex-end; 
-            justify-content: space-between; 
+            justify-content: flex-start; 
             width: 100%; 
             box-sizing: border-box; 
             margin-top: auto; 
             margin-bottom: 3.5vh; 
-            padding-left: 2vw; 
-            padding-right: 0.5vw; 
+            padding-left: 1.5vw; 
+            padding-right: 2vw;  
         }
 
-        .ss-separator { color: #222; font-size: 5.5vw; font-weight: 200; line-height: 1; position: relative; top: 0.5vw; }
-        #date-display { line-height: 1; color: #ffffff; position: relative; top: 1.4vw; margin-right: 2px; }
-        .ss-date-wrapper { display: flex; align-items: flex-end; gap: 5px; }
-        .ss-date { font-size: 14vw; font-weight: 300; color: #fff; line-height: 1; }
+        /* 1. Štýl pre DÁTUM (vysoký a úzky) */
+        .ss-date { 
+            font-size: 10vw; 
+            font-weight: 300; 
+            color: #fff; 
+            line-height: 1.0;
+            white-space: nowrap;
+            display: inline-block;
+            transform: scaleX(0.65) scaleY(2.2); 
+            transform-origin: bottom left;
+        }
 
+        /* 2. Štýl pre MENINY (vysoký a úzky) */
         .ss-day { 
-            font-size: 5.0vw; 
+            font-size: 5.5vw; 
             font-weight: 500; 
             text-transform: uppercase; 
             text-align: left; 
-            line-height: 1; 
-            max-width: 35vw; 
-            white-space: normal; 
+            line-height: 1.0;
+            white-space: nowrap; 
             display: inline-block; 
-            transform: scaleY(2.2); 
-            transform: scaleY(2.2); 
-            transform-origin: bottom; 
+            transform: scaleX(0.7) scaleY(2.15); 
+            transform-origin: bottom left;
+        }
+        /* 3. Štýl pre VIETOR (vysoký a úzky vedľa menín) */
+        #wind-block {
+            display: flex !important;
+            flex-direction: row !important; 
+            align-items: flex-end !important;
+            gap: 0.8vw;
+            line-height: 1.0;
+            white-space: nowrap;
+            display: inline-block;
+            font-size: 5.0vw;
+            font-weight: 400;
+            color: #fff;
+            transform: scaleX(0.75) scaleY(2.15);
+            transform-origin: bottom left;
+        }
+
+        /* Ošetrenie veľkosti a zarovnania ikony šípky vetra v riadku */
+        #wind-icon {
+            font-size: 4.5vw !important;
+            color: #aaa;
+            transition: transform 0.5s ease-in-out;
+            transform-origin: center;
             position: relative;
-            top: 0.6vw;
+            bottom: -0.2vw; 
+        }
+
+        #wind-speed {
+            font-size: inherit !important;
+            font-weight: inherit !important;
+            color: inherit !important;
         }
 
         .name-female { color: #FFB6C1 !important; } 
