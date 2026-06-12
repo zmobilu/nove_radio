@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Hodiny</title>
+    <title>🕰️</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="icon" href="data:,">
     
@@ -883,10 +883,10 @@ function playIntegratedSpotify(target, element) {
             // Záložné riešenie ak protokol zlyhá
             window.open("microsoft-edge:" + extUrl, "_blank");
         }
+        aktualizujTitulokStranky();
         return;
-       aktualizujTitulokStranky();
-    }
-
+   }
+    
     const container = document.getElementById('integrated-spotify-container');
     const frame = document.getElementById('spotify-player-frame');
     if (!container || !frame) return;
