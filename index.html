@@ -127,40 +127,43 @@
         #date-block { 
         display: flex; 
         align-items: flex-end; 
-        justify-content: space-between; 
+        justify-content: flex-start; /* Zmenené zo space-between na flex-start, aby bolo všetko vľavo */
         width: 100%; 
         box-sizing: border-box; 
         margin-top: auto; 
         margin-bottom: 3.5vh; 
-        padding-left: 0 !important;  /* Úplne na nulu */
+        padding-left: 0.5vw; /* Minimálny odskok od úplného okraja obrazovky */
         padding-right: 2vw;  
-    }
+        }
 
-        /* Pridaj tento štýl pre dokonalé zarovnanie vetra k okraju */
         #wind-block {
-        align-items: flex-start !important; /* Zmenené z center na flex-start */
-        padding-left: 5px; /* Minimálna estetická rezerva, aby to nebolo úplne nalepené na skle displeja */
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;     /* Šípka aj text budú presne pod sebou na stred */
+        justify-content: center !important;
+        width: 100%;
+        margin-top: 1vh;
+        margin-bottom: 1vh;
     }
 
         .ss-separator { color: #222; font-size: 5.5vw; font-weight: 200; line-height: 1; position: relative; top: 0.5vw; }
         #date-display { line-height: 1; color: #ffffff; position: relative; top: 1.4vw; margin-right: 2px; }
-        .ss-date-wrapper { display: flex; align-items: flex-end; gap: 5px; }
-        .ss-date { font-size: 14vw; font-weight: 300; color: #fff; line-height: 1; }
+        .ss-date-wrapper { display: flex; align-items: flex-end; justify-content: flex-start; gap: 2vw; width: 100%; }
+        .ss-date { font-size: 14vw; font-weight: 300; color: #fff; line-height: 0.85; }
 
         .ss-day { 
-            font-size: 5.0vw; 
+            font-size: 5.5vw; 
             font-weight: 500; 
             text-transform: uppercase; 
             text-align: left; 
-            line-height: 1; 
-            max-width: 35vw; 
-            white-space: normal; 
+            line-height: 0.85;
+            white-space: nowrap; 
             display: inline-block; 
-            transform: scaleY(2.2); 
-            transform: scaleY(2.2); 
-            transform-origin: bottom; 
+            /* Úzke a natiahnuté písmo, aby lícovalo s hranami 14vw dátumu */
+            transform: scaleX(0.7) scaleY(2.3); 
+            transform-origin: bottom left; /* Kotva vľavo dole zaručí, že spodky budú dokonale v jednej línii */
             position: relative;
-            top: 0.6vw;
+            top: 0.1vw;
         }
 
         .name-female { color: #FFB6C1 !important; } 
@@ -271,6 +274,11 @@
                         <span id="apparent-temp" class="hum-val">--°</span>
                         <span id="outdoor-hum" class="hum-val">--%</span>
                     </div>
+                </div>
+
+                <div id="wind-block" class="weather-details-hide" style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin: auto 0;">
+                    <i id="wind-icon" class="fas fa-arrow-up" style="font-size: 5.5vw; color: #aaa; transition: transform 0.5s ease-in-out; transform-origin: center; margin-bottom: 1vh;"></i>
+                    <span id="wind-speed" style="font-size: 4.5vw; font-weight: 400; color: #fff; white-space: nowrap; line-height: 1;">-- km/h</span>
                 </div>
       
                 <div id="mini-forecast-strip">
@@ -391,20 +399,14 @@
             </div>
             
             <div id="date-block" class="ss-only">
-                <div id="wind-block" class="weather-details-hide" style="display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end; margin-bottom: 0.2vh;">
-                    <i id="wind-icon" class="fas fa-arrow-up" style="font-size: 5.5vw; color: #aaa; transition: transform 0.5s ease-in-out; transform-origin: center; margin-bottom: 1.5vw; margin-left: 1vw;"></i>
-                    <span id="wind-speed" style="font-size: 4.5vw; font-weight: 400; color: #fff; white-space: nowrap; line-height: 1;">-- km/h</span>
-                </div>
-
                 <div id="extended-forecast-container" class="weather-details-only" style="display: none; justify-content: space-between; gap: 6px; width: 100%; height: 20vh; padding-right: 1.5vw; box-sizing: border-box;"></div> 
-                
-                <span class="ss-separator weather-details-hide" style="display: none !important;">|</span> <div class="ss-date-wrapper weather-details-hide">
-                    <span id="day-display" class="ss-day" style="margin-right: 1.5vw; text-align: right;">---</span>
+    
+                <div class="ss-date-wrapper weather-details-hide">
                     <span id="date-display" class="ss-date">--.--.</span>
+                    <span id="day-display" class="ss-day">---</span>
                 </div>
             </div>
         </div>
-
     </div>
             
     <script>
@@ -491,7 +493,7 @@ function updateClock() {
     document.getElementById('m-part').textContent = m;
     
     const formattedDate = `${now.getDate()}.${now.getMonth() + 1}.`;
-    document.getElementById('date-display').textContent = formattedDate;
+    document.getElementById('date-display').textContent = formattedDate; // Tu bude korektne napr. "12.6."
     document.getElementById('radio-date').textContent = formattedDate;
     
     const menoElementSS = document.getElementById('day-display');
