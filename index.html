@@ -784,7 +784,7 @@ function playRadio(url, element, type) {
     if (radioInfoEl) {
         radioInfoEl.innerHTML = `<small style="font-size: 0.6em; opacity: 0.7; text-transform: none; margin-right: 8px;">hrá:</small>${type.toUpperCase()}`;
     }
-    document.title = "Hrá: " + type.toUpperCase();
+    document.title = "🔊 " + type.toUpperCase();
 }
 
 function aktualizujSubPanely(type) {
@@ -840,7 +840,7 @@ function showSpotify() {
     if (spotifyBtn) spotifyBtn.classList.add('playing');
     
     resetIdleTimer();
-    document.title = "Hrá: SPOTIFY";
+    document.title = "🔊 SPOTIFY";
 }
 
 function playIntegratedSpotify(target, element) {
@@ -856,7 +856,7 @@ function playIntegratedSpotify(target, element) {
             window.open("microsoft-edge:" + extUrl, "_blank");
         }
         return;
-       document.title = "Hrá: SPOTIFY";
+       document.title = "🔊 SPOTIFY";
     }
 
     const container = document.getElementById('integrated-spotify-container');
