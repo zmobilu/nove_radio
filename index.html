@@ -86,93 +86,13 @@
         .sub-btn.playing { border: 2px solid #ff9f0a !important; }
         
         .buttons-section { width: 35%; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 0.6fr 1fr 1fr 1fr; gap: 8px; padding: 10px; background: #050505; box-sizing: border-box;}
-       /* --- DYNAMICKÉ PRISPÔSOBENIE PRE TABLETY A NOTEBOOKY --- */
-@media (min-width: 800px) {
-    /* 1. Kompresia ľavého panelu pre tlačidlá rádia */
-    .buttons-section { 
-        width: 24%; 
-        grid-template-rows: 0.8fr 1fr 1fr 1fr; 
-        gap: 12px; 
-        padding: 15px; 
+        /* --- JEMNÁ KOREKCIA SPODNÉHO OKRAJA PRE TABLETY A PC --- */
+        @media (min-width: 800px) {
+        /* Pôvodné šírky 35% a 65% zostávajú nedotknuté, presne ako v tvojom základe */
+        /* Iba stiahneme spodnú medzeru celého bloku o kúsok vyššie, aby vietor neutekal */
+        #date-block { 
+        margin-bottom: 1.5vh !important; /* Pôvodne tam bolo 3.5vh, čo vytláčalo vietor von */ }
     }
-    
-    /* 2. Priradenie rovnakej šírky (24%) pre blok počasia v šetriči */
-    body.screensaver-mode .ss-left-col { 
-        width: 24%; 
-        justify-content: space-between !important; /* Rovnomerne rozloží prvky od zhora nadol */
-        padding: 2vh 0 !important; /* Pridá bezpečné medzery zhora aj zdola okna */
-        box-sizing: border-box;
-    }
-    
-    /* Zvyšných 76% dostane pravá strana s časom, rádio infom a dátumom */
-    .clock-section { 
-        width: 76%; 
-    }
-    body.screensaver-mode .ss-right-col { 
-        width: 76%; 
-    }
-
-    /* 3. ROZSTIEHNUTÉ A MASÍVNE POČASIE S MEDZERAMI */
-    .current-weather-group {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 1.5vh; /* Vytvorí rovnomerné medzery medzi názvom mesta, ikonou a teplotou */
-        margin-top: 0 !important;
-    }
-
-    #weather-location-main { 
-        font-size: 2.2vw !important; 
-        margin-bottom: 0 !important;
-        margin-top: 0 !important;
-    }
-
-    /* GIGANTICKÁ IKONA POČASIA (Vďaka medzerám má kopec miesta) */
-    .meteo-icon-large { 
-        font-size: 14vw !important; 
-        margin-bottom: 0 !important;
-        margin-top: 0 !important;
-    }
-
-    .temp-val { 
-        font-size: 11vw !important; 
-        line-height: 0.85 !important;
-    }
-
-    .hum-val { 
-        font-size: 4.8vw !important; 
-    }
-
-    /* Malé spodné dni v ľavom stĺpci (Dnes / Zajtra) */
-    #mini-forecast-strip {
-        padding-top: 2vh !important;
-        margin-bottom: 0 !important; /* Spodok sa oprie o okraj vďaka space-between */
-        border-top: 1px solid #111; /* Jemnejšia linka, aby to opticky netlačilo */
-    }
-    .mini-day { 
-        font-size: 1.5vw !important; 
-        margin-bottom: 4px !important;
-    }
-    .mini-icon { 
-        font-size: 5.5vw !important; 
-    }
-    .mini-temp { 
-        font-size: 3.8vw !important; 
-    }
-
-    /* 4. Vizuálne zväčšenie hlavných ikon v gombíkoch rádia */
-    .vypni i { font-size: 5.5vw !important; }
-    .spotify i { font-size: 5vw !important; }
-    .btn.cro i { font-size: 5vw !important; }
-    .btn { font-size: 16px; border-radius: 22px; }
-
-    /* Rozmer malých štvorcových gombíkov sub-staníc */
-    .sub-btn { 
-        width: 100px; 
-        height: 100px; 
-        border-radius: 16px; 
-    }
-}
         .page-group { display: contents; }
         .page-group.hidden { display: none !important; }
 
