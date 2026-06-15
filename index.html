@@ -561,8 +561,8 @@ async function updateWeather(lat = 48.1421, lon = 17.1964) {
                 zobrazovanyNazov = `${lat.toFixed(2)}°N, ${lon.toFixed(2)}°E`;
             }
             
-            // SPRÁVNA MAPOVÁ URL
-            const mapaUrl = `https://maps.open-meteo.com/?latitude=${lat}&longitude=${lon}&zoom=6`;
+            // SPRÁVNA MAPOVÁ URL pre tablety a notebooky (Arabba / akékoľvek mesto v strede)
+            const mapaUrl = `https://maps.open-meteo.com/?latitude=${lat}&longitude=${lon}&zoom=8#8.0/${lat.toFixed(3)}/${lon.toFixed(3)}`;
             
             // OŠETRENIE DOTYKU: pointerdown otvorí okno a kompletne zabije akúkoľvek inú akciu widgetu
             locationMainEl.innerHTML = `<span onpointerdown="event.stopPropagation(); event.preventDefault(); window.open('${mapaUrl}', '_blank');" style="color: #ff9f0a; text-decoration: none; border-bottom: 1px dashed #ff9f0a; font-weight: 600; cursor: pointer; display: inline-block; position: relative; z-index: 9999;">${zobrazovanyNazov}</span>`;
