@@ -431,53 +431,22 @@ let weatherOpenedFrom = "";
 let songTitleInterval = null;
         
 async function fetchCurrentSong(streamName) {
-    if (currentPlayingType !== streamName) return;
+    const ssRadioInfoEl = document.getElementById('ss-radio-info');
+    if (!ssRadioInfoEl) return;
 
-    const streamMap = {
-        'fun': '18_fun-radio',
-        'funchill': '155_fun-radio-chill',
-        'funczsk': '156_fun-radio-cz-sk',
-        'fun8090': '157_fun-radio-80-90',
-        'milenialky': '158_fun-radio-milenialky'
+    // Mapovanie ID streamov na krasne cele nazvy pre tvoj šetrič
+    const stationNames = {
+        'fun': 'FUN RÁDIO LIVE',
+        'funchill': 'FUN RÁDIO CHILL',
+        'funczsk': 'FUN RÁDIO CZ-SK',
+        'fun8090': 'FUN RÁDIO 80-90',
+        'milenialky': 'FUN MILENIÁLKY'
     };
 
-    const apiParam = streamMap[streamName];
-    if (!apiParam) return;
-
-    // Vytvoríme unikátny názov globálnej funkcie pre spracovanie dát
-    const callbackName = 'jsonp_callback_' + Math.round(Math.random() * 100000);
+    const krasnyNazov = stationNames[streamName] || streamName.toUpperCase();
     
-    // Definujeme, čo sa má stať, keď dáta dorazia (vyčistí sa to po sebe)
-    window[callbackName] = function(proxyData) {
-        try {
-            if (currentPlayingType !== streamName) return;
-            
-            // Allorigins vráti dáta v contents, naparsujeme ich
-            const data = JSON.parse(proxyData.contents);
-
-            if (data && data.artist && data.track) {
-                const songText = `${data.artist} - ${data.track}`;
-                const ssRadioInfoEl = document.getElementById('ss-radio-info');
-                if (ssRadioInfoEl) {
-                    ssRadioInfoEl.innerHTML = `${streamName.toUpperCase()} <span style="color: #444; font-weight: 200; margin: 0 10px;">|</span> <em style="font-style: italic; font-weight: 300;">${songText}</em>`;
-                }
-            }
-        } catch (e) {
-            console.log("Chyba parsovania skladby:", e);
-        } finally {
-            // Po dokončení upraceme globálne prostredie a odstránime pomocný script element
-            delete window[callbackName];
-            const oldScript = document.getElementById(callbackName);
-            if (oldScript) oldScript.remove();
-        }
-    };
-
-    // Vložíme do stránky dynamický <script> tag - toto prehliadač z princípu CORS pravidiel neblokuje
-    const script = document.createElement('script');
-    script.id = callbackName;
-    script.src = `https://api.allorigins.win/get?url=${encodeURIComponent('https://www.radia.sk/api/prave-hra/' + apiParam)}&callback=${callbackName}`;
-    
-    document.body.appendChild(script);
+    // Zapíšeme priamo formátovaný názov stanice – stabilne, rýchlo a bez chýb
+    ssRadioInfoEl.innerHTML = `<span style="font-weight: 500; color: #ff9f0a; letter-spacing: 2px;">${krasnyNazov}</span>`;
 }
         
 async function updateNameday() {
