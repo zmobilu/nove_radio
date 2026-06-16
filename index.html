@@ -431,6 +431,9 @@ let weatherOpenedFrom = "";
 let songTitleInterval = null;
         
 async function fetchCurrentSong(streamName) {
+    // POISTKA: Ak používateľ medzitým prepol na iné rádio, ignoruj staré API požiadavky
+    if (currentPlayingType !== streamName) return;
+
     const streamMap = {
         'fun': 'fun',
         'funchill': 'chill',
@@ -447,10 +450,11 @@ async function fetchCurrentSong(streamName) {
         if (!response.ok) throw new Error('API nedostupné');
         const data = await response.json();
 
+        // Opätovná kontrola po ukončení fetch (sieťová odozva trvá nejaký čas)
+        if (currentPlayingType !== streamName) return;
+
         if (data && data.artist && data.title) {
             const songText = `${data.artist} - ${data.title}`;
-            
-            // Na šetriči zobrazíme: FUNCHILL | Umelec - Pieseň (kurzívou)
             const ssRadioInfoEl = document.getElementById('ss-radio-info');
             if (ssRadioInfoEl) {
                 ssRadioInfoEl.innerHTML = `${streamName.toUpperCase()} <span style="color: #666; font-weight: 200; margin: 0 8px;">|</span> <em style="font-style: italic; font-weight: 300;">${songText}</em>`;
@@ -814,7 +818,6 @@ const audio = document.getElementById('audioPlayer');
 function playRadio(url, element, type) {
     currentPlayingType = type; 
     
-    // Pred zapnutím rádia kompletne zmažeme a skryjeme integrované Spotify
     const spotifyContainer = document.getElementById('integrated-spotify-container');
     const spotifyFrame = document.getElementById('spotify-player-frame');
     if (spotifyContainer) spotifyContainer.style.display = 'none';
@@ -854,20 +857,17 @@ function playRadio(url, element, type) {
     audio.play();
     resetIdleTimer();
     
-   // --- ÚPRAVA V playRadio PRE SPRÁVNE ZOBRAZENIE NA ŠETRIČI ---
+    clearInterval(songTitleInterval);
+    
+    const radioInfoEl = document.getElementById('ss-radio-info');
+    if (radioInfoEl) {
+        // Okamžite nastavíme iba názov stanice ako čisté HTML bez piesne
+        radioInfoEl.innerHTML = `${type.toUpperCase()}`;
+    }
+
     if (['fun', 'funchill', 'funczsk', 'fun8090', 'milenialky'].includes(type)) {
-        // Okamžitý počiatočný stav, kým API nevráti pesničku
-        const radioInfoEl = document.getElementById('ss-radio-info');
-        if (radioInfoEl) radioInfoEl.textContent = type.toUpperCase();
-        
         fetchCurrentSong(type); 
         songTitleInterval = setInterval(() => fetchCurrentSong(type), 20000); 
-    } else {
-        // Pre ostatné rádiá (Slovensko, Rock, Blaník...) bez pesničky
-        const radioInfoEl = document.getElementById('ss-radio-info');
-        if (radioInfoEl) {
-            radioInfoEl.textContent = type.toUpperCase();
-        }
     }
     aktualizujTitulokStranky();
 }
