@@ -433,27 +433,29 @@ let songTitleInterval = null;
 async function fetchCurrentSong(streamName) {
     if (currentPlayingType !== streamName) return;
 
-    // Mapovanie tvojich streamov na ID názvy z portálu Radia.sk
+    // Presné ID názvy staníc podľa adresára portálu Radia.sk
     const streamMap = {
-        'fun': 'fun-radio',
-        'funchill': 'fun-chill',
-        'funczsk': 'fun-radio-cz-sk',
-        'fun8090': 'fun-radio-80-90',
-        'milenialky': 'fun-radio-milenialky'
+        'fun': '18_fun-radio',
+        'funchill': '155_fun-radio-chill',
+        'funczsk': '156_fun-radio-cz-sk',
+        'fun8090': '157_fun-radio-80-90',
+        'milenialky': '158_fun-radio-milenialky'
     };
 
     const apiParam = streamMap[streamName];
     if (!apiParam) return;
 
     try {
-        // Voláme API radia.sk pre konkrétny stream
-        const response = await fetch(`https://www.radia.sk/api/prave-hra/${apiParam}`);
-        if (!response.ok) throw new Error('API nedostupné');
-        const data = await response.json();
+        // Použitie verejnej allorigins proxy na obídenie CORS ochrany portálu radia.sk
+        const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://www.radia.sk/api/prave-hra/' + apiParam)}`);
+        if (!response.ok) throw new Error('Proxy alebo API nedostupné');
+        const proxyData = await response.json();
+        
+        // Allorigins balí odpoveď do stringu "contents", ktorý musíme naparsovať
+        const data = JSON.parse(proxyData.contents);
 
         if (currentPlayingType !== streamName) return;
 
-        // API vracia priamo interpret (artist) a skladba (track)
         if (data && data.artist && data.track) {
             const songText = `${data.artist} - ${data.track}`;
             const ssRadioInfoEl = document.getElementById('ss-radio-info');
@@ -462,7 +464,7 @@ async function fetchCurrentSong(streamName) {
             }
         }
     } catch (e) {
-        console.log("Chyba načítania skladby z radia.sk:", e);
+        console.log("Chyba načítania skladby cez CORS proxy:", e);
     }
 }
         
