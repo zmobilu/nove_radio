@@ -432,23 +432,23 @@ let songTitleInterval = null;
         
 // 1. KROK: Úplne nový objekt API adries (AllOrigins formát)
 const RADIO_API_URLS = {
-    'fun': 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://api.funradio.sk/public/now-playing/current'),
-    'funchill': 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://api.funradio.sk/public/now-playing/current'),
-    'funczsk': 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://api.funradio.sk/public/now-playing/current'),
-    'fun8090': 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://api.funradio.sk/public/now-playing/current'),
-    'milenialky': 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://api.funradio.sk/public/now-playing/current'),
+    'fun': 'https://cors-trap.workers.dev/?url=' + encodeURIComponent('https://api.funradio.sk/public/now-playing/current'),
+    'funchill': 'https://cors-trap.workers.dev/?url=' + encodeURIComponent('https://api.funradio.sk/public/now-playing/current'),
+    'funczsk': 'https://cors-trap.workers.dev/?url=' + encodeURIComponent('https://api.funradio.sk/public/now-playing/current'),
+    'fun8090': 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://api.funradio.sk/public/now-playing/current'), // testujeme zálohu
+    'milenialky': 'https://cors-trap.workers.dev/?url=' + encodeURIComponent('https://api.funradio.sk/public/now-playing/current'),
     
-    'slovensko': 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://api.rtvs.sk/xml/playlist.json?channel=1'),
+    'slovensko': 'https://cors-trap.workers.dev/?url=' + encodeURIComponent('https://api.rtvs.sk/xml/playlist.json?channel=1'),
     
-    'expres': 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://api.bauermedia.sk/playlist/expres/current.json'),
-    'europa2': 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://api.bauermedia.sk/playlist/europa2/current.json'),
-    'melody': 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://api.bauermedia.sk/playlist/melody/current.json'),
+    'expres': 'https://cors-trap.workers.dev/?url=' + encodeURIComponent('https://api.bauermedia.sk/playlist/expres/current.json'),
+    'europa2': 'https://cors-trap.workers.dev/?url=' + encodeURIComponent('https://api.bauermedia.sk/playlist/europa2/current.json'),
+    'melody': 'https://cors-trap.workers.dev/?url=' + encodeURIComponent('https://api.bauermedia.sk/playlist/melody/current.json'),
     
-    'vlna': 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://api.radiovlna.sk/playlist/current.json'),
-    'blanik': 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://api.api-mc.cz/public/v1/playlist/blanik/current'),
-    'rock': 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://api.bauermedia.sk/playlist/rock/current.json'),
-    'beat': 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.radiobeat.cz/cs/sys/playlist-json.shtml'),
-    'casrock': 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://casrock.cz/wp-json/wp/v2/now-playing')
+    'vlna': 'https://cors-trap.workers.dev/?url=' + encodeURIComponent('https://api.radiovlna.sk/playlist/current.json'),
+    'blanik': 'https://cors-trap.workers.dev/?url=' + encodeURIComponent('https://api.api-mc.cz/public/v1/playlist/blanik/current'),
+    'rock': 'https://cors-trap.workers.dev/?url=' + encodeURIComponent('https://api.bauermedia.sk/playlist/rock/current.json'),
+    'beat': 'https://cors-trap.workers.dev/?url=' + encodeURIComponent('https://www.radiobeat.cz/cs/sys/playlist-json.shtml'),
+    'casrock': 'https://cors-trap.workers.dev/?url=' + encodeURIComponent('https://casrock.cz/wp-json/wp/v2/now-playing')
 };
 
 // 2. KROK: Kompletne upravená funkcia na parsovanie dát z novej proxy
@@ -474,11 +474,7 @@ async function fetchCurrentSong(streamName) {
     try {
         const response = await fetch(apiUrl);
         if (!response.ok) throw new Error('API nedostupné');
-        const proxyData = await response.json();
-        
-        // AllOrigins posiela čisté dáta ako text v premennej .contents, tu ich premeníme na čitateľný objekt
-        if (!proxyData.contents) throw new Error('Proxy nevrátila obsah');
-        let data = JSON.parse(proxyData.contents);
+        let data = await response.json();
         
         let artist = "";
         let song = "";
