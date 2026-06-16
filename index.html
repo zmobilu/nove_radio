@@ -432,13 +432,14 @@ let songTitleInterval = null;
         
 // Mapovanie API zdrojov pre jednotlivé stanice
 const RADIO_API_URLS = {
-    // FUN RÁDIO funguje na GitHub Pages priamo (netreba proxy)
-    'fun': 'https://api.funradio.sk/public/now-playing/current',
-    'funchill': 'https://api.funradio.sk/public/now-playing/current',
-    'funczsk': 'https://api.funradio.sk/public/now-playing/current',
-    'fun8090': 'https://api.funradio.sk/public/now-playing/current',
-    'milenialky': 'https://api.funradio.sk/public/now-playing/current',
-    // RÁDIO SLOVENSKO (Ak bez proxy nejde, pridaj ju pred link)
+    // FUN RÁDIO – upravené tak, aby išlo cez CORS proxy
+    'fun': 'https://cors-proxy.htmldriven.com/?url=https://api.funradio.sk/public/now-playing/current',
+    'funchill': 'https://cors-proxy.htmldriven.com/?url=https://api.funradio.sk/public/now-playing/current',
+    'funczsk': 'https://cors-proxy.htmldriven.com/?url=https://api.funradio.sk/public/now-playing/current',
+    'fun8090': 'https://cors-proxy.htmldriven.com/?url=https://api.funradio.sk/public/now-playing/current',
+    'milenialky': 'https://cors-proxy.htmldriven.com/?url=https://api.funradio.sk/public/now-playing/current',
+    
+    // RÁDIO SLOVENSKO
     'slovensko': 'https://cors-proxy.htmldriven.com/?url=https://api.rtvs.sk/xml/playlist.json?channel=1',
     // BAUER MEDIA (Expres, Europa 2, Melody)
     'expres': 'https://cors-proxy.htmldriven.com/?url=https://api.bauermedia.sk/playlist/expres/current.json',
@@ -446,11 +447,11 @@ const RADIO_API_URLS = {
     'melody': 'https://cors-proxy.htmldriven.com/?url=https://api.bauermedia.sk/playlist/melody/current.json',
     // RÁDIO VLNA
     'vlna': 'https://cors-proxy.htmldriven.com/?url=https://api.radiovlna.sk/playlist/current.json',
-    // RÁDIO BLANÍK (Aktuálna skladba z MC playlistu)
+    // RÁDIO BLANÍK
     'blanik': 'https://cors-proxy.htmldriven.com/?url=https://api.api-mc.cz/public/v1/playlist/blanik/current',
-    // ANTÉNA ROCK (Bauer Media)
+    // ANTÉNA ROCK
     'rock': 'https://cors-proxy.htmldriven.com/?url=https://api.bauermedia.sk/playlist/rock/current.json',
-    // RÁDIO BEAT (AB Radio)
+    // RÁDIO BEAT
     'beat': 'https://cors-proxy.htmldriven.com/?url=https://www.radiobeat.cz/cs/sys/playlist-json.shtml',
     // RÁDIO ČAS ROCK
     'casrock': 'https://cors-proxy.htmldriven.com/?url=https://casrock.cz/wp-json/wp/v2/now-playing'
