@@ -431,38 +431,38 @@ let weatherOpenedFrom = "";
 let songTitleInterval = null;
         
 async function fetchCurrentSong(streamName) {
-    // POISTKA: Ak používateľ medzitým prepol na iné rádio, ignoruj staré API požiadavky
     if (currentPlayingType !== streamName) return;
 
+    // Mapovanie tvojich streamov na ID názvy z portálu Radia.sk
     const streamMap = {
-        'fun': 'fun',
-        'funchill': 'chill',
-        'funczsk': 'cs',
-        'fun8090': '80-90',
-        'milenialky': 'milenialky'
+        'fun': 'fun-radio',
+        'funchill': 'fun-chill',
+        'funczsk': 'fun-radio-cz-sk',
+        'fun8090': 'fun-radio-80-90',
+        'milenialky': 'fun-radio-milenialky'
     };
 
     const apiParam = streamMap[streamName];
     if (!apiParam) return;
 
     try {
-        // OPRAVENÝ RIADOK (bez lomky pred otáznikom):
-        const response = await fetch(`https://www.funradio.sk/api/playlist/current?stream=${apiParam}`);
+        // Voláme API radia.sk pre konkrétny stream
+        const response = await fetch(`https://www.radia.sk/api/prave-hra/${apiParam}`);
         if (!response.ok) throw new Error('API nedostupné');
         const data = await response.json();
 
-        // Opätovná kontrola po ukončení fetch (sieťová odozva trvá nejaký čas)
         if (currentPlayingType !== streamName) return;
 
-        if (data && data.artist && data.title) {
-            const songText = `${data.artist} - ${data.title}`;
+        // API vracia priamo interpret (artist) a skladba (track)
+        if (data && data.artist && data.track) {
+            const songText = `${data.artist} - ${data.track}`;
             const ssRadioInfoEl = document.getElementById('ss-radio-info');
             if (ssRadioInfoEl) {
-                ssRadioInfoEl.innerHTML = `${streamName.toUpperCase()} <span style="color: #666; font-weight: 200; margin: 0 8px;">|</span> <em style="font-style: italic; font-weight: 300;">${songText}</em>`;
+                ssRadioInfoEl.innerHTML = `${streamName.toUpperCase()} <span style="color: #444; font-weight: 200; margin: 0 10px;">|</span> <em style="font-style: italic; font-weight: 300;">${songText}</em>`;
             }
         }
     } catch (e) {
-        console.log("Chyba načítania skladby:", e);
+        console.log("Chyba načítania skladby z radia.sk:", e);
     }
 }
         
