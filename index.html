@@ -33,9 +33,9 @@
         }
         
         #time { font-size: 24vw; line-height: 0.8; letter-spacing: -4px; display: flex; align-items: baseline; 
-                  transform: scaleY(1.05); transform-origin: center; cursor: pointer; }
+                transform: scaleY(1.05); transform-origin: center; cursor: pointer; }
         .hours-part { font-weight: 600; color: #FFFfff; } 
-        .minutes-part { font-weight: 200; color: #FFFfff; margin-left: 1px; }    /* --- <span class="colon-part">:</span> --- */
+        .minutes-part { font-weight: 200; color: #FFFfff; margin-left: 1px; } 
         .red-digit { color: #eb0028 !important; } 
         .blue-digit { color: #307CEB !important; }
         
@@ -145,12 +145,10 @@
             white-space: normal; 
             display: inline-block; 
             transform: scaleY(2.2); 
-            transform: scaleY(2.2); 
             transform-origin: bottom; 
             position: relative;
             top: 0.6vw;
         }
-
 
         .name-female { color: #FFB6C1 !important; } 
         .name-male { color: #87CEEB !important; }    
@@ -159,11 +157,12 @@
         .name-colleagues { color: #00CED1 !important; }  
         .name-classmates { color: #32CD32 !important; }  
         
+        /* ZELENÝ BLOK - Ovládanie rádia na šetriči */
         #ss-radio-info {
             position: absolute;
-            bottom: 25vh;
-            left: 40vw; 
-            width: 38vw;
+            bottom: 14vh; /* Umiestnené pod žltým rámom hodín */
+            left: 35vw; 
+            width: 60vw;
             font-size: 4.0vw;
             font-weight: 400;
             color: #ff9f0a;
@@ -172,7 +171,9 @@
             display: none;
             justify-content: center;
             align-items: center;
-            pointer-events: none;
+            pointer-events: auto !important; /* Dôležité pre dotyky */
+            z-index: 9999 !important; /* Skočí nad bounding box hodín */
+            cursor: pointer;
         }
         body.screensaver-mode #ss-radio-info { display: flex !important; }
         body.weather-details-mode #ss-radio-info { display: none !important; }
@@ -284,7 +285,7 @@
                 <span id="m-part" class="minutes-part">00</span> 
             </div>
             
-            <div id="ss-radio-info" class="weather-details-hide" onpointerdown="event.stopPropagation(); if(event.cancelable) event.preventDefault(); stopRadio();" style="pointer-events: auto !important; cursor: pointer;"></div>
+            <div id="ss-radio-info" class="weather-details-hide" onpointerdown="event.stopPropagation(); if(event.cancelable) event.preventDefault(); stopRadio();"><small style="font-size: 0.6em; opacity: 0.5; text-transform: none;">zapnúť posledné</small> 📻</div>
             
             <div id="weather-details-top-inline" class="weather-details-only" style="display: none; flex-direction: column; width: 100%; height: 68vh; padding: 10px 10px 0 10px; box-sizing: border-box; justify-content: space-between;">
                 <div id="weather-search-row" style="display: flex; justify-content: space-between; align-items: center; width: 100%; height: 5vh; gap: 10px;">
@@ -379,7 +380,7 @@
                 <button onclick="playRadio('https://stream.sunshine-live.de/drumbass/mp3-192', this, 'Drumcode')" class="sub-btn" style="color:#fff; font-weight:bold; font-size:14px; background:#111;">Drumcode 🔊</button>
            </div>
 
-            <div id="date-block" class="ss-only">
+            <div id="date-block" class="ss-only" onpointerdown="event.stopPropagation();">
                 <div class="ss-date-wrapper weather-details-hide">
                     <span id="date-display" class="ss-date">--.--.</span>
                     <span id="day-display" class="ss-day">---</span>
@@ -429,6 +430,11 @@ let weatherDataBackup = null;
 let currentPlayingType = ""; 
 let weatherOpenedFrom = ""; 
 let songTitleInterval = null;
+
+// Pripravené prázdne premenné pamäte rádio streamu
+let lastRadioUrl = "";
+let lastRadioElement = null;
+let lastRadioType = "";
         
 // 1. KROK: Úplne nový objekt API adries (AllOrigins formát)
 const RADIO_API_URLS = {
@@ -465,8 +471,8 @@ async function fetchCurrentSong(streamName) {
     const krasnyNazov = stationNames[streamName] || streamName.toUpperCase();
 
     try {
-        // Ťaháme dáta priamo z tvojho vlastného GitHub Pages webu! Žiadny CORS problém, žiadny blokovaný web rádia.
-        const response = await fetch('./song.json?t=' + new Date().getTime());
+        // Absolútna cesta upravená pre čisté správanie na iPhone
+        const response = await fetch('/moje_radio/song.json?t=' + new Date().getTime());
         if (!response.ok) throw new Error('Súbor s pesničkami zatiaľ neexistuje');
         const data = await response.json();
 
@@ -835,13 +841,8 @@ function prepniDenGrafu(e, dayIndex) {
 // --- AUDIO LOGIKA ---
 const audio = document.getElementById('audioPlayer');
 
-// Nové premenné pre zapamätanie posledného hraného rádia
-let lastRadioUrl = "";
-let lastRadioElement = null;
-let lastRadioType = "";
-
 function playRadio(url, element, type) {
-    // Uložíme si aktuálne rádio do pamäte pre prípadné opätovné zapnutie
+    // Uložíme si aktuálne spustené rádio do pamäte pre jedno kliknutie v šetriči
     lastRadioUrl = url;
     lastRadioElement = element;
     lastRadioType = type;
@@ -887,7 +888,6 @@ function playRadio(url, element, type) {
     audio.play();
     resetIdleTimer();
     
-    // Hľadaj tento blok na konci funkcie playRadio(url, element, type)
     clearInterval(songTitleInterval);
     
     const radioInfoEl = document.getElementById('ss-radio-info');
@@ -895,7 +895,6 @@ function playRadio(url, element, type) {
         radioInfoEl.innerHTML = `${type.toUpperCase()}`;
     }
 
-    // TOTO UPRAV: Spustí sa pre akékoľvek rádio, ktoré podporujeme
     fetchCurrentSong(type); 
     songTitleInterval = setInterval(() => fetchCurrentSong(type), 20000); 
 
@@ -919,45 +918,40 @@ function aktualizujSubPanely(type) {
 }
     
 function stopRadio() {
-    // AK RÁDIO PRÁVE HRÁ (alebo hrá Spotify): zastavíme ho
     if (currentPlayingType !== "") {
         audio.pause(); 
         audio.src = "";
         currentPlayingType = "";
     
-    // Zastavenie intervalu piesne
-    clearInterval(songTitleInterval);
+        clearInterval(songTitleInterval);
     
-    document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('playing'));
-    document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('playing'));
+        document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('playing'));
+        document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('playing'));
     
-    const container = document.getElementById('integrated-spotify-container');
-    const frame = document.getElementById('spotify-player-frame');
-    if (container) container.style.display = 'none';
-    if (frame) frame.src = "";
+        const container = document.getElementById('integrated-spotify-container');
+        const frame = document.getElementById('spotify-player-frame');
+        if (container) container.style.display = 'none';
+        if (frame) frame.src = "";
     
-    aktualizujSubPanely("none");
-    resetIdleTimer();
+        aktualizujSubPanely("none");
+        resetIdleTimer();
     
-    // Obnovenie menín v rádio lište
-    const menoElementRadio = document.getElementById('radio-name');
-    if (menoElementRadio) menoElementRadio.textContent = dnesneMeno;
+        const menoElementRadio = document.getElementById('radio-name');
+        if (menoElementRadio) menoElementRadio.textContent = dnesneMeno;
 
-    const radioInfoEl = document.getElementById('ss-radio-info');
-    if (radioInfoEl) radioInfoEl.innerHTML = `<small style="font-size: 0.6em; opacity: 0.5; text-transform: none;">zapnúť posledné</small> 📻`;
-    aktualizujTitulokStranky();
-}
-    // AK RÁDIO NEHRÁ: skontrolujeme, či máme v pamäti predchádzajúce rádio a znova ho zapneme
+        const radioInfoEl = document.getElementById('ss-radio-info');
+        if (radioInfoEl) radioInfoEl.innerHTML = `<small style="font-size: 0.6em; opacity: 0.5; text-transform: none;">zapnúť posledné</small> 📻`;
+        aktualizujTitulokStranky();
+    }
     else if (lastRadioUrl !== "") {
+        // Opätovné rýchle spustenie pamäte
         playRadio(lastRadioUrl, lastRadioElement, lastRadioType);
     }
 }
         
 function showSpotify() {
-    // Vypne bežné rádio, no neodstráni vizuálny panel
     audio.pause(); audio.src = "";
 
-    // Zatvoríme otvorený iframe ak predtým existoval
     const container = document.getElementById('integrated-spotify-container');
     const frame = document.getElementById('spotify-player-frame');
     if (container) container.style.display = 'none';
@@ -980,10 +974,8 @@ function playIntegratedSpotify(target, element) {
    if (target === 'https://open.spotify.com/') {
         const extUrl = "https://open.spotify.com/collection/tracks";
         try {
-            // Skúsi vynútiť otvorenie v Microsoft Edge pomocou URL schémy
             window.open(extUrl, "_blank");
         } catch(e) {
-            // Záložné riešenie ak protokol zlyhá
             window.open("microsoft-edge:" + extUrl, "_blank");
         }
         aktualizujTitulokStranky();
@@ -1029,7 +1021,8 @@ function resetIdleTimer() {
 }
 
 document.addEventListener('touchstart', function(e) {
-    if (e.target.closest('#time') || e.target.closest('#ss-weather-trigger') || e.target.closest('#weather-details-top-inline') || e.target.closest('#extended-forecast-container')) {
+    // Ak sme klikli na spodnú lištu (dátum/meniny) alebo zónu rádia, globálny dotyk ignorujeme
+    if (e.target.closest('#ss-radio-info') || e.target.closest('#date-block') || e.target.closest('#ss-weather-trigger') || e.target.closest('#weather-details-top-inline') || e.target.closest('#extended-forecast-container')) {
         return; 
     }
     resetIdleTimer();
@@ -1089,10 +1082,23 @@ function zatvorPocasie(e) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    // VERZIA A PRE MANŽELKU: Vyberie z mriežky gombík pre Slovensko a naplní štartovaciu pamäť
+    const predvoleneTlacitko = document.querySelector('.btn.rozhlas');
+    if (predvoleneTlacitko) {
+        const onclickText = predvoleneTlacitko.getAttribute('onclick') || "";
+        const matches = onclickText.match(/'([^']+)'/g);
+        if (matches && matches.length >= 2) {
+            lastRadioUrl = matches[0].replace(/'/g, "");  
+            lastRadioType = matches[1].replace(/'/g, ""); 
+            lastRadioElement = predvoleneTlacitko;         
+        }
+    }
+
     const timeEl = document.getElementById('time');
     const weatherEl = document.getElementById('ss-weather-trigger');
     const grafContainer = document.getElementById('weather-details-top-inline');
 
+    // ŽLTÝ BLOK: Kliknutím čisto na hodiny zrušíš šetrič
     if (timeEl) {
         timeEl.addEventListener('pointerdown', (e) => {
             klikNaHodiny(e);
