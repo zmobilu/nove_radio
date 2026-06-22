@@ -828,7 +828,7 @@ const audio = document.getElementById('audioPlayer');
     audio.volume = VOLUME_MAP[type] || 1.0;
     audio.src = url; 
     audio.play();
-    resetIdleTimer();
+    resetIdleTimer(!document.body.classList.contains('screensaver-mode'));
     
     const radioInfoEl = document.getElementById('ss-radio-info');
     if (radioInfoEl) {
@@ -868,7 +868,7 @@ function stopRadio() {
     if (frame) frame.src = "";
     
     aktualizujSubPanely("none");
-    resetIdleTimer();
+    resetIdleTimer(!document.body.classList.contains('screensaver-mode'));
     
     const radioInfoEl = document.getElementById('ss-radio-info');
 if (radioInfoEl) radioInfoEl.innerHTML = `<small style="font-size: 0.6em; opacity: 0.5; text-transform: none;">zapni posledné</small> 📻`;
@@ -948,9 +948,8 @@ function playIntegratedSpotify(target, element) {
 
 // --- ŠETRIČ A DOTYKY ---
 let idleTimer;
-
-function resetIdleTimer() {
-    document.body.classList.remove('screensaver-mode');
+function resetIdleTimer(wakingUp = true) {
+    if (wakingUp) document.body.classList.remove('screensaver-mode');
     clearTimeout(idleTimer);
     idleTimer = setTimeout(() => document.body.classList.add('screensaver-mode'), 20000);
 }
