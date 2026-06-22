@@ -832,8 +832,8 @@ const audio = document.getElementById('audioPlayer');
     
     const radioInfoEl = document.getElementById('ss-radio-info');
     if (radioInfoEl) {
-        radioInfoEl.innerHTML = `<small style="font-size: 0.6em; opacity: 0.7; text-transform: none; margin-right: 8px;"> </small>${type.toUpperCase()}`;
-    }
+    radioInfoEl.innerHTML = `${type.toUpperCase()} <i class="fa-solid fa-power-off" style="color: #eb0028; font-size: 0.8em; margin-left: 12px;"></i>`;
+}
     aktualizujTitulokStranky();
 }
 
@@ -871,7 +871,7 @@ function stopRadio() {
     resetIdleTimer(!document.body.classList.contains('screensaver-mode'));
     
     const radioInfoEl = document.getElementById('ss-radio-info');
-if (radioInfoEl) radioInfoEl.innerHTML = `<small style="font-size: 0.6em; opacity: 0.5; text-transform: none;">zapni posledné</small> 📻`;
+    if (radioInfoEl) radioInfoEl.innerHTML = `<small style="font-size: 0.6em; opacity: 0.5; text-transform: none;">zapni posledné</small> 📻 <i class="fa-solid fa-power-off" style="color: #555; font-size: 0.8em; margin-left: 10px;"></i>`;   
     aktualizujTitulokStranky();
     }
     // AK RÁDIO NEHRÁ: skontrolujeme, či máme v pamäti predchádzajúce rádio a znova ho zapneme
