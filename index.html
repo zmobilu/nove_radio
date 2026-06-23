@@ -896,7 +896,7 @@ function stopRadio() {
         if (radioInfoEl) radioInfoEl.innerHTML = `<small style="font-size: 0.6em; opacity: 0.5; text-transform: none;">zapni</small> <i class="fa-solid fa-power-off" style="color: #555; font-size: 0.8em; margin-left: 10px;"></i>`;   
         aktualizujTitulokStranky();
     }
-    // AK RÁDIO NEHRÁ: Najprv skúsime vytiahnuť rádio z localStorage (včerajšie rádio)
+   // AK RÁDIO NEHRÁ: Najprv skúsime vytiahnuť rádio z localStorage (včerajšie rádio)
     else {
         const savedRadioUrl = localStorage.getItem('kiosk_last_radio_url');
         const savedRadioType = localStorage.getItem('kiosk_last_radio_type');
@@ -904,12 +904,18 @@ function stopRadio() {
         if (savedRadioUrl && savedRadioType) {
             playRadio(savedRadioUrl, null, savedRadioType);
         } 
-        // Ak by bola pamäť náhodou prázdna, použije staré záložné premenné v RAM
         else if (lastRadioUrl !== "") {
             playRadio(lastRadioUrl, lastRadioElement, lastRadioType);
         }
+        // ÚPLNÁ ZÁLOHA: Ak je kiosk spustený prvýkrát a pamäť je úplne prázdna
+        else {
+            const prveTlacitko = document.querySelector('.buttons-section .btn:not(.vypni):not(.spotify)');
+            if (prveTlacitko) {
+                // Simuluje kliknutie na prvé rádio v poradí (Slovensko)
+                prveTlacitko.click();
+            }
+        }
     }
-}
     
 function showSpotify() {
     // Vypne bežné rádio, no neodstráni vizuálny panel
