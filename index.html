@@ -1227,6 +1227,20 @@ if (ua.includes('iPhone') && ua.includes('OS 16_')) {
     if (searchRow) {
         searchRow.style.setProperty('display', 'none', 'important');
     }
+    // TEST NAČÍTANIA SKLADBY PRIAMO Z API
+async function testNačitaniaSkladby() {
+    try {
+        const response = await fetch('https://fm.stvr.sk/json/snippet/radio_playlist.json?channel=2');
+        if (!response.ok) throw new Error('Chyba servera');
+        const data = await response.json();
+        console.log("ÚSPECH! Dáta z rozhlasu:", data);
+    } catch (error) {
+        console.error("CORS ochrana nás zablokovala. Detaily:", error);
+    }
+}
+
+// Spustíme test po načítaní stránky
+setTimeout(testNačitaniaSkladby, 2000);
 }
 
 updateNameday();
