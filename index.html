@@ -238,11 +238,11 @@
     
     <div class="buttons-section">
         <button onpointerdown="stopRadio()" class="btn vypni" style="padding: 20px 0; min-height: 90px; width: 100%;"><i class="fa-solid fa-power-off"></i></button>
-        <button onclick="playRadio('https://icecast.stv.livebox.sk/slovensko_128.mp3', this, 'slovensko')" class="btn rozhlas" style="background:#00547E;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoSRo.png" style="max-width:80%; max-height:70%; object-fit:contain;"></button>
-        <button onclick="playRadio('https://stream.funradio.sk/fun192.mp3', this, 'fun')" class="btn fun" style="background:#ffffff;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoFunRadio.png" style="max-width:75%; max-height:70%; object-fit:contain;"></button>
-        <button onclick="playRadio('https://stream.bauermedia.sk/rock-hi.mp3', this, 'rock')" class="btn rock" style="background:#000000;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoAntenaROCK.png" style="max-width:70%; max-height:60%; object-fit:contain;"></button>
-        <button onclick="playRadio('https://ice.abradio.cz/blanikcz128.mp3', this, 'blanik')" class="btn blanik" style="background:#005ea6;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoBlanik.png" style="max-width:80%; max-height:70%; object-fit:contain;"></button>
-        <button onclick="playRadio('https://stream.sunshine-live.de/techno/mp3-192/', this, 'S-techno')" class="btn cro" style="background:#000000; color:#307CEB;"><i class="fa-solid fa-bolt" style="font-size:60px;"></i></button>
+        <button onclick="playRadio('https://icecast.stv.livebox.sk/slovensko_128.mp3', this, 'slovensko')" class="btn rozhlas" style="background:#00547E;" data-type="slovensko"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoSRo.png" style="max-width:80%; max-height:70%; object-fit:contain;"></button>
+        <button onclick="playRadio('https://stream.funradio.sk/fun192.mp3', this, 'fun')" class="btn fun" style="background:#ffffff;" data-type="fun"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoFunRadio.png" style="max-width:75%; max-height:70%; object-fit:contain;"></button>
+        <button onclick="playRadio('https://stream.bauermedia.sk/rock-hi.mp3', this, 'rock')" class="btn rock" style="background:#000000;" data-type="rock"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoAntenaROCK.png" style="max-width:70%; max-height:60%; object-fit:contain;"></button>
+        <button onclick="playRadio('https://ice.abradio.cz/blanikcz128.mp3', this, 'blanik')" class="btn blanik" style="background:#005ea6;" data-type="blanik"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoBlanik.png" style="max-width:80%; max-height:70%; object-fit:contain;"></button>
+        <button onclick="playRadio('https://stream.sunshine-live.de/techno/mp3-192/', this, 'S-techno')" class="btn cro" style="background:#000000; color:#307CEB;" data-type="S-techno"><i class="fa-solid fa-bolt" style="font-size:60px;"></i></button>
         <button onclick="showSpotify()" class="btn spotify"><i class="fa-brands fa-spotify"></i></button>
         
     </div>
@@ -338,23 +338,23 @@
             </div>
 
             <div id="slovensko-links-container" class="ss-hide" style="display: none; flex-direction: row; justify-content: center; gap: 12px; margin-top: 25px; width: 100%;">
-                <button onclick="playRadio('https://icecast.stv.livebox.sk/fm_128.mp3', this, 'fm')" class="sub-btn"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoRadioFM.png"></button>
-                <button onclick="playRadio('https://icecast.stv.livebox.sk/devin_128.mp3', this, 'devin')" class="sub-btn"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoRadioDevin.png"></button>
-                <button onclick="playRadio('https://icecast.stv.livebox.sk/litera_128.mp3', this, 'litera')" class="sub-btn"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoRadioLitera.png"></button>
-                <button onclick="playRadio('https://icecast.stv.livebox.sk/regina-ba_128.mp3', this, 'regina')" class="sub-btn"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoRadioReginaZ.png"></button>
+                <button onclick="playRadio('https://icecast.stv.livebox.sk/fm_128.mp3', this, 'fm')" class="sub-btn" data-type="fm"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoRadioFM.png"></button>
+                <button onclick="playRadio('https://icecast.stv.livebox.sk/devin_128.mp3', this, 'devin')" class="sub-btn" data-type="devin"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoRadioDevin.png"></button>
+                <button onclick="playRadio('https://icecast.stv.livebox.sk/litera_128.mp3', this, 'litera')" class="sub-btn" data-type="litera"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoRadioLitera.png"></button>
+                <button onclick="playRadio('https://icecast.stv.livebox.sk/regina-ba_128.mp3', this, 'regina')" class="sub-btn" data-type="regina"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoRadioReginaZ.png"></button>
             </div>
 
             <div id="fun-links-container" class="ss-hide" style="display: none; flex-direction: row; justify-content: center; gap: 12px; margin-top: 25px; width: 100%;">
-                <button onclick="playRadio('https://stream.funradio.sk/chill128.mp3', this, 'funchill')" class="sub-btn"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoFunChill.png"></button>
-                <button onclick="playRadio('https://stream.funradio.sk/cs128.mp3', this, 'funczsk')" class="sub-btn"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoFunCZSK.png"></button>
-                <button onclick="playRadio('https://stream.funradio.sk/80-90-128.mp3', this, 'fun8090')" class="sub-btn"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoFun8090.png"></button>
-                <button onclick="playRadio('https://stream.funradio.sk/milenialky128.mp3', this, 'milenialky')" class="sub-btn"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoFun2000.png"></button>
+                <button onclick="playRadio('https://stream.funradio.sk/chill128.mp3', this, 'funchill')" class="sub-btn" data-type="funchill"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoFunChill.png"></button>
+                <button onclick="playRadio('https://stream.funradio.sk/cs128.mp3', this, 'funczsk')" class="sub-btn" data-type="funczsk"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoFunCZSK.png"></button>
+                <button onclick="playRadio('https://stream.funradio.sk/80-90-128.mp3', this, 'fun8090')" class="sub-btn" data-type="fun8090"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoFun8090.png"></button>
+                <button onclick="playRadio('https://stream.funradio.sk/milenialky128.mp3', this, 'milenialky')" class="sub-btn" data-type="milenialky"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoFun2000.png"></button>
             </div>
 
             <div id="rock-links-container" class="ss-hide" style="display: none; flex-direction: row; justify-content: center; gap: 12px; margin-top: 25px; width: 100%;">
-                <button onclick="playRadio('https://stream.radiovlna.sk/rockovarepublika-hi.mp3', this, 'rockrepublika')" class="sub-btn"><img src="https://www.radia.sk/static/logos/radios/61_large.png" style="padding: 5px;"></button>
-                <button onclick="playRadio('https://ice.abradio.cz/beat128.mp3', this, 'beat')" class="sub-btn"><img src="https://www.radia.sk/static/logos/radios/142_large.png" style="padding: 4px;"></button>
-                <button onclick="playRadio('https://ice.abradio.cz/casrock128.mp3', this, 'casrock')" class="sub-btn"><img src="https://www.casrock.cz/wp-content/themes/casrock/assets/images/logo.png" style="padding: 6px;"></button>
+                <button onclick="playRadio('https://stream.radiovlna.sk/rockovarepublika-hi.mp3', this, 'rockrepublika')" class="sub-btn" data-type="rockrepublika"><img src="https://www.radia.sk/static/logos/radios/61_large.png" style="padding: 5px;"></button>
+                <button onclick="playRadio('https://ice.abradio.cz/beat128.mp3', this, 'beat')" class="sub-btn" data-type="beat"><img src="https://www.radia.sk/static/logos/radios/142_large.png" style="padding: 4px;"></button>
+                <button onclick="playRadio('https://ice.abradio.cz/casrock128.mp3', this, 'casrock')" class="sub-btn" data-type="casrock"><img src="https://www.casrock.cz/wp-content/themes/casrock/assets/images/logo.png" style="padding: 6px;"></button>
             </div>
 
             <div id="spotify-links-container" class="ss-hide" style="display: none; flex-direction: row; justify-content: center; gap: 12px; margin-top: 25px; width: 100%;">
@@ -365,17 +365,17 @@
             </div>
 
             <div id="komerce-links-container" class="ss-hide" style="display: none; flex-direction: row; justify-content: center; gap: 12px; margin-top: 25px; width: 100%;">
-                <button onclick="playRadio('https://stream.bauermedia.sk/expres-hi.mp3', this, 'expres')" class="sub-btn"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoExpress.png"></button>
-                <button onclick="playRadio('https://stream.bauermedia.sk/europa2-hi.mp3', this, 'europa2')" class="sub-btn"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoEuropa2.png"></button>
-                <button onclick="playRadio('https://stream.bauermedia.sk/melody-hi.mp3', this, 'melody')" class="sub-btn"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoMelody.png"></button>
-                <button onclick="playRadio('https://stream.radiovlna.sk/vlna-hi.mp3', this, 'vlna')" class="sub-btn"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoVlna.png"></button>
+                <button onclick="playRadio('https://stream.bauermedia.sk/expres-hi.mp3', this, 'expres')" class="sub-btn" data-type="expres"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoExpress.png"></button>
+                <button onclick="playRadio('https://stream.bauermedia.sk/europa2-hi.mp3', this, 'europa2')" class="sub-btn" data-type="europa2"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoEuropa2.png"></button>
+                <button onclick="playRadio('https://stream.bauermedia.sk/melody-hi.mp3', this, 'melody')" class="sub-btn" data-type="melody"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoMelody.png"></button>
+                <button onclick="playRadio('https://stream.radiovlna.sk/vlna-hi.mp3', this, 'vlna')" class="sub-btn" data-type="vlna"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoVlna.png"></button>
             </div>
 
            <div id="cro-links-container" class="ss-hide">
-                <button onclick="playRadio('https://stream.sunshine-live.de/schranz/mp3-192/', this, 'schranz')" class="sub-btn" style="color:#fff; font-weight:bold; font-size:14px; background:#111;">schranz</button>
-                <button onclick="playRadio('https://stream.sunshine-live.de/melodic_beats/mp3-192/', this, 'melodic')" class="sub-btn" style="color:#fff; font-weight:bold; font-size:14px; background:#111;">melodic</button>
-                <button onclick="playRadio('https://stream.sunshine-live.de/hardtechno/mp3-192', this, 'h-techno')" class="sub-btn" style="color:#fff; font-weight:bold; font-size:14px; background:#111;">HM-h-techno</button>
-                <button onclick="playRadio('https://stream.sunshine-live.de/drumbass/mp3-192', this, 'Drumcode')" class="sub-btn" style="color:#fff; font-weight:bold; font-size:14px; background:#111;">Drumcode 🔊</button>
+                <button onclick="playRadio('https://stream.sunshine-live.de/schranz/mp3-192/', this, 'schranz')" class="sub-btn" style="color:#fff; font-weight:bold; font-size:14px; background:#111;" data-type="schranz">schranz</button>
+                <button onclick="playRadio('https://stream.sunshine-live.de/melodic_beats/mp3-192/', this, 'melodic')" class="sub-btn" style="color:#fff; font-weight:bold; font-size:14px; background:#111;" data-type="melodic">melodic</button>
+                <button onclick="playRadio('https://stream.sunshine-live.de/hardtechno/mp3-192', this, 'h-techno')" class="sub-btn" style="color:#fff; font-weight:bold; font-size:14px; background:#111;" data-type="h-techno">h-techno</button>
+                <button onclick="playRadio('https://stream.sunshine-live.de/drumbass/mp3-192', this, 'Drumcode')" class="sub-btn" style="color:#fff; font-weight:bold; font-size:14px; background:#111;" data-type="Drumcode">Drumcode 🔊</button>
            </div>
 
             <div id="date-block" class="ss-only">
@@ -662,7 +662,20 @@ async function updateWeather(lat = 48.1421, lon = 17.1964) {
 }
 
 function inicializujPocasie() {
-    updateWeather(48.1421, 17.1964);
+    // Načítanie naposledy zvoleného mesta z localStorage
+    const savedLat = localStorage.getItem('kiosk_current_lat');
+    const savedLon = localStorage.getItem('kiosk_current_lon');
+    const savedName = localStorage.getItem('kiosk_current_name');
+
+    if (savedLat && savedLon && savedName) {
+        window.customLat = parseFloat(savedLat);
+        window.customLon = parseFloat(savedLon);
+        window.customCityName = savedName;
+        updateWeather(window.customLat, window.customLon);
+    } else {
+        // Ak nie je nič uložené, predvolená Bratislava
+        updateWeather(48.1421, 17.1964);
+    }
 
     window.weatherInterval = setInterval(() => {
         const aktualnyLat = window.customLat || 48.1421;
@@ -784,6 +797,10 @@ const audio = document.getElementById('audioPlayer');
     let lastRadioType = "";
 
     function playRadio(url, element, type) {
+        // Pridané pre localStorage:
+        localStorage.setItem('kiosk_last_radio_url', url);
+        localStorage.setItem('kiosk_last_radio_type', type);
+        
         // Uložíme si aktuálne rádio do pamäte pre prípadné opätovné zapnutie
         lastRadioUrl = url;
         lastRadioElement = element;
@@ -801,6 +818,10 @@ const audio = document.getElementById('audioPlayer');
     
     if (element && element.classList) {
         element.classList.add('playing');
+    } else {
+        // Ak funkciu voláme z pamäte pri štarte, nájdeme tlačidlo podľa dátového atribútu
+        const tlacitko = document.querySelector(`[data-type="${type}"]`);
+        if (tlacitko) tlacitko.classList.add('playing');
     }
     if (['fm', 'devin', 'litera', 'regina'].includes(type)) {
         const hlavnyRozhlas = document.querySelector('.rozhlas');
@@ -859,31 +880,41 @@ function stopRadio() {
         audio.pause(); 
         audio.src = "";
         currentPlayingType = "";
-    document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('playing'));
-    document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('playing')); 
-    
-    const container = document.getElementById('integrated-spotify-container');
-    const frame = document.getElementById('spotify-player-frame');
-    if (container) container.style.display = 'none';
-    if (frame) frame.src = "";
-    
-    aktualizujSubPanely("none");
-    resetIdleTimer(!document.body.classList.contains('screensaver-mode'));
-    
-    const radioInfoEl = document.getElementById('ss-radio-info');
-    if (radioInfoEl) radioInfoEl.innerHTML = `<small style="font-size: 0.6em; opacity: 0.5; text-transform: none;">zapni</small> <i class="fa-solid fa-power-off" style="color: #555; font-size: 0.8em; margin-left: 10px;"></i>`;   
-    aktualizujTitulokStranky();
+        
+        document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('playing'));
+        document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('playing')); 
+        
+        const container = document.getElementById('integrated-spotify-container');
+        const frame = document.getElementById('spotify-player-frame');
+        if (container) container.style.display = 'none';
+        if (frame) frame.src = "";
+        
+        aktualizujSubPanely("none");
+        resetIdleTimer(!document.body.classList.contains('screensaver-mode'));
+        
+        const radioInfoEl = document.getElementById('ss-radio-info');
+        if (radioInfoEl) radioInfoEl.innerHTML = `<small style="font-size: 0.6em; opacity: 0.5; text-transform: none;">zapni</small> <i class="fa-solid fa-power-off" style="color: #555; font-size: 0.8em; margin-left: 10px;"></i>`;   
+        aktualizujTitulokStranky();
     }
-    // AK RÁDIO NEHRÁ: skontrolujeme, či máme v pamäti predchádzajúce rádio a znova ho zapneme
-    else if (lastRadioUrl !== "") {
-        playRadio(lastRadioUrl, lastRadioElement, lastRadioType);
+    // AK RÁDIO NEHRÁ: Najprv skúsime vytiahnuť rádio z localStorage (včerajšie rádio)
+    else {
+        const savedRadioUrl = localStorage.getItem('kiosk_last_radio_url');
+        const savedRadioType = localStorage.getItem('kiosk_last_radio_type');
+        
+        if (savedRadioUrl && savedRadioType) {
+            playRadio(savedRadioUrl, null, savedRadioType);
+        } 
+        // Ak by bola pamäť náhodou prázdna, použije staré záložné premenné v RAM
+        else if (lastRadioUrl !== "") {
+            playRadio(lastRadioUrl, lastRadioElement, lastRadioType);
+        }
     }
 }
     
 function showSpotify() {
     // Vypne bežné rádio, no neodstráni vizuálny panel
     audio.pause(); audio.src = "";
-
+ 
     // Zatvoríme otvorený iframe ak predtým existoval
     const container = document.getElementById('integrated-spotify-container');
     const frame = document.getElementById('spotify-player-frame');
@@ -1038,6 +1069,19 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+    
+    // Načítanie posledného rádia z pamäte do interných premenných pre vypínač
+    const savedRadioUrl = localStorage.getItem('kiosk_last_radio_url');
+    const savedRadioType = localStorage.getItem('kiosk_last_radio_type');
+    
+    if (savedRadioUrl && savedRadioType) {
+        lastRadioUrl = savedRadioUrl;
+        lastRadioType = savedRadioType;
+        
+        // Nastavíme text "zapni" na šetriči obrazovky
+        const radioInfoEl = document.getElementById('ss-radio-info');
+        if (radioInfoEl) radioInfoEl.innerHTML = `<small style="font-size: 0.6em; opacity: 0.5; text-transform: none;">zapni</small> <i class="fa-solid fa-power-off" style="color: #555; font-size: 0.8em; margin-left: 10px;"></i>`;
+    }
 });
 
 async function hladajMesto() {
@@ -1070,7 +1114,12 @@ async function hladajMesto() {
         window.customLat = lat;
         window.customLon = lon;
         window.customCityName = name;
-
+        
+        // Pridané: Uloženie aktuálneho mesta do pamäte
+        localStorage.setItem('kiosk_current_lat', lat);
+        localStorage.setItem('kiosk_current_lon', lon);
+        localStorage.setItem('kiosk_current_name', name);
+        
         pridajDoHistorie(name, lat, lon);
 
         inputEl.value = '';
@@ -1115,6 +1164,12 @@ function zobrazHistoriu() {
             window.customLat = mesto.lat;
             window.customLon = mesto.lon;
             window.customCityName = mesto.name;
+
+            // Pridané: Uložíme mesto z histórie ako aktuálne predvolené
+            localStorage.setItem('kiosk_current_lat', mesto.lat);
+            localStorage.setItem('kiosk_current_lon', mesto.lon);
+            localStorage.setItem('kiosk_current_name', mesto.name);
+            
             await updateWeather(mesto.lat, mesto.lon);
             box.style.display = 'none';
         };
