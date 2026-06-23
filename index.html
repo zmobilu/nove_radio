@@ -349,8 +349,9 @@
                 <button onclick="playRadio('https://icecast.stv.livebox.sk/devin_128.mp3', this, 'devin')" class="sub-btn" data-type="devin"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoRadioDevin.png"></button>
                 <button onclick="playRadio('https://icecast.stv.livebox.sk/litera_128.mp3', this, 'litera')" class="sub-btn" data-type="litera"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoRadioLitera.png"></button>
                 <button onclick="playRadio('https://icecast.stv.livebox.sk/junior_128.mp3', this, 'junior')" class="sub-btn" data-type="junior"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoRadioJunior.png"></button>
+                <button onclick="playRadio('https://icecast.stv.livebox.sk/regina-ba_128.mp3', this, 'regina')" class="sub-btn" data-type="regina"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoRadioReginaZ.png"></button>
             </div>
-
+            
             <div id="fun-links-container" class="ss-hide" style="display: none; flex-direction: row; justify-content: center; gap: 12px; margin-top: 25px; width: 100%;">
                 <button onclick="playRadio('https://stream.funradio.sk/chill128.mp3', this, 'funchill')" class="sub-btn" data-type="funchill"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoFunChill.png"></button>
                 <button onclick="playRadio('https://stream.funradio.sk/cs128.mp3', this, 'funczsk')" class="sub-btn" data-type="funczsk"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoFunCZSK.png"></button>
@@ -407,7 +408,7 @@
             
     <script>
 const VOLUME_MAP = { 
-    'slovensko': 0.3, 'fm': 0.5, 'devin': 0.5, 'litera': 0.5, 'junior': 0.5,
+    'slovensko': 0.3, 'fm': 1.0, 'devin': 1.0, 'litera': 1.0, 'junior': 1.0, 'regina': 1.0,
     'fun': 1.0, 'funchill': 1.0, 'funczsk': 1.0, 'fun8090': 1.0, 'milenialky': 1.0,
     'expres': 1.0, 'europa2': 1.0, 'melody': 1.0, 'vlna': 1.0,
     'blanik': 1.0, 'rock': 0.5, 'rockrepublika': 0.5, 'beat': 0.5, 'casrock': 0.5, 
@@ -906,7 +907,7 @@ const audio = document.getElementById('audioPlayer');
         const tlacitko = document.querySelector(`[data-type="${type}"]`);
         if (tlacitko) tlacitko.classList.add('playing');
     }
-    if (['fm', 'devin', 'litera', 'junior'].includes(type)) {
+    if (['fm', 'devin', 'litera', 'junior', 'regina'].includes(type)) {
         const hlavnyRozhlas = document.querySelector('.rozhlas');
         if (hlavnyRozhlas) hlavnyRozhlas.classList.add('playing');
     }
@@ -951,7 +952,7 @@ function aktualizujSubPanely(type) {
     const rockContainer = document.getElementById('rock-links-container');
     const croContainer = document.getElementById('cro-links-container');
 
-    if (slovenskoContainer) slovenskoContainer.style.display = ['slovensko', 'fm', 'devin', 'litera', 'junior'].includes(type) ? 'flex' : 'none';
+    if (slovenskoContainer) slovenskoContainer.style.display = ['slovensko', 'fm', 'devin', 'litera', 'junior', 'regina'].includes(type) ? 'flex' : 'none';
     if (funContainer) funContainer.style.display = ['fun', 'funchill', 'funczsk', 'fun8090', 'milenialky'].includes(type) ? 'flex' : 'none';
     if (komerceContainer) komerceContainer.style.display = ['blanik', 'expres', 'europa2', 'melody', 'vlna', 'topolcany'].includes(type) ? 'flex' : 'none';
     if (spotifyContainer) spotifyContainer.style.display = (type === 'spotify') ? 'flex' : 'none';
