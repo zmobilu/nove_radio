@@ -238,6 +238,7 @@ body.full-night-mode .ss-left-col,
 body.full-night-mode #ss-radio-info,
 body.full-night-mode .radio-info-wrapper,
 body.full-night-mode #integrated-spotify-container,
+body.full-night-mode [id$="-links-container"], /* TENTO RIADOK skryje všetky sub-tlačidlá rádií */
 body.full-night-mode #date-block {
     display: none !important;
 }
@@ -620,8 +621,8 @@ function updateClock() {
     const terazMili = Date.now();
 
     // --- TESTOVACÍ ČAS (Zatiaľ ponechaný 10:00 - 11:20 pre tvoj notebook) ---
-    const casOd = 14 * 60;      
-    const casDo = 15 * 60 + 20; 
+    const casOd = 16 * 60;      
+    const casDo = 16 * 60 + 20; 
 
     const bodyEl = document.getElementById('mainBody');
     const bottomInfoEl = document.getElementById('night-bottom-info');
@@ -639,10 +640,16 @@ function updateClock() {
         
         // Vytiahnutie teploty z mini elementu (kde je už stiahnutá a zaokrúhlená)
         const aktualnaTeplota = document.getElementById('weather-temp-mini').textContent || '--°C';
+
+        // PRIDANÉ: Detekcia hrajúceho rádia do nočného riadku
+        let radioNocnyText = "";
+        if (currentPlayingType && currentPlayingType !== "" && currentPlayingType !== "none") {
+            radioNocnyText = `  •  📻 ${currentPlayingType.toUpperCase()}`;
+        }
         
-        // Výsledný formát: "Pondelok, 23. júna • 24°C"
+        // Výsledný formát: "Pondelok, 23. júna • 24°C • 📻 FUN" (ak rádio hrá)
         if (bottomInfoEl) {
-            bottomInfoEl.innerHTML = `${denSlovom}, ${denCislom}. ${mesiacSlovom} &nbsp;•&nbsp; ${aktualnaTeplota}`;
+            bottomInfoEl.innerHTML = `${denSlovom}, ${denCislom}. ${mesiacSlovom}  •  ${aktualnaTeplota}${radioNocnyText}`;
         }
     } else {
         bodyEl.classList.remove('full-night-mode');
@@ -1234,11 +1241,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (timeEl) {
         timeEl.addEventListener('pointerdown', (e) => {
-            // AK je aktívny celoobrazovkový nočný režim, kliknutím ho zrušíme na 5 minút
+            // AK je aktívny celoobrazovkový nočný režim, kliknutím ho zrušíme na 1 minútu
             if (document.body.classList.contains('full-night-mode')) {
                 e.stopPropagation();
                 e.preventDefault();
-                nocnyRezimSnoozeDo = Date.now() + (2 * 60 * 1000); // 2 minúty odklad
+                nocnyRezimSnoozeDo = Date.now() + (1 * 60 * 1000); // 1 minúta odklad
                 document.body.classList.remove('full-night-mode');
                 return;
             }
