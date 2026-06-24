@@ -288,6 +288,23 @@ body.full-night-mode #night-bottom-info {
     font-family: inherit !important;
     text-align: center !important;
 }
+
+/* Štýl pre nový horný informačný riadok (Budík) */
+body.full-night-mode #night-top-info {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 8px !important;
+    position: absolute !important;
+    top: 8vh !important; /* Umiestnenie pri hornom okraji */
+    font-size: 3.2vw !important;
+    font-weight: 400 !important;
+    color: var(--night-color) !important;
+    opacity: 0.85 !important;
+    cursor: pointer !important;
+    pointer-events: auto !important; /* Umožní naň kliknúť */
+    z-index: 9999 !important;
+}
          
     </style>
 </head>
@@ -339,6 +356,9 @@ body.full-night-mode #night-bottom-info {
         
         <div class="ss-right-col">
             <div id="ss-radio-info" class="weather-details-hide" onpointerdown="event.stopPropagation(); event.preventDefault(); stopRadio();" style="pointer-events: auto !important; cursor: pointer; z-index: 9999 !important;"></div>
+
+            <!-- PRIDANÉ: Horný riadok pre budík v nočnom režime -->
+            <div id="night-top-info" style="display: none;"></div>
             
             <div id="time" class="weather-details-hide">
                 <span id="h-part" class="hours-part">00</span>
@@ -620,15 +640,26 @@ function updateClock() {
     const aktualnyCasVKutoch = now.getHours() * 60 + now.getMinutes();
     const terazMili = Date.now();
 
-    // --- TESTOVACÍ ČAS (Zatiaľ ponechaný 10:00 - 11:20 pre tvoj notebook) ---
-    const casOd = 14 * 60;      
-    const casDo = 15 * 60 + 20; 
+    // --- TESTOVACÍ ČAS (Už sme v reálnom čase, tak dajme 20:00 - 05:20 alebo nechaj testovací) ---
+    const casOd = 10 * 60;      
+    const casDo = 18 * 60 + 20; // Dočasne predĺžené, aby si to videl aj teraz poobede
 
     const bodyEl = document.getElementById('mainBody');
     const bottomInfoEl = document.getElementById('night-bottom-info');
+    const topInfoEl = document.getElementById('night-top-info'); // Pridané
     
     if (aktualnyCasVKutoch >= casOd && aktualnyCasVKutoch < casDo && terazMili > nocnyRezimSnoozeDo) {
         bodyEl.classList.add('full-night-mode');
+        
+        // 1. Zobrazenie a formátovanie Budíka v hornom riadku
+        const savedAlarm = localStorage.getItem('kiosk_night_alarm') || '06:00';
+        if (topInfoEl) {
+            if (savedAlarm === 'VYPNUTÝ') {
+                topInfoEl.innerHTML = `<i class="fa-regular fa-bell-slash"></i> Budík vypnutý`;
+            } else {
+                topInfoEl.innerHTML = `<i class="fa-solid fa-bell"></i> Budík ${savedAlarm}`;
+            }
+        }
         
         // Generovanie slovenského nočného riadku
         const dniVTyzdniSvk = ['Nedeľa', 'Pondelok', 'Utorok', 'Streda', 'Štvrtok', 'Piatok', 'Sobota'];
@@ -1235,11 +1266,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (timeEl) {
         timeEl.addEventListener('pointerdown', (e) => {
-            // AK je aktívny celoobrazovkový nočný režim, kliknutím ho zrušíme na 5 minút
+            // AK je aktívny celoobrazovkový nočný režim, kliknutím ho zrušíme na 1 minútu
             if (document.body.classList.contains('full-night-mode')) {
                 e.stopPropagation();
                 e.preventDefault();
-                nocnyRezimSnoozeDo = Date.now() + (2 * 60 * 1000); // 2 minúty odklad
+                nocnyRezimSnoozeDo = Date.now() + (1 * 60 * 1000); // 1 minúta odklad
                 document.body.classList.remove('full-night-mode');
                 return;
             }
@@ -1258,6 +1289,26 @@ document.addEventListener('DOMContentLoaded', () => {
         grafContainer.addEventListener('pointerdown', (e) => {
             if (document.body.classList.contains('weather-details-mode') && !e.target.closest('button')) {
                 zatvorPocasie(e);
+            }
+        });
+   // Nastavenie kliknutia na budík v nočnom režime
+    const topInfoEl = document.getElementById('night-top-info');
+    if (topInfoEl) {
+        topInfoEl.addEventListener('pointerdown', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            
+            const povodnyBudik = localStorage.getItem('kiosk_night_alarm') || '06:00';
+            const novyBudik = prompt('Zadaj čas budíka (napr. 05:20) alebo napíš "vypnuty" pre vypnutie:', povodnyBudik);
+            
+            if (novyBudik !== null) {
+                let formatovany = novyBudik.trim();
+                if (formatovany.toLowerCase() === 'vypnuty' || formatovany === '') {
+                    localStorage.setItem('kiosk_night_alarm', 'VYPNUTÝ');
+                } else {
+                    localStorage.setItem('kiosk_night_alarm', formatovany);
+                }
+                updateClock(); // Okamžitá prekreslenie hodín
             }
         });
     }
