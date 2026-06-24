@@ -229,6 +229,41 @@
             white-space: nowrap !important;
             line-height: 1.0 !important;
         }
+        /* --- CELOOBRAZOVKOVÝ NOČNÝ REŽIM (IBA ŽLTÉ HODINY) --- */
+body.full-night-mode .buttons-section,
+body.full-night-mode .ss-left-col,
+body.full-night-mode #ss-radio-info,
+body.full-night-mode .radio-info-wrapper,
+body.full-night-mode #integrated-spotify-container,
+body.full-night-mode #date-block {
+    display: none !important;
+}
+
+body.full-night-mode .clock-section {
+    width: 100vw !important;
+    height: 100vh !important;
+    border: none !important;
+    background-color: #000 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+body.full-night-mode #time {
+    font-size: 35vw !important; /* Ešte o niečo väčšie, keďže sú na obrazovke samé */
+    transform: scaleY(1.20) !important;
+    letter-spacing: -1vw !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+body.full-night-mode .hours-part,
+body.full-night-mode .minutes-part,
+body.full-night-mode .red-digit,
+body.full-night-mode .blue-digit {
+    color: #ffff00 !important; /* Vynútená žltá pre všetky číslice */
+}
+         
     </style>
 </head>
 
@@ -554,6 +589,21 @@ function updateClock() {
     const now = new Date();
     let h = String(now.getHours()).padStart(2, '0');
     let m = String(now.getMinutes()).padStart(2, '0');
+
+    // --- PRIDANÉ: Kontrola pre Celoobrazovkový nočný režim (20:00 - 05:20) ---
+    const aktualnyCasVKutoch = now.getHours() * 60 + now.getMinutes(); // Prevedieme čas na minúty od polnoci
+    const casOd = 10 * 60;      // 20:00 = 1200 minút 20 * 60
+    const casDo = 11 * 60 + 20;  // 05:20 = 320 minút 5 * 60 + 20
+
+    const bodyEl = document.getElementById('mainBody');
+    
+    // Ak je čas po 20:00 ALEBO pred 5:20
+    if (aktualnyCasVKutoch >= casOd || aktualnyCasVKutoch < casDo) {
+        bodyEl.classList.add('full-night-mode');
+    } else {
+        bodyEl.classList.remove('full-night-mode');
+    }
+    // --- KONIEC KONTROLY NOČNÉHO REŽIMU ---
     
     let h_display = h;
     if (h[0] === '1') {
