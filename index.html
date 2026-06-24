@@ -583,20 +583,26 @@ function aktualizujTitulokStranky() {
     // Finálne zostavenie titulku - čisté, iba Počasie | Rádio/Mesto
     document.title = `${weatherEmoji} ${tempText} | ${radioText}`;
 }
+// Nová premenná pre dočasné zrušenie režimu kliknutím (umiestni ju tesne nad updateClock)
+let nocnyRezimSnoozeDo = 0;
+
 function updateClock() {
     const now = new Date();
     let h = String(now.getHours()).padStart(2, '0');
     let m = String(now.getMinutes()).padStart(2, '0');
 
-    // --- PRIDANÉ: Kontrola pre Celoobrazovkový nočný režim (20:00 - 05:20) ---
-    const aktualnyCasVKutoch = now.getHours() * 60 + now.getMinutes(); // Prevedieme čas na minúty od polnoci
-    const casOd = 10 * 60;      // 20:00 = 1200 minút 20 * 60
-    const casDo = 11 * 60 + 20;  // 05:20 = 320 minút 5 * 60 + 20
+    // Prevod aktuálneho času na minúty
+    const aktualnyCasVKutoch = now.getHours() * 60 + now.getMinutes();
+    const terazMili = Date.now();
+
+    // --- TESTOVACÍ ČAS (10:00 - 11:20) s opravou na SÚČASNE (&&) ---
+    const casOd = 10 * 60;      // 10:00
+    const casDo = 11 * 60 + 20; // 11:20
 
     const bodyEl = document.getElementById('mainBody');
     
-    // Ak je čas po 20:00 ALEBO pred 5:20
-    if (aktualnyCasVKutoch >= casOd || aktualnyCasVKutoch < casDo) {
+    // Podmienka platí len vtedy, ak sme v intervale A ZÁROVEŇ nevypršal 5-minútový snooze klik
+    if (aktualnyCasVKutoch >= casOd && aktualnyCasVKutoch < casDo && terazMili > nocnyRezimSnoozeDo) {
         bodyEl.classList.add('full-night-mode');
     } else {
         bodyEl.classList.remove('full-night-mode');
@@ -629,12 +635,9 @@ function updateClock() {
 
         listyTried.forEach(el => {
             if (!el) return;
-            
             el.classList.remove('name-female', 'name-male', 'name-moje', 'name-family', 'name-colleagues', 'name-classmates');
             el.style.color = '';
-
             const skontroluj = (zoznam) => zoznam.some(m => m.toLowerCase().trim() === menoLower);
-
             if (skontroluj(RODINA)) { el.classList.add('name-family'); } 
             else if (skontroluj(MOJE_MENA)) { el.classList.add('name-moje'); } 
             else if (skontroluj(KOLEGOVIA)) { el.classList.add('name-colleagues'); } 
@@ -646,7 +649,6 @@ function updateClock() {
             }
         });
     }
-    // PRIDANÉ: Automatická aktualizácia záhlavia každú sekundu
     aktualizujTitulokStranky();
 }
 
@@ -1192,6 +1194,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (timeEl) {
         timeEl.addEventListener('pointerdown', (e) => {
+            // AK je aktívny celoobrazovkový nočný režim, kliknutím ho zrušíme na 5 minút
+            if (document.body.classList.contains('full-night-mode')) {
+                e.stopPropagation();
+                e.preventDefault();
+                nocnyRezimSnoozeDo = Date.now() + (2 * 60 * 1000); // 2 minúty odklad
+                document.body.classList.remove('full-night-mode');
+                return;
+            }
+            // Inak platí pôvodná funkcia prepínania šetriča
             klikNaHodiny(e);
         });
     }
