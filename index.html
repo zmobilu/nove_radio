@@ -238,6 +238,12 @@ body.full-night-mode .ss-left-col,
 body.full-night-mode #ss-radio-info,
 body.full-night-mode .radio-info-wrapper,
 body.full-night-mode #integrated-spotify-container,
+body.full-night-mode #settings-container { display: none !important; }
+/* Ak sú otvorené nastavenia, skryjeme hodiny a info riadok, aby uvoľnili miesto navrchu */
+body:has(#settings-container[style*="display: block"]) #time,
+body:has(#settings-container[style*="display: block"]) .radio-info-wrapper { 
+    display: none !important; 
+}
 body.full-night-mode [id$="-links-container"], /* TENTO RIADOK skryje všetky sub-tlačidlá rádií */
 body.full-night-mode #date-block {
     display: none !important;
@@ -1149,7 +1155,7 @@ function aktualizujSubPanely(type) {
     if (slovenskoContainer) slovenskoContainer.style.display = ['slovensko', 'fm', 'devin', 'litera', 'junior', 'regina'].includes(type) ? 'flex' : 'none';
     if (funContainer) funContainer.style.display = ['fun', 'funchill', 'funczsk', 'fun8090', 'milenialky'].includes(type) ? 'flex' : 'none';
     if (komerceContainer) komerceContainer.style.display = ['blanik', 'expres', 'europa2', 'melody', 'vlna', 'topolcany'].includes(type) ? 'flex' : 'none';
-    if (spotifyContainer) spotifyContainer.style.display = (type === 'spotify') ? 'flex' : 'none';
+    if (spotifyContainer) spotifyContainer.style.display = (type === 'spotify' || type === 'settings') ? 'flex' : 'none';
     if (rockContainer) rockContainer.style.display = ['rockrepublika', 'beat', 'casrock'].includes(type) ? 'flex' : 'none';
     if (croContainer) croContainer.style.display = ['S-techno', 'schranz', 'melodic', 'h-techno', 'Drumcode'].includes(type) ? 'flex' : 'none';
 }
