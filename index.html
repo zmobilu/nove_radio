@@ -620,14 +620,17 @@ function updateClock() {
     const aktualnyCasVKutoch = now.getHours() * 60 + now.getMinutes();
     const terazMili = Date.now();
 
-    // --- TESTOVACÍ ČAS (Zatiaľ ponechaný 10:00 - 11:20 pre tvoj notebook) ---
-    const casOd = 21 * 60;      
-    const casDo = 5 * 60 + 20; 
+    // --- NASTAVENIE NOČNÉHO REŽIMU (20:00 - 05:20) ---
+    const casOd = 20 * 60;       // 20:00 = 1200 minút
+    const casDo = 5 * 60 + 20;   // 05:20 = 320 minút
 
     const bodyEl = document.getElementById('mainBody');
     const bottomInfoEl = document.getElementById('night-bottom-info');
     
-    if (aktualnyCasVKutoch >= casOd && aktualnyCasVKutoch < casDo && terazMili > nocnyRezimSnoozeDo) {
+    // Logika prechodu cez polnoc (od 20:00 do 23:59 ALEBO od 00:00 do 05:20)
+    const jeNocnyCas = (aktualnyCasVKutoch >= casOd || aktualnyCasVKutoch < casDo);
+
+    if (jeNocnyCas && terazMili > nocnyRezimSnoozeDo) {
         bodyEl.classList.add('full-night-mode');
         
         // Generovanie slovenského nočného riadku
@@ -638,16 +641,16 @@ function updateClock() {
         const mesiacSlovom = mesiaceSvk[now.getMonth()];
         const denCislom = now.getDate();
         
-        // Vytiahnutie teploty z mini elementu (kde je už stiahnutá a zaokrúhlená)
+        // Vytiahnutie teploty z mini elementu
         const aktualnaTeplota = document.getElementById('weather-temp-mini').textContent || '--°C';
 
-        // PRIDANÉ: Detekcia hrajúceho rádia do nočného riadku
+        // Detekcia hrajúceho rádia do nočného riadku
         let radioNocnyText = "";
         if (currentPlayingType && currentPlayingType !== "" && currentPlayingType !== "none") {
             radioNocnyText = `  •  📻 ${currentPlayingType.toUpperCase()}`;
         }
         
-        // Výsledný formát: "Pondelok, 23. júna • 24°C • 📻 FUN" (ak rádio hrá)
+        // Výsledný formát: "Pondelok, 23. júna  •  24°C  •  📻 FUN"
         if (bottomInfoEl) {
             bottomInfoEl.innerHTML = `${denSlovom}, ${denCislom}. ${mesiacSlovom}  •  ${aktualnaTeplota}${radioNocnyText}`;
         }
