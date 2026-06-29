@@ -364,32 +364,39 @@
             <i class="fa-solid fa-gear"></i>
         </button>
         
-        <!-- --- PANEL NASTAVENÍ: 100% VÝŠKA, NOČNÝ PANEL NAVRCHU --- -->
         <div id="right-settings-overlay" style="display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; background: #090909; z-index: 9998; padding: 15px; box-sizing: border-box; overflow-y: auto; -webkit-overflow-scrolling: touch;">
             
-            <!-- 1. BOX NASTAVENÍ NOCNÉHO REŽIMU - ÚPLNE NAVRCHU (2x2) -->
-            <div id="settings-container" style="width: 100%; background: #050505; padding: 12px; box-sizing: border-box; border-radius: 14px; border: 1px solid #222; margin-bottom: 12px;">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; background: #111; padding: 8px 12px; border-radius: 8px; border: 1px solid #222; min-height: 42px; box-sizing: border-box;">
-                        <span style="font-size: 2.2vw; color: #fff;"><i class="fa-solid fa-moon" style="color: #307CEB; margin-right: 6px;"></i> Noc</span>
-                        <div style="display: flex; gap: 6px; align-items: center;">
-                            <button onclick="zmenNastavenieCasu('od')" id="set-night-from" style="background: #222; color: #fff; border: 1px solid #444; padding: 4px 8px; border-radius: 6px; font-size: 1.8vw; cursor: pointer;">20:00</button>
-                            <span style="color: #555;">-</span>
-                            <button onclick="zmenNastavenieCasu('do')" id="set-night-to" style="background: #222; color: #fff; border: 1px solid #444; padding: 4px 8px; border-radius: 6px; font-size: 1.8vw; cursor: pointer;">05:20</button>
+            <div id="settings-container" style="width: 100%; background: #050505; padding: 6px 8px; box-sizing: border-box; border-radius: 12px; border: 1px solid #222; margin-bottom: 12px;">
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(130px, 180px)); gap: 6px; justify-content: start;">
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; background: #111; padding: 6px 10px; border-radius: 8px; border: 1px solid #222; min-height: 38px; box-sizing: border-box;">
+                        <span style="font-size: 10px; font-weight: 600; text-transform: uppercase; color: #888; display: flex; align-items: center;">
+                            <i class="fa-solid fa-moon" style="color: #307CEB; margin-right: 5px; font-size: 11px;"></i> Noc
+                        </span>
+                        <div style="display: flex; gap: 4px; align-items: center;">
+                            <button onclick="zmenNastavenieCasu('od')" id="set-night-from" style="background: #222; color: #fff; border: 1px solid #444; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; cursor: pointer;">20:00</button>
+                            <span style="color: #555; font-size: 10px;">-</span>
+                            <button onclick="zmenNastavenieCasu('do')" id="set-night-to" style="background: #222; color: #fff; border: 1px solid #444; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; cursor: pointer;">05:20</button>
                         </div>
                     </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; background: #111; padding: 8px 12px; border-radius: 8px; border: 1px solid #222; min-height: 42px; box-sizing: border-box;">
-                        <span style="font-size: 2.2vw; color: #fff;"><i class="fa-solid fa-hourglass-half" style="color: #ff9f0a; margin-right: 6px;"></i> Odklad</span>
-                        <button onclick="zmenDobuOdkladu()" id="set-snooze-time" style="background: #222; color: #fff; border: 1px solid #444; padding: 4px 12px; border-radius: 6px; font-size: 1.8vw; cursor: pointer;">1 min</button>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; background: #111; padding: 6px 10px; border-radius: 8px; border: 1px solid #222; min-height: 38px; box-sizing: border-box;">
+                        <span style="font-size: 10px; font-weight: 600; text-transform: uppercase; color: #888; display: flex; align-items: center;">
+                            <i class="fa-solid fa-hourglass-half" style="color: #ff9f0a; margin-right: 5px; font-size: 11px;"></i> Odklad
+                        </span>
+                        <button onclick="zmenDobuOdkladu()" id="set-snooze-time" style="background: #222; color: #fff; border: 1px solid #444; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; cursor: pointer;">1 min</button>
                     </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; background: #111; padding: 8px 12px; border-radius: 8px; border: 1px solid #222; grid-column: span 2; min-height: 42px; box-sizing: border-box;">
-                        <span style="font-size: 2.2vw; color: #fff;"><i class="fa-solid fa-palette" style="color: #eb0028; margin-right: 6px;"></i> Farba noci</span>
-                        <div style="display: flex; gap: 8px;">
-                            <div onclick="nastavFarbuNoci('#ffff00', this)" class="color-picker-dot" style="background-color: yellow; width: 26px; height: 26px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; box-shadow: 0 0 4px rgba(0,0,0,0.5);"></div>
-                            <div onclick="nastavFarbuNoci('#eb0028', this)" class="color-picker-dot" style="background-color: rgb(235, 0, 40); width: 26px; height: 26px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; box-shadow: 0 0 4px rgba(0,0,0,0.5);"></div>
-                            <div onclick="nastavFarbuNoci('#ffa500', this)" class="color-picker-dot" style="background-color: orange; width: 26px; height: 26px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; box-shadow: 0 0 4px rgba(0,0,0,0.5);"></div>
-                            <div onclick="nastavFarbuNoci('#32CD32', this)" class="color-picker-dot" style="background-color: limegreen; width: 26px; height: 26px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; box-shadow: 0 0 4px rgba(0,0,0,0.5);"></div>
-                            <div onclick="nastavFarbuNoci('#ffffff', this)" class="color-picker-dot" style="background-color: white; width: 26px; height: 26px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; box-shadow: 0 0 4px rgba(255,255,255,0.2);"></div>
+                    
+                    <div style="display: flex; grid-column: span 2; justify-content: space-between; align-items: center; background: #111; padding: 6px 10px; border-radius: 8px; border: 1px solid #222; min-height: 38px; box-sizing: border-box;">
+                        <span style="font-size: 10px; font-weight: 600; text-transform: uppercase; color: #888; display: flex; align-items: center;">
+                            <i class="fa-solid fa-palette" style="color: #eb0028; margin-right: 5px; font-size: 11px;"></i> Farba
+                        </span>
+                        <div style="display: flex; gap: 5px;">
+                            <div onclick="nastavFarbuNoci('#ffff00', this)" class="color-picker-dot" style="background-color: yellow; width: 18px; height: 18px; border-radius: 50%; cursor: pointer; border: 1px solid transparent; box-shadow: 0 0 3px rgba(0,0,0,0.5);"></div>
+                            <div onclick="nastavFarbuNoci('#eb0028', this)" class="color-picker-dot" style="background-color: rgb(235, 0, 40); width: 18px; height: 18px; border-radius: 50%; cursor: pointer; border: 1px solid transparent; box-shadow: 0 0 3px rgba(0,0,0,0.5);"></div>
+                            <div onclick="nastavFarbuNoci('#ffa500', this)" class="color-picker-dot" style="background-color: orange; width: 18px; height: 18px; border-radius: 50%; cursor: pointer; border: 1px solid transparent; box-shadow: 0 0 3px rgba(0,0,0,0.5);"></div>
+                            <div onclick="nastavFarbuNoci('#32CD32', this)" class="color-picker-dot" style="background-color: limegreen; width: 18px; height: 18px; border-radius: 50%; cursor: pointer; border: 1px solid transparent; box-shadow: 0 0 3px rgba(0,0,0,0.5);"></div>
+                            <div onclick="nastavFarbuNoci('#ffffff', this)" class="color-picker-dot" style="background-color: white; width: 18px; height: 18px; border-radius: 50%; cursor: pointer; border: 1px solid transparent; box-shadow: 0 0 3px rgba(255,255,255,0.2);"></div>
                         </div>
                     </div>
                 </div>
