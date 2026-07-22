@@ -762,6 +762,128 @@
                 box-shadow: 0 0 0 4px #ff9f0a, 0 0 25px rgba(255, 159, 10, 0.8) !important;
                 transition: all 0.3s ease !important;
             }
+
+        /* Rotácia ozubeného kolieska pri prechode myšou / stlačení */
+            .btn-settings i.fa-gear {
+                transition: transform 0.5s ease-in-out;
+            }
+            .btn-settings:hover i.fa-gear,
+            .btn-settings.active i.fa-gear {
+                transform: rotate(180deg);
+            }
+            
+            /* Animovaný pulzujúci rámček pre hrajúce rádio */
+            @keyframes radioGlow {
+                0% { box-shadow: 0 0 5px rgba(255, 159, 10, 0.4); }
+                50% { box-shadow: 0 0 18px rgba(255, 159, 10, 0.9); }
+                100% { box-shadow: 0 0 5px rgba(255, 159, 10, 0.4); }
+            }
+            .fav-card.playing {
+                border: 2px solid #ff9f0a !important;
+                background: #151515;
+                animation: radioGlow 2s infinite ease-in-out;
+            }
+            
+            /* Plynulá animácia prechodu okien a nočného režimu */
+            body, .placeholder-view, .weather-detail-view, .settings-grid-view {
+                transition: background-color 0.8s ease, opacity 0.4s ease;
+            }
+            
+            /* Rozšírená ochrana proti vypáleniu (jemný mikropohyb celého obsahu počas dňa) */
+            @keyframes daytimeAntiBurnIn {
+                0%   { transform: translate(0, 0); }
+                25%  { transform: translate(1px, -1px); }
+                50%  { transform: translate(-1px, 1px); }
+                75%  { transform: translate(-1px, -1px); }
+                100% { transform: translate(0, 0); }
+            }
+            .placeholder-view {
+                animation: daytimeAntiBurnIn 120s infinite ease-in-out;
+            }
+
+        /* --- ANIMÁCIE PRE IKONY POČASIA --- */
+
+            /* 1. Slnko: Jemné dýchanie/pulzovanie a pomalá rotácia */
+            @keyframes sunRotatePulse {
+                0% { transform: scale(1) rotate(0deg); opacity: 0.95; }
+                50% { transform: scale(1.08) rotate(180deg); opacity: 1; filter: drop-shadow(0 0 15px rgba(255, 204, 0, 0.8)); }
+                100% { transform: scale(1) rotate(360deg); opacity: 0.95; }
+            }
+            
+            /* 2. Oblaky: Jemné kolísanie zľava doprava */
+            @keyframes cloudFloat {
+                0% { transform: translateX(0px) translateY(0px); }
+                50% { transform: translateX(4px) translateY(-2px); }
+                100% { transform: translateX(0px) translateY(0px); }
+            }
+            
+            /* 3. Dážď: Jemné vertikálne skákanie / kvapkanie */
+            @keyframes rainDrop {
+                0% { transform: translateY(0); }
+                50% { transform: translateY(3px) scaleY(1.05); }
+                100% { transform: translateY(0); }
+            }
+            
+            /* 4. Búrka: Náhle bleskové bliknutie */
+            @keyframes lightningFlash {
+                0%, 90%, 100% { opacity: 1; filter: drop-shadow(0 0 0px transparent); }
+                92% { opacity: 0.3; }
+                94% { opacity: 1; filter: drop-shadow(0 0 18px #ffeb3b); }
+                96% { opacity: 0.5; }
+                98% { opacity: 1; filter: drop-shadow(0 0 25px #ffeb3b); }
+            }
+            
+            /* --- APLIKÁCIA ANIMÁCIÍ NA HLAVNÚ IKONU POČASIA --- */
+            #mainBigIcon {
+                display: inline-block !important;
+                transition: transform 0.5s ease;
+            }
+            
+            /* Efekty podľa ikonky (Emoji / FontAwesome) */
+            #mainBigIcon:contains("☀️"), 
+            .weather-core-row:has(#mainBigIcon) span[id="mainBigIcon"] {
+                animation: sunRotatePulse 20s infinite linear;
+            }
+            
+            /* Všeobecné priradenie animácií pre oblasť počasia */
+            .weather-core-row #mainBigIcon {
+                animation: sunRotatePulse 25s infinite linear;
+            }
+
+        /* --- VŠEOBECNÉ ANIMÁCIE PRE EMOJI IKONY POČASIA KDEKOĽVEK V KIOSKU --- */
+
+            /* Základné nastavenie pre plynulý pohyb ikoniek */
+            #mainBigIcon, #mainFc0Icon, #mainFc1Icon, .chart-icon-info, .forecast-day-icon {
+                display: inline-block !important;
+                transform-origin: center center;
+            }
+            
+            /* 1. Všetky slniečka (☀️) budú jemne rotovať a dýchať */
+            #mainFc0Icon:contains("☀️"), #mainFc1Icon:contains("☀️"), 
+            .chart-icon-info:contains("☀️"), .forecast-day-icon:contains("☀️") {
+                animation: sunRotatePulse 20s infinite linear;
+            }
+            
+            /* 2. Všetky obláčiky a polojasno (⛅ / 🌫️) sa budú plynulo kolísať */
+            #mainFc0Icon:contains("⛅"), #mainFc1Icon:contains("⛅"),
+            .chart-icon-info:contains("⛅"), .forecast-day-icon:contains("⛅") {
+                animation: cloudFloat 4s infinite ease-in-out;
+            }
+            
+            /* 3. Všetky daždivé ikony a sneženie (🌧️ / ❄️) budú jemne kvapkať/pérovať */
+            #mainFc0Icon:contains("🌧️"), #mainFc1Icon:contains("🌧️"),
+            .chart-icon-info:contains("🌧️"), .forecast-day-icon:contains("🌧️"),
+            #mainFc0Icon:contains("❄️"), #mainFc1Icon:contains("❄️") {
+                animation: rainDrop 2s infinite ease-in-out;
+            }
+            
+            /* 4. Všetky búrky (⛈️) budú občasne blikať */
+            #mainFc0Icon:contains("⛈️"), #mainFc1Icon:contains("⛈️"),
+            .chart-icon-info:contains("⛈️"), .forecast-day-icon:contains("⛈️") {
+                animation: lightningFlash 5s infinite ease-in-out;
+            }
+
+
         
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/nosleep/0.12.0/NoSleep.min.js"></script>
@@ -1058,8 +1180,32 @@
                     const bigCityEl = document.getElementById('bigClockCity');
                     if (bigCityEl) bigCityEl.textContent = cfgMestoNazov.toUpperCase();
                     
-                    const mainBigIconEl = document.getElementById('mainBigIcon');
-                    if (mainBigIconEl) mainBigIconEl.textContent = icon;
+                   const mainBigIconEl = document.getElementById('mainBigIcon');
+                    if (mainBigIconEl) {
+                        mainBigIconEl.textContent = icon;
+                        
+                        // Odstránime staré animácie
+                        mainBigIconEl.style.animation = 'none';
+                        
+                        // Aplikujeme presnú animáciu podľa kódu počasia (Open-Meteo code)
+                        setTimeout(() => {
+                            if (code === 0) {
+                                // Jasno - slnko rotuje a dýcha
+                                mainBigIconEl.style.animation = 'sunRotatePulse 20s infinite linear';
+                            } else if (code >= 1 && code <= 3) {
+                                // Polojasno / Zamračené - oblak sa jemne kolíše
+                                mainBigIconEl.style.animation = 'cloudFloat 4s infinite ease-in-out';
+                            } else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) {
+                                // Dážď - jemné kvapkanie
+                                mainBigIconEl.style.animation = 'rainDrop 1.8s infinite ease-in-out';
+                            } else if (code >= 95) {
+                                // Búrka - bleskové blikanie
+                                mainBigIconEl.style.animation = 'lightningFlash 4s infinite ease-in-out';
+                            } else {
+                                mainBigIconEl.style.animation = 'cloudFloat 5s infinite ease-in-out';
+                            }
+                        }, 50);
+                    }
                     
                     const mainBigTempEl = document.getElementById('mainBigTemp');
                     if (mainBigTempEl) {
@@ -1085,7 +1231,10 @@
                         const min = Math.round(data.daily.temperature_2m_min[i]);
                         
                         const mIcon = document.getElementById(`mainFc${i}Icon`);
-                        if (mIcon) mIcon.textContent = getWeatherIcon(dCode);
+                        if (mIcon) {
+                            mIcon.textContent = getWeatherIcon(dCode);
+                            priradAnimaciuIkone(mIcon, dCode);
+                        }
                         
                         const mTemp = document.getElementById(`mainFc${i}Temp`);
                         if (mTemp) mTemp.innerHTML = `<span style="color:${getTempColor(max)}">${max}°</span> / <span style="color:#aaa">${min}°</span>`;
@@ -1161,9 +1310,11 @@
                 const windVal = wind[idx] ? Math.round(wind[idx]) : 0;
                 const windHtml = windVal > 0 ? `<span style="font-size: 12px; color: #fff; margin-top: 5px;"><i class="fas fa-wind" style="font-size:0.8em; color:#aaa;"></i> ${windVal}</span>` : `<span style="min-height: 14px;"></span>`;
 
+                // 1. NAJPRV VYTVORÍME ELEMENT COLUMN
                 const column = document.createElement('div');
                 column.style.cssText = `display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; flex: 1;`;
                 
+                // 2. NAPLNÍME HO HTML OBSAHOM
                 column.innerHTML = `
                     ${rainHtml}
                     ${weatherIconHtml}
@@ -1172,6 +1323,11 @@
                     <span style="font-size: 14px; color: #fff; margin-top: 5px; font-weight: 500;">${labels[idx]}</span>
                     ${windHtml}
                 `;
+
+                // 3. AŽ TERAZ PRIRADÍME ANIMÁCIU IKONE VO VNÚTRI COLUMN
+                const iconEl = column.querySelector('.chart-icon-info');
+                if (iconEl) priradAnimaciuIkone(iconEl, cCode);
+
                 chartContainer.appendChild(column);
             });
         }
@@ -1250,6 +1406,8 @@
                     </div>
                 `;
                 extendedContainer.appendChild(dayBox);
+                const dayIconEl = dayBox.querySelector('.forecast-day-icon');
+                if (dayIconEl) priradAnimaciuIkone(dayIconEl, exCode);
             }
         }
 
@@ -1403,17 +1561,20 @@
                 const card = document.createElement('div');
                 
                 if (item && id !== null) {
-                    card.className = "fav-card";
-                    if (currentPlayingType === item.id && !audio.paused) card.classList.add("playing");
-                    //card.setAttribute("style", item.style);
-                    card.onclick = () => handleFavCardClick(item);
-                    
-                    if (item.img) {
-                        card.innerHTML = `<img src="${item.img}" alt="${item.name}">`;
-                    } else if (item.icon) {
-                        card.innerHTML = `<i class="${item.icon}" style="color:${item.color}"></i><span>${item.name}</span>`;
-                    }
-                } else {
+                card.className = "fav-card";
+                
+                if (currentPlayingType === item.id && !audio.paused) {
+                    card.classList.add("playing");
+                }
+                
+                card.onclick = () => handleFavCardClick(item);
+
+                if (item.img) {
+                    card.innerHTML = `<img src="${item.img}" alt="${item.name}">`;
+                } else if (item.icon) {
+                    card.innerHTML = `<i class="${item.icon}" style="color:${item.color}"></i><span>${item.name}</span>`;
+                }
+            } else {
                     card.className = "fav-card empty";
                     card.innerHTML = `<i class="fa-solid fa-plus"></i>`;
                 }
@@ -2224,6 +2385,27 @@
             document.addEventListener('DOMContentLoaded', () => {
                 spustiTourAkJePrvykrat();
             });
+
+        // Pomocná funkcia na pridanie animácie k ľubovoľnému elementu ikony
+            function priradAnimaciuIkone(element, wCode) {
+                if (!element) return;
+                
+                // Zrušíme prípadnú starú animáciu
+                element.style.animation = 'none';
+                
+                // Priradíme novú podľa kódu počasia
+                if (wCode === 0) {
+                    element.style.animation = 'sunRotatePulse 20s infinite linear';
+                } else if (wCode >= 1 && wCode <= 3) {
+                    element.style.animation = 'cloudFloat 4s infinite ease-in-out';
+                } else if ((wCode >= 51 && wCode <= 67) || (wCode >= 80 && wCode <= 82) || (wCode >= 71 && wCode <= 77)) {
+                    element.style.animation = 'rainDrop 2s infinite ease-in-out';
+                } else if (wCode >= 95) {
+                    element.style.animation = 'lightningFlash 4s infinite ease-in-out';
+                } else {
+                    element.style.animation = 'cloudFloat 5s infinite ease-in-out';
+                }
+            }
         
     </script>
      <!-- Vyskakujúce okno pre zoznam mien -->
