@@ -2632,19 +2632,26 @@
 			}
 			
 			function skontrolujAutoStartRadiaPoReloadu() {
-			    // Ak si kód pred reloadom zapamätal, že hralo rádio, znova ho zapneme
 			    const chcelAutoStart = localStorage.getItem('kiosk_autorestart_radio');
 			    if (chcelAutoStart === 'true') {
-			        localStorage.removeItem('kiosk_autorestart_radio'); // Vyčistíme príznak
+			        localStorage.removeItem('kiosk_autorestart_radio');
 			        
 			        const savedRadioUrl = localStorage.getItem('kiosk_last_radio_url');
 			        const savedRadioType = localStorage.getItem('kiosk_last_radio_type');
 			        
 			        if (savedRadioUrl && savedRadioType) {
-			            // Dáme prehliadaču 1 sekundu na inicializáciu a spustíme rádio
 			            setTimeout(() => {
+			                // Pokus o reštart rádia
 			                playRadio(savedRadioUrl, null, savedRadioType);
-			            }, 1000);
+			                
+			                // Ošetrenie pre iOS (ak prehliadač zablokuje autoplay po reloadu)
+			                const playPromise = audio.play();
+			                if (playPromise !== undefined) {
+			                    playPromise.catch(error => {
+			                        console.log("Autoplay bol prehliadačom blokovaný, vyžaduje sa dotyk:", error);
+			                    });
+			                }
+			            }, 800);
 			        }
 			    }
 			}
@@ -2662,6 +2669,7 @@
 			        skontrolujNochnuAktualizaciu();
 			    }
 			});
+            
             
     </script>
      <!-- Vyskakujúce okno pre zoznam mien -->
